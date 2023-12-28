@@ -10,19 +10,19 @@
                 <h4 class="logo-title ms-3 mb-0" data-setting="app_name"><brand-name></brand-name></h4>
               </div>
               <h2 class="mb-2 text-center">Masuk</h2>
-              <p class="text-center">Selamat data di TPS Connect!</p>
+              <p class="text-center">Selamat datang di Kaznet, Masuk untuk melanjutkan!</p>
               <form @submit.prevent="handleSignIn">
                 <div class="row">
                   <div class="col-lg-12">
                     <div class="form-group">
                       <label for="email" class="form-label">Email</label>
-                      <input type="email" class="form-control" id="email" aria-describedby="email" placeholder=" " />
+                      <input v-model="email" type="email" class="form-control" id="email" aria-describedby="email" placeholder=" " />
                     </div>
                   </div>
                   <div class="col-lg-12">
                     <div class="form-group">
                       <label for="password" class="form-label">Password</label>
-                      <input type="password" class="form-control" id="password" aria-describedby="password" placeholder=" " />
+                      <input v-model="password" type="password" class="form-control" id="password" aria-describedby="password" placeholder=" " />
                     </div>
                   </div>
                   <div class="col-lg-12 d-flex justify-content-between">
@@ -59,13 +59,46 @@
 </template>
 
 <script setup>
+import { ref, onMounted} from 'vue';
+import axios from 'axios';
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-const handleSignIn = async()=> {
-  router.push({ name: 'default.dashboard'});
-}
+const email = ref('');
+const password = ref('');
+
+onMounted(() => {
+  if (localStorage.getItem('jwtToken')) {
+    // If a token is present, redirect to the dashboard
+    router.push({ name: 'default.dashboard' });
+  }
+});
+
+
+const handleSignIn = async () => {
+  try {
+    const response = await axios.post(`${process.env.VUE_APP_BACKEND_API}/api/v1/user/login`, {
+      email: email.value,
+      password: password.value,
+    });
+
+    // Assuming your server returns a JWT token
+    const token = response.data.data.token_jwt;
+    const user = JSON.stringify(response.data.data.data_user);
+
+    // Store the token in local storage or a secure store
+    localStorage.setItem('jwtToken', token);
+    localStorage.setItem('userData', user);
+
+    console.log('Login successful:', response.data);
+
+    // Redirect to the dashboard on successful login
+    router.push({ name: 'default.dashboard' });
+  } catch (error) {
+    console.error('Login failed:', error.response ? error.response.data : error.message);
+  }
+};
 </script>
 
 <style lang="scss" scoped></style>

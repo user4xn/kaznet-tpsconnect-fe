@@ -27,14 +27,14 @@
               <img src="@/assets/images/avatars/avtar_5.png" alt="User-Profile" class="theme-color-yellow-img img-fluid avatar avatar-50 avatar-rounded" />
               <img src="@/assets/images/avatars/avtar_3.png" alt="User-Profile" class="theme-color-pink-img img-fluid avatar avatar-50 avatar-rounded" />
               <div class="caption ms-3 d-none d-md-block">
-                <h6 class="mb-0 caption-title">{{ userName ? userName : "John Doe" }}</h6>
-                <p class="mb-0 caption-sub-title">{{ userRole ?  userRole : "Admin (Example)" }}</p>
+                <h6 class="mb-0 caption-title">{{ userName }}</h6>
+                <p class="mb-0 caption-sub-title">{{ userRole }}</p>
               </div>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
               <li><router-link class="dropdown-item" :to="{ name: 'default.user-privacy-setting' }">Privacy Setting</router-link></li>
               <li><hr class="dropdown-divider" /></li>
-              <li><router-link class="dropdown-item" :to="{ name: 'auth.login' }">Logout</router-link></li>
+              <li><a class="dropdown-item" @click="handleLogout">Logout</a></li>
             </ul>
           </li>
         </ul>
@@ -45,6 +45,11 @@
 <script>
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useStore } from 'vuex'
+import axios from 'axios'
+import { useRouter } from 'vue-router'
+
+const router = useRouter();
+
 export default {
   components: {},
   props: {
@@ -61,6 +66,8 @@ export default {
     const store = useStore()
     const headerNavbar = computed(() => store.getters['setting/header_navbar'])
     const isHidden = ref(false)
+    const userName = ref('');
+    const userRole = ref('');
 
     const onscroll = () => {
       const yOffset = document.documentElement.scrollTop
@@ -76,8 +83,39 @@ export default {
 
     const carts = computed(() => store.getters.carts)
 
+    const handleLogout = async()=> {
+      try {
+        const jwtToken = localStorage.getItem('jwtToken');
+
+        const response = await axios.post(`${process.env.VUE_APP_BACKEND_API}/api/v1/user/logout`, {}, {
+          headers: {
+            Authorizations: `Bearer ${jwtToken}`
+          }
+        });
+
+        if (response.code === 200) {
+          localStorage.removeItem('jwtToken');
+          localStorage.removeItem('userData');
+
+          console.log('Logout successful:', response.data);
+
+          // Redirect to the login page
+          router.push({ name: 'auth.login' });
+        }
+      } catch (error) {
+        console.error('Logout failed:', error.response ? error.response.data : error.message);
+      }
+    }
+
+    const setProfile = () => {
+      const userData = JSON.parse(localStorage.getItem('userData'))
+      userName.value = userData?.name || 'John Doe';
+      userRole.value = userData?.role || 'Admin (Example)';
+    }
+
     onMounted(() => {
       window.addEventListener('scroll', onscroll())
+      setProfile()
     })
 
     onUnmounted(() => {
@@ -87,7 +125,10 @@ export default {
       headerNavbar,
       isHidden,
       carts,
-      emit
+      emit,
+      userName,
+      userRole,
+      handleLogout
     }
   }
 }

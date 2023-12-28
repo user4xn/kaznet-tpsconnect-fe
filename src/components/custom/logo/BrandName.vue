@@ -5,7 +5,7 @@
 <script>
 export default {
   setup() {
-    const appName = 'TPS Connect'
+    const appName = 'Kaznet'
     return { appName }
   }
 }

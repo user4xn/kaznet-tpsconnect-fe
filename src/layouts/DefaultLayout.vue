@@ -31,7 +31,7 @@
 <script setup>
 // Library
 import { ref, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 // Components
@@ -43,6 +43,7 @@ import FooterComponent from '@/components/partials/FooterComponent.vue'
 import LoaderComponent from '@/components/custom/loader/LoaderComponent.vue'
 
 const route = useRoute()
+const router = useRouter()
 const store = useStore()
 const isBanner = computed(() => route.meta.isBanner)
 const bannerStyle = computed(() => store.getters['setting/header_banner'])
@@ -52,6 +53,11 @@ onMounted(() => {
   setTimeout(() => {
     isLoader.value = false
   }, 300)
+
+  if (!localStorage.getItem('jwtToken')) {
+    // If a token is present, redirect to the dashboard
+    router.push({ name: 'auth.login' });
+  }
 })
 </script>
 
