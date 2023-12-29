@@ -86,7 +86,7 @@ const defaultChildRoutes = (prefix) => [
         { text: 'Verifikasi Pemilih' },
       ],
      },
-    component: () => import('@/views/admin/AdminPage.vue')
+    component: () => import('@/views/utama/VerifikasiPemilih.vue')
   },
   // USER
   {
