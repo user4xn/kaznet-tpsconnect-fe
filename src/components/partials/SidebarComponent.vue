@@ -7,29 +7,28 @@
       
       <li><hr class="hr-horizontal" /></li>
       <side-menu title="Utama" :static-item="true"></side-menu>
-      <side-menu isTag="router-link" title="Verifikasi Pemilih" icon="shield-check" :route="{ to: 'default.admin-permissions' }"></side-menu>
+      <side-menu isTag="router-link" title="Verifikasi Pemilih" icon="shield-check" :route="{ to: 'default.verifikasi-pemilih' }"></side-menu>
 
       <li><hr class="hr-horizontal" /></li>
       <side-menu title="Master Data" :static-item="true"></side-menu>
-      <side-menu title="Data Masyarakat" icon="users" toggle-id="citizen" :caret-icon="true" :route="{ popup: 'false', to: 'citizen' }" @onClick="toggle" :active="currentRoute.includes('citizen')">
+      <side-menu title="Data Pemilih" icon="users" toggle-id="citizen" :caret-icon="true" :route="{ popup: 'false', to: 'citizen' }" @onClick="toggle" :active="currentRoute.includes('citizen')">
         <b-collapse tag="ul" class="sub-nav" id="citizen" accordion="sidebar-menu" :visible="currentRoute.includes('citizen')">
-          <side-menu isTag="router-link" title="Tambah Masyarakat" icon="circle" :icon-size="10" icon-type="solid" miniTitle="UA" :route="{ to: 'default.user-add' }"></side-menu>
-          <side-menu isTag="router-link" title="List Data Masyarakat" icon="circle" :icon-size="10" icon-type="solid" miniTitle="UL" :route="{ to: 'default.user-list' }"></side-menu>
+          <side-menu isTag="router-link" title="Tambah Pemilih" icon="circle" :icon-size="10" icon-type="solid" miniTitle="UA" :route="{ to: 'default.tambah-pemilih' }"></side-menu>
+          <side-menu isTag="router-link" title="List Pemilih" icon="circle" :icon-size="10" icon-type="solid" miniTitle="UL" :route="{ to: 'default.daftar-pemilih' }"></side-menu>
         </b-collapse>
       </side-menu>
       <side-menu title="Pengguna" icon="user-group" toggle-id="users" :caret-icon="true" :route="{ popup: 'false', to: 'user' }" @onClick="toggle" :active="currentRoute.includes('user')">
         <b-collapse tag="ul" class="sub-nav" id="users" accordion="sidebar-menu" :visible="currentRoute.includes('user')">
-          <side-menu isTag="router-link" title="User Profile" icon="circle" :icon-size="10" icon-type="solid" miniTitle="UP" :route="{ to: 'default.user-profile' }"></side-menu>
-          <side-menu isTag="router-link" title="User Add" icon="circle" :icon-size="10" icon-type="solid" miniTitle="UA" :route="{ to: 'default.user-add' }"></side-menu>
-          <side-menu isTag="router-link" title="User List" icon="circle" :icon-size="10" icon-type="solid" miniTitle="UL" :route="{ to: 'default.user-list' }"></side-menu>
+          <side-menu isTag="router-link" title="Tambah Pengguna" icon="circle" :icon-size="10" icon-type="solid" miniTitle="UA" :route="{ to: 'default.tambah-pengguna' }"></side-menu>
+          <side-menu isTag="router-link" title="List Pengguna" icon="circle" :icon-size="10" icon-type="solid" miniTitle="UL" :route="{ to: 'default.daftar-pengguna' }"></side-menu>
         </b-collapse>
       </side-menu>
       
       <li><hr class="hr-horizontal" /></li>
       <side-menu title="Master Lokasi" :static-item="true"></side-menu>
-      <side-menu isTag="router-link" title="Kabupaten" icon="location" :route="{ to: 'default.billing' }"></side-menu>
-      <side-menu isTag="router-link" title="Kecamatan" icon="location" :route="{ to: 'default.kanban' }"></side-menu>
-      <side-menu isTag="router-link" title="Kelurahan" icon="location" :route="{ to: 'default.calender' }"></side-menu>
+      <side-menu isTag="router-link" title="Kabupaten" icon="location" :route="{ to: 'default.daftar-kabupaten' }"></side-menu>
+      <side-menu isTag="router-link" title="Kecamatan" icon="location" :route="{ to: 'default.daftar-kecamatan' }"></side-menu>
+      <side-menu isTag="router-link" title="Kelurahan" icon="location" :route="{ to: 'default.daftar-kelurahan' }"></side-menu>
     </ul>
   </default-sidebar>
   <!-- Sidebar Component End Here-->

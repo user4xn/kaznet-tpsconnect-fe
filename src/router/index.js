@@ -8,6 +8,8 @@ const authChildRoutes = (prefix) => [
     meta: { auth: false, name: 'Login' },
     component: () => import('@/views/auth/default/SignIn.vue')
   },
+
+  // NOT USED BELOW
   {
     path: 'register',
     name: prefix + '.register',
@@ -32,6 +34,7 @@ const authChildRoutes = (prefix) => [
     meta: { auth: false, name: 'Lock Screen' },
     component: () => import('@/views/auth/default/LockScreen.vue')
   }
+
 ]
 
 // Dashboard routes
@@ -39,37 +42,164 @@ const dashboardRoutes = (prefix) => [
   {
     path: '',
     name: prefix + '.dashboard',
-    meta: { auth: true, name: 'Home', isBanner: false },
+    meta: { 
+      auth: true, 
+      name: 'Home', 
+      isBanner: false,
+      pageTitle: 'Dashboard', 
+      breadcrumbs: [
+        { text: 'Selamat datang di Kaznet, Sistem Verifikasi Data Pemilu'},
+      ],
+    },
     component: () => import('@/views/dashboards/IndexPage.vue')
   }
 ]
+
 // Default routes
 const defaultChildRoutes = (prefix) => [
+  // DASHBOARD
   {
     path: '',
     name: prefix + '.dashboard',
-    meta: { auth: true, name: 'Home', isBanner: true },
+    meta: { 
+      auth: true, 
+      name: 'Home', 
+      isBanner: true,
+      pageTitle: 'Dashboard', 
+      breadcrumbs: [
+        { text: 'Selamat datang di Kaznet, Sistem Verifikasi Data Pemilu'},
+      ],
+  },
     component: () => import('@/views/dashboards/IndexPage.vue')
   },
-  // Spacial Pages
+  // CORE
   {
-    path: '/billing',
-    name: prefix + '.billing',
-    meta: { auth: true, name: 'Billing', isBanner: true },
+    path: '/verifikasi-pemilih',
+    name: prefix + '.verifikasi-pemilih',
+    meta: { 
+      auth: true, 
+      name: 'Verifikasi Pemilih', 
+      isBanner: true,
+      pageTitle: 'Verifikasi Pemilih', 
+      breadcrumbs: [
+        { text: 'Utama'},
+        { text: 'Verifikasi Pemilih' },
+      ],
+     },
+    component: () => import('@/views/admin/AdminPage.vue')
+  },
+  // USER
+  {
+    path: '/daftar-pengguna',
+    name: prefix + '.daftar-pengguna',
+    meta: { 
+      auth: true, 
+      name: 'Daftar Pengguna', 
+      isBanner: true,
+      pageTitle: 'Daftar Pengguna',
+      breadcrumbs: [
+        { text: 'Master Data' },
+        { text: 'Data Pengguna' },
+        { text: 'Daftar Pengguna' },
+      ],
+   },
+    component: () => import('@/views/user/ListPage.vue')
+  },
+  {
+    path: '/tambah-pengguna',
+    name: prefix + '.tambah-pengguna',
+    meta: { 
+      auth: true, 
+      name: 'Tambah Pengguna', 
+      isBanner: true,
+      pageTitle: 'Tambah Pengguna',
+      breadcrumbs: [
+        { text: 'Master Data' },
+        { text: 'Data Pengguna' },
+        { text: 'Tambah Pengguna' },
+      ],
+  },
+    component: () => import('@/views/user/AddPage.vue')
+  },
+  // CITIZEN
+  {
+    path: '/tambah-pemilih',
+    name: prefix + '.tambah-pemilih',
+    meta: { 
+      auth: true, 
+      name: 'Tambah Pemilih', 
+      isBanner: true ,
+      pageTitle: 'Tambah Pemilih',
+      breadcrumbs: [
+        { text: 'Master Data' },
+        { text: 'Data Pemilih' },
+        { text: 'Tambah Pemilih' },
+      ],
+    },
+    component: () => import('@/views/forms/ElementsPage.vue')
+  },
+  {
+    path: '/daftar-pemilih',
+    name: prefix + '.daftar-pemilih',
+    meta: { 
+      auth: true, 
+      name: 'Daftar Pemilih', 
+      isBanner: true,
+      pageTitle: 'Daftar Pemilih',
+      breadcrumbs: [
+        { text: 'Master Data' },
+        { text: 'Data Pemilih' },
+        { text: 'Daftar Pemilih' },
+      ],
+    },
+    component: () => import('@/views/forms/ValidationPage.vue')
+  },
+  {
+    path: '/daftar-kabupaten',
+    name: prefix + '.daftar-kabupaten',
+    meta: { 
+      auth: true, 
+      name: 'Daftar Kabupaten', 
+      isBanner: true,
+      pageTitle: 'Daftar Kabupaten',
+      breadcrumbs: [
+        { text: 'Master Lokasi' },
+        { text: 'Daftar Kabupaten' },
+      ],
+    },
     component: () => import('@/views/spacial-pages/BillingPage.vue')
   },
   {
-    path: '/calender',
-    name: prefix + '.calender',
-    meta: { auth: true, name: 'Calender', isBanner: true },
+    path: '/daftar-kecamatan',
+    name: prefix + '.daftar-kecamatan',
+    meta: { 
+      auth: true, 
+      name: 'Daftar Kecamatan', 
+      isBanner: true,
+      pageTitle: 'Daftar Kecamatan',
+      breadcrumbs: [
+        { text: 'Master Lokasi' },
+        { text: 'Daftar Kecamatan' },
+      ],
+    },
     component: () => import('@/views/spacial-pages/CalenderPage.vue')
   },
   {
-    path: '/kanban',
-    name: prefix + '.kanban',
-    meta: { auth: true, name: 'Kanban', isBanner: true },
+    path: '/daftar-kelurahan',
+    name: prefix + '.daftar-kelurahan',
+    meta: { 
+      auth: true, 
+      name: 'Daftar Kelurahan', 
+      isBanner: true,
+      pageTitle: 'Daftar Kelurahan',
+      breadcrumbs: [
+        { text: 'Master Lokasi' },
+        { text: 'Daftar Kelurahan' },
+      ],
+    },
     component: () => import('@/views/spacial-pages/KanbanPage.vue')
   },
+  // NOT USED BELOW
   {
     path: '/pricing',
     name: prefix + '.pricing',
@@ -87,19 +217,6 @@ const defaultChildRoutes = (prefix) => [
     name: prefix + '.rtlsupport',
     meta: { auth: true, name: 'RTL-Support', isBanner: true },
     component: () => import('@/views/spacial-pages/RtlSupport.vue')
-  },
-  // Users Pages
-  {
-    path: '/user-list',
-    name: prefix + '.user-list',
-    meta: { auth: true, name: 'User List', isBanner: true },
-    component: () => import('@/views/user/ListPage.vue')
-  },
-  {
-    path: '/user-add',
-    name: prefix + '.user-add',
-    meta: { auth: true, name: 'User Add', isBanner: true },
-    component: () => import('@/views/user/AddPage.vue')
   },
   {
     path: '/user-profile',
@@ -144,19 +261,6 @@ const defaultChildRoutes = (prefix) => [
     name: prefix + '.map-vector',
     meta: { auth: true, name: 'Vector Map', isBanner: true },
     component: () => import('@/views/maps/VectorPage.vue')
-  },
-  // Form Pages
-  {
-    path: '/elements',
-    name: prefix + '.elements',
-    meta: { auth: true, name: 'Elements', isBanner: true },
-    component: () => import('@/views/forms/ElementsPage.vue')
-  },
-  {
-    path: '/validation',
-    name: prefix + '.validation',
-    meta: { auth: true, name: 'Validation', isBanner: true },
-    component: () => import('@/views/forms/ValidationPage.vue')
   },
   {
     path: '/wizard',
@@ -209,12 +313,6 @@ const defaultChildRoutes = (prefix) => [
     meta: { auth: true, name: 'Terms and Conditions', isBanner: true },
     component: () => import('@/views/extra/TermsAndConditions.vue')
   },
-  {
-    path: '/admin-permissions',
-    name: prefix + '.admin-permissions',
-    meta: { auth: true, name: 'Admin Permissions', isBanner: true },
-    component: () => import('@/views/admin/AdminPage.vue')
-  }
 ]
 
 const errorRoutes = (prefix) => [
