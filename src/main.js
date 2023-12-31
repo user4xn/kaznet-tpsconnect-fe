@@ -5,11 +5,13 @@ import router from './router'
 import store from './store'
 
 // Library Components
+import VueSelect from 'vue-select'
 import VueSweetalert2 from 'vue-sweetalert2'
 import VueApexCharts from 'vue3-apexcharts'
 import BootstrapVue3 from 'bootstrap-vue-3'
 import CounterUp from 'vue3-autocounter'
 import 'aos/dist/aos.css'
+import "vue-select/dist/vue-select.css"
 
 // Custom Components & Directives
 import globalComponent from './plugins/global-components'
@@ -25,6 +27,7 @@ app.use(store).use(router)
 app.use(VueSweetalert2)
 app.use(VueApexCharts)
 app.use(BootstrapVue3)
+app.component("v-select", VueSelect);
 app.component('counter-up', CounterUp)
 
 // Custom Components & Directives

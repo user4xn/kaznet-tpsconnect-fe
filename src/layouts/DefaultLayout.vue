@@ -26,6 +26,9 @@
     <footer-component></footer-component>
     <!-- Footer Component End Here -->
   </main>
+  <!-- Live Customizer Component Start Here -->
+  <setting-offcanvas></setting-offcanvas>
+  <!-- Live Customizer Component End Here-->
 </template>
 
 <script setup>
@@ -41,6 +44,7 @@ import SidebarComponent from '@/components/partials/SidebarComponent.vue'
 import MainContentComponent from '@/components/partials/MainContentComponent.vue'
 import FooterComponent from '@/components/partials/FooterComponent.vue'
 import LoaderComponent from '@/components/custom/loader/LoaderComponent.vue'
+import SettingOffcanvas from '@/components/setting/SettingOffcanvas.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -53,7 +57,7 @@ onMounted(() => {
   setTimeout(() => {
     isLoader.value = false
   }, 300)
-
+  
   if (!localStorage.getItem('jwtToken')) {
     // If a token is present, redirect to the dashboard
     router.push({ name: 'auth.login' });

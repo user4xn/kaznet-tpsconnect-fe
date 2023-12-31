@@ -13,14 +13,14 @@
       <side-menu title="Master Data" :static-item="true"></side-menu>
       <side-menu title="Data Pemilih" icon="users" toggle-id="citizen" :caret-icon="true" :route="{ popup: 'false', to: 'citizen' }" @onClick="toggle" :active="currentRoute.includes('citizen')">
         <b-collapse tag="ul" class="sub-nav" id="citizen" accordion="sidebar-menu" :visible="currentRoute.includes('citizen')">
-          <side-menu isTag="router-link" title="Tambah Pemilih" icon="circle" :icon-size="10" icon-type="solid" miniTitle="UA" :route="{ to: 'default.tambah-pemilih' }"></side-menu>
-          <side-menu isTag="router-link" title="List Pemilih" icon="circle" :icon-size="10" icon-type="solid" miniTitle="UL" :route="{ to: 'default.daftar-pemilih' }"></side-menu>
+          <side-menu isTag="router-link" title="Tambah Pemilih" icon="circle" :icon-size="10" icon-type="solid" miniTitle="TP" :route="{ to: 'default.tambah-pemilih' }"></side-menu>
+          <side-menu isTag="router-link" title="List Pemilih" icon="circle" :icon-size="10" icon-type="solid" miniTitle="LP" :route="{ to: 'default.daftar-pemilih' }"></side-menu>
         </b-collapse>
       </side-menu>
       <side-menu title="Pengguna" icon="user-group" toggle-id="users" :caret-icon="true" :route="{ popup: 'false', to: 'user' }" @onClick="toggle" :active="currentRoute.includes('user')">
         <b-collapse tag="ul" class="sub-nav" id="users" accordion="sidebar-menu" :visible="currentRoute.includes('user')">
-          <side-menu isTag="router-link" title="Tambah Pengguna" icon="circle" :icon-size="10" icon-type="solid" miniTitle="UA" :route="{ to: 'default.tambah-pengguna' }"></side-menu>
-          <side-menu isTag="router-link" title="List Pengguna" icon="circle" :icon-size="10" icon-type="solid" miniTitle="UL" :route="{ to: 'default.daftar-pengguna' }"></side-menu>
+          <side-menu isTag="router-link" title="Tambah Pengguna" icon="circle" :icon-size="10" icon-type="solid" miniTitle="TP" :route="{ to: 'default.tambah-pengguna' }"></side-menu>
+          <side-menu isTag="router-link" title="List Pengguna" icon="circle" :icon-size="10" icon-type="solid" miniTitle="LP" :route="{ to: 'default.daftar-pengguna' }"></side-menu>
         </b-collapse>
       </side-menu>
       

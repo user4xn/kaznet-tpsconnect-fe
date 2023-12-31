@@ -83,15 +83,26 @@ const handleSignIn = async () => {
       password: password.value,
     });
 
-    // Assuming your server returns a JWT token
-    const token = response.data.data.token_jwt;
-    const user = JSON.stringify(response.data.data.data_user);
+    console.log(response.data.data);
 
-    // Store the token in local storage or a secure store
+    const token = response.data.data.token;
+    const id = response.data.data.id;
+    const full_name = response.data.data.full_name;
+    const regency = response.data.data.regency;
+    const status = response.data.data.status;
+    const role = response.data.data.role;
+
+    const userData = {
+      id: id,
+      email: email,
+      full_name: full_name,
+      regency: regency,
+      status: status,
+      role: role,
+    }
+
     localStorage.setItem('jwtToken', token);
-    localStorage.setItem('userData', user);
-
-    console.log('Login successful:', response.data);
+    localStorage.setItem('userData', JSON.stringify(userData));
 
     // Redirect to the dashboard on successful login
     router.push({ name: 'default.dashboard' });
