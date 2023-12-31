@@ -7,12 +7,12 @@
             <h4 class="card-title mb-0">Cari Pemilih</h4>
           </div>
           <div class="d-flex align-items-center gap-3">
-            <router-link :to="{ name: 'default.tambah-pemilih' }" class="text-center btn btn-primary d-flex gap-2">
+            <button class="text-center btn btn-primary d-flex gap-2">
               <svg width="20" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
               </svg>
               Tambah Pemilih
-            </router-link>
+            </button>
           </div>
         </div>
         <b-card-body>
@@ -20,7 +20,7 @@
             <b-row>
               <b-col sm="4">
                 <b-form-group>
-                  <label for="input-kabupaten" class="form-label">Kabupaten:</label>
+                  <label for="input-kabupaten" class="form-label">Kota/Kabupaten:</label>
                   <v-select v-model="selectedKabupaten" placeholder="Pilih Kabupaten" :options="kabupatenOptions" id="input-kabupaten" :disabled="!isAdmin"></v-select>
                 </b-form-group>
               </b-col>
@@ -97,7 +97,7 @@
                       </ol>
                       <hr class="hr-horizontal"/>
                       <div class="text-center mt-1">
-                          <button class="btn btn-primary" :disabled="isOnValidate">
+                          <button class="btn btn-success" :disabled="isOnValidate" @click="processValidate">
                             <span v-if="!isOnValidate">
                             Validasi Semua
                             </span>
@@ -114,12 +114,23 @@
       </b-card>
     </b-col>
   </b-row>
+  <b-row v-if="succesValidate">
+    <b-col sm="12">
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.94118 10.7474V20.7444C5.94118 21.0758 5.81103 21.3936 5.57937 21.628C5.3477 21.8623 5.0335 21.994 4.70588 21.994H2.23529C1.90767 21.994 1.59347 21.8623 1.36181 21.628C1.13015 21.3936 1 21.0758 1 20.7444V11.997C1 11.6656 1.13015 11.3477 1.36181 11.1134C1.59347 10.879 1.90767 10.7474 2.23529 10.7474H5.94118ZM5.94118 10.7474C7.25166 10.7474 8.50847 10.2207 9.43512 9.28334C10.3618 8.34594 10.8824 7.07456 10.8824 5.74887V4.49925C10.8824 3.83641 11.1426 3.20071 11.606 2.73201C12.0693 2.26331 12.6977 2 13.3529 2C14.0082 2 14.6366 2.26331 15.0999 2.73201C15.5632 3.20071 15.8235 3.83641 15.8235 4.49925V10.7474H19.5294C20.1847 10.7474 20.8131 11.0107 21.2764 11.4794C21.7397 11.9481 22 12.5838 22 13.2466L20.7647 19.4947C20.5871 20.2613 20.25 20.9196 19.8045 21.3704C19.3589 21.8211 18.8288 22.04 18.2941 21.994H9.64706C8.6642 21.994 7.72159 21.599 7.0266 20.896C6.33162 20.1929 5.94118 19.2394 5.94118 18.2451" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <strong> Berhasil Validasi!</strong> {{ resultValidate.total - resultValidate.error }} data berhasil <u>di verifikasi</u>, {{ resultValidate.error }} data duplikat ditemukan (akan dihapus).
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    </b-col>
+  </b-row>
   <b-row v-if="resultSearch.length > 0">
     <b-col sm="12">
       <b-card no-body class="card">
         <div class="card-header d-flex justify-content-between flex-wrap align-items-center">
           <div class="header-title">
-            <p class="text-muted mb-0">Tampil {{ `${(resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit) + 1} - ${resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)} dari ${resultTotal.toLocaleString()}` }} data...</p>
+            <p class="text-muted mb-0">Tampil {{ `${(resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit) + 1} - ${((resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit)) + this.resultSearch.length} dari ${resultTotal.toLocaleString()}` }} data...</p>
           </div>
         </div>
         <b-card-body>
@@ -151,6 +162,7 @@
                   </td>
                   <td class="d-flex justify-content-center">
                     <button class="btn btn-primary btn-sm" @click="insertSelected(result)">Pilih</button>
+                    <button class="btn btn-success btn-sm ms-2" @click="processSingleValidate(result.id)">Validasi</button>
                   </td>
                 </tr>
               </tbody>
@@ -214,6 +226,11 @@ export default {
       openIndex: -1,
       resultLimit: 10,
       resultOffset: 0,
+      succesValidate: false,
+      resultValidate: {
+        total: 0,
+        error: 0
+      },
     }
   },
   watch: {
@@ -269,7 +286,7 @@ export default {
     async fetchTpsOptions() {
       this.selectedTps = null;
       this.inputName = null;
-      this.resetSearch();
+
       if (this.selectedKelurahan) {
         try {
           var queryParam = `nama_kabupaten=${this.selectedKabupaten}`;
@@ -305,7 +322,7 @@ export default {
       let offset = this.resultPagination.currentOffset ?? this.resultOffset;
 
       if(page) {
-        offset = this.resultPagination.currentLimit * page;
+        offset = this.resultPagination.currentLimit * (page - 1);
       }
       
       var queryParam = `nama_kabupaten=${this.selectedKabupaten}`;
@@ -327,7 +344,7 @@ export default {
         const data = response.data.data.items;
         const metadata = response.data.data.metadata;
         
-        if(data != null) {
+        if(data != []) {
           this.resultSearch = data;
           this.resultTotal = metadata.total_results;
         }
@@ -343,8 +360,9 @@ export default {
     prevNextCariData(x) {
       let current = this.resultPagination.currentPage;
       let count = current + x;
-      
-      if (count > 0 && count < (this.resultTotal / this.resultPagination.currentLimit)) {
+      let mod = this.resultTotal % this.resultPagination.currentLimit;
+
+      if ((count > 0 && count <= (this.resultTotal / this.resultPagination.currentLimit)) || mod != 0 && ((this.resultPagination.currentLimit * (count - 1)) + mod) <= this.resultTotal) {
         this.resultPagination.currentPage = count;
         this.cariData(this.resultMode, this.resultPagination.currentPage);
       }
@@ -372,11 +390,11 @@ export default {
     },
     resetSelected() {
       this.selectedData = [];
+      this.resultSearch = [];
       this.resetSearch();
     },
     insertSelected(value) {
       const isDuplicate = this.selectedData.find(item => item.id === value.id);
-      console.log(isDuplicate);
 
       if (!isDuplicate) {
         this.selectedData.push(value);
@@ -401,6 +419,98 @@ export default {
       }
 
       return age;
+    },
+    async processValidate() {
+      this.isOnValidate = true;
+
+      this.resultValidate = {
+        total: 0,
+        error: 0
+      }
+
+      try {
+        var selectedDataID = this.selectedData.map(item => item.id);
+      
+        const body = {
+          resident_id: selectedDataID,
+          is_true: true
+        }
+
+        const response = await axios.post(`${process.env.VUE_APP_BACKEND_API}/api/v1/resident/validate`, body, withHeader);
+        
+        if(response.data.meta.code == 200) {
+          const totalValidate = this.selectedData.length;
+          const errorData = response.data.data.items;
+          let totalError = 0;
+
+          if(errorData) {
+            totalError = errorData.length;
+          }
+
+          this.selectedData = [];
+          this.succesValidate = true;
+          this.resultValidate = {
+            total: totalValidate,
+            error: totalError
+          }
+
+          setTimeout(() => {
+            this.succesValidate = false;
+          }, 10000);
+        }
+      } catch (error) {
+        console.log('error cant validate data: ', error);
+      }
+
+      setTimeout(() => {
+        this.isOnValidate = false;
+      }, 500);
+    },
+    async processSingleValidate(id) {
+      this.isOnValidate = true;
+
+      this.resultValidate = {
+        total: 0,
+        error: 0
+      }
+
+      try {
+        var selectedDataID = [id];
+      
+        const body = {
+          resident_id: selectedDataID,
+          is_true: true
+        }
+
+        const response = await axios.post(`${process.env.VUE_APP_BACKEND_API}/api/v1/resident/validate`, body, withHeader);
+        
+        if(response.data.meta.code == 200) {
+          const totalValidate = 1;
+          const errorData = response.data.data.items;
+          let totalError = 0;
+
+          if(errorData) {
+            totalError = errorData.length;
+          }
+
+          this.selectedData = [];
+          this.succesValidate = true;
+          this.resultValidate = {
+            total: totalValidate,
+            error: totalError
+          }
+
+          setTimeout(() => {
+            this.succesValidate = false;
+          }, 10000);
+        }
+      } catch (error) {
+        console.log('error cant validate data: ', error);
+      }
+
+      setTimeout(() => {
+        this.isOnValidate = false;
+      }, 500);
     }
   }
 }

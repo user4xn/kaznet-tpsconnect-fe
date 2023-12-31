@@ -9,8 +9,13 @@
         </span>
         <input type="search" class="form-control" placeholder="Search..." />
       </div>
-      <a class="nav-link py-0 d-flex align-items-center ms-auto" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <a class="nav-link py-0 d-flex align-items-center ms-auto text-muted" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         <img src="@/assets/images/avatars/01.png" alt="User-Profile" class="theme-color-default-img img-fluid avatar avatar-50 avatar-rounded" />
+        <img src="@/assets/images/avatars/avtar_1.png" alt="User-Profile" class="theme-color-purple-img img-fluid avatar avatar-50 avatar-rounded" />
+        <img src="@/assets/images/avatars/avtar_2.png" alt="User-Profile" class="theme-color-blue-img img-fluid avatar avatar-50 avatar-rounded" />
+        <img src="@/assets/images/avatars/avtar_4.png" alt="User-Profile" class="theme-color-green-img img-fluid avatar avatar-50 avatar-rounded" />
+        <img src="@/assets/images/avatars/avtar_5.png" alt="User-Profile" class="theme-color-yellow-img img-fluid avatar avatar-50 avatar-rounded" />
+        <img src="@/assets/images/avatars/avtar_3.png" alt="User-Profile" class="theme-color-pink-img img-fluid avatar avatar-50 avatar-rounded" />
         <div class="caption ms-3 d-none d-md-block">
           <h6 class="mb-0 caption-title">{{ userName }}</h6>
           <p class="mb-0 caption-sub-title">{{ userRole }}</p>
@@ -27,7 +32,6 @@
 <script>
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useStore } from 'vuex'
-import axios from 'axios'
 import { useRouter } from 'vue-router'
 
 const router = useRouter();
@@ -67,25 +71,13 @@ export default {
 
     const handleLogout = async()=> {
       try {
-        const jwtToken = localStorage.getItem('jwtToken');
+        localStorage.removeItem('jwtToken');
+        localStorage.removeItem('userData');
 
-        const response = await axios.post(`${process.env.VUE_APP_BACKEND_API}/api/v1/user/logout`, {}, {
-          headers: {
-            Authorizations: `Bearer ${jwtToken}`
-          }
-        });
-
-        if (response.code === 200) {
-          localStorage.removeItem('jwtToken');
-          localStorage.removeItem('userData');
-
-          console.log('Logout successful:', response.data);
-
-          // Redirect to the login page
-          router.push({ name: 'auth.login' });
-        }
+        // Redirect to the login page
+        router.push({ name: 'auth.login' });
       } catch (error) {
-        console.error('Logout failed:', error.response ? error.response.data : error.message);
+        console.error('Logout failed:', error);
       }
     }
 

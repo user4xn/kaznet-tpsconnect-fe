@@ -8,13 +8,14 @@
       <li><hr class="hr-horizontal" /></li>
       <side-menu title="Utama" :static-item="true"></side-menu>
       <side-menu isTag="router-link" title="Verifikasi Pemilih" icon="shield-check" :route="{ to: 'default.verifikasi-pemilih' }"></side-menu>
+      <side-menu isTag="router-link" title="Data Pemilih" icon="users" :route="{ to: 'default.timeline' }"></side-menu>
 
       <li><hr class="hr-horizontal" /></li>
       <side-menu title="Master Data" :static-item="true"></side-menu>
-      <side-menu title="Data Pemilih" icon="users" toggle-id="citizen" :caret-icon="true" :route="{ popup: 'false', to: 'citizen' }" @onClick="toggle" :active="currentRoute.includes('citizen')">
+      <side-menu title="Data DPT" icon="location-arrow" toggle-id="citizen" :caret-icon="true" :route="{ popup: 'false', to: 'citizen' }" @onClick="toggle" :active="currentRoute.includes('citizen')">
         <b-collapse tag="ul" class="sub-nav" id="citizen" accordion="sidebar-menu" :visible="currentRoute.includes('citizen')">
-          <side-menu isTag="router-link" title="Tambah Pemilih" icon="circle" :icon-size="10" icon-type="solid" miniTitle="TP" :route="{ to: 'default.tambah-pemilih' }"></side-menu>
-          <side-menu isTag="router-link" title="List Pemilih" icon="circle" :icon-size="10" icon-type="solid" miniTitle="LP" :route="{ to: 'default.daftar-pemilih' }"></side-menu>
+          <side-menu isTag="router-link" title="Tambah Masyarakat" icon="circle" :icon-size="10" icon-type="solid" miniTitle="TM" :route="{ to: 'default.tambah-masyarakat' }"></side-menu>
+          <side-menu isTag="router-link" title="List Masyarakat" icon="circle" :icon-size="10" icon-type="solid" miniTitle="LM" :route="{ to: 'default.daftar-masyarakat' }"></side-menu>
         </b-collapse>
       </side-menu>
       <side-menu title="Pengguna" icon="user-group" toggle-id="users" :caret-icon="true" :route="{ popup: 'false', to: 'user' }" @onClick="toggle" :active="currentRoute.includes('user')">

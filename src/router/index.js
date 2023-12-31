@@ -123,33 +123,33 @@ const defaultChildRoutes = (prefix) => [
   },
   // CITIZEN
   {
-    path: '/tambah-pemilih',
-    name: prefix + '.tambah-pemilih',
+    path: '/tambah-masyarakat',
+    name: prefix + '.tambah-masyarakat',
     meta: { 
       auth: true, 
-      name: 'Tambah Pemilih', 
+      name: 'Tambah Masyarakat', 
       isBanner: true ,
-      pageTitle: 'Tambah Pemilih',
+      pageTitle: 'Tambah Masyarakat',
       breadcrumbs: [
         { text: 'Master Data' },
-        { text: 'Data Pemilih' },
-        { text: 'Tambah Pemilih' },
+        { text: 'Data DPT' },
+        { text: 'Tambah Masyarakat' },
       ],
     },
     component: () => import('@/views/forms/ElementsPage.vue')
   },
   {
-    path: '/daftar-pemilih',
-    name: prefix + '.daftar-pemilih',
+    path: '/daftar-masyarakat',
+    name: prefix + '.daftar-masyarakat',
     meta: { 
       auth: true, 
-      name: 'Daftar Pemilih', 
+      name: 'Daftar Masyarakat', 
       isBanner: true,
-      pageTitle: 'Daftar Pemilih',
+      pageTitle: 'Daftar Masyarakat',
       breadcrumbs: [
         { text: 'Master Data' },
-        { text: 'Data Pemilih' },
-        { text: 'Daftar Pemilih' },
+        { text: 'Data DPT' },
+        { text: 'Daftar Masyarakat' },
       ],
     },
     component: () => import('@/views/forms/ValidationPage.vue')
