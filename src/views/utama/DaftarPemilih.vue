@@ -11,7 +11,7 @@
               <svg width="20" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
               </svg>
-              Tambah Pemilih
+              Tambah Manual
             </button>
           </div>
         </div>
@@ -47,7 +47,7 @@
                   <b-row>
                     <b-col md="8">
                       <label for="input-name" class="form-label">Nama: <span class="text-muted">(minimal 2 karakter)</span></label>
-                      <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama" id="input-name" :disabled="!selectedTps" @keyup="cariData(false)"></b-form-input>
+                      <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama" id="input-name" :disabled="!selectedKabupaten" @keyup="cariData(false)"></b-form-input>
                     </b-col>
                     <b-col md="4" class="d-flex align-items-end">
                       <b-button variant="success" size="sm" class="height-select2 w-100">
@@ -99,7 +99,7 @@
               <tbody>
                 <template v-for="(result, index) in resultSearch" :key="index">
                   <tr>
-                    <id>{{ (resultPagination.currentPage - 1) * resultLimit + index + 1 }}</id>
+                    <id>{{ (resultPagination.currentPage - 1) * resultLimit + index + 1 }}.</id>
                     <td>{{ result.nama }}</td>
                     <td>{{ result.nik }}</td>
                     <td>{{ result.nama_kecamatan }}</td>

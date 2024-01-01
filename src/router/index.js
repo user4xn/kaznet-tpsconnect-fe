@@ -34,7 +34,6 @@ const authChildRoutes = (prefix) => [
     meta: { auth: false, name: 'Lock Screen' },
     component: () => import('@/views/auth/default/LockScreen.vue')
   }
-
 ]
 
 // Dashboard routes
@@ -105,23 +104,6 @@ const defaultChildRoutes = (prefix) => [
     },
     component: () => import('@/views/utama/DaftarPemilih.vue')
   },
-  // USER
-  {
-    path: '/daftar-pengguna',
-    name: prefix + '.daftar-pengguna',
-    meta: { 
-      auth: true, 
-      name: 'Daftar Pengguna', 
-      isBanner: true,
-      pageTitle: 'Daftar Pengguna',
-      breadcrumbs: [
-        { text: 'Master Data' },
-        { text: 'Data Pengguna' },
-      ],
-   },
-    component: () => import('@/views/user/ListPage.vue')
-  },
-  // CITIZEN
   {
     path: '/daftar-dpt',
     name: prefix + '.daftar-dpt',
@@ -135,7 +117,22 @@ const defaultChildRoutes = (prefix) => [
         { text: 'Data DPT' },
       ],
     },
-    component: () => import('@/views/forms/ValidationPage.vue')
+    component: () => import('@/views/master-data/DaftarDPT.vue')
+  },
+  {
+    path: '/daftar-pengguna',
+    name: prefix + '.daftar-pengguna',
+    meta: { 
+      auth: true, 
+      name: 'Daftar Pengguna', 
+      isBanner: true,
+      pageTitle: 'Daftar Pengguna',
+      breadcrumbs: [
+        { text: 'Master Data' },
+        { text: 'Data Pengguna' },
+      ],
+   },
+    component: () => import('@/views/pengguna/DaftarPengguna.vue')
   },
   {
     path: '/daftar-kabupaten',
@@ -150,7 +147,7 @@ const defaultChildRoutes = (prefix) => [
         { text: 'Daftar Kabupaten' },
       ],
     },
-    component: () => import('@/views/spacial-pages/BillingPage.vue')
+    component: () => import('@/views/master-lokasi/DaftarKabupaten.vue')
   },
   {
     path: '/daftar-kecamatan',
@@ -165,7 +162,7 @@ const defaultChildRoutes = (prefix) => [
         { text: 'Daftar Kecamatan' },
       ],
     },
-    component: () => import('@/views/spacial-pages/CalenderPage.vue')
+    component: () => import('@/views/master-lokasi/DaftarKecamatan.vue')
   },
   {
     path: '/daftar-kelurahan',
@@ -180,7 +177,7 @@ const defaultChildRoutes = (prefix) => [
         { text: 'Daftar Kelurahan' },
       ],
     },
-    component: () => import('@/views/spacial-pages/KanbanPage.vue')
+    component: () => import('@/views/master-lokasi/DaftarKelurahan.vue')
   },
   // NOT USED BELOW
   {
