@@ -7,7 +7,12 @@
             <h4 class="card-title mb-0">Cari Pemilih</h4>
           </div>
           <div class="d-flex align-items-center gap-3">
-            <button class="text-center btn btn-primary d-flex gap-2">
+            <button class="text-center btn btn-primary d-flex gap-2"
+            :class="addCollapse ? null : 'collapsed'"
+            :aria-expanded="addCollapse ? 'true' : 'false'"
+            aria-controls="addManual"
+            @click="addCollapse = !addCollapse"
+            >
               <svg width="20" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
               </svg>
@@ -42,26 +47,88 @@
                   <v-select v-model="selectedTps" placeholder="Pilih TPS" :options="tpsOptions" id="input-tps" :disabled="!selectedKelurahan"></v-select>
                 </b-form-group>
               </b-col>
-              <b-col sm="8">
+              <b-col sm="8" :class="addCollapse == true ? 'd-none' : ''">
                 <b-form-group>
                   <b-row>
                     <b-col md="8">
                       <label for="input-name" class="form-label">Nama: <span class="text-muted">(minimal 2 karakter)</span></label>
-                      <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama" id="input-name" :disabled="!selectedTps || isOnFetch" @keyup="cariData(false)"></b-form-input>
+                      <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama" id="input-name" :disabled="!selectedTps || isOnFetch || addCollapse" @keyup="cariData(false)"></b-form-input>
                     </b-col>
                     <b-col md="4" class="d-flex align-items-end">
-                      <b-button variant="primary" size="sm" class="height-select2 w-100" @click="cariData(true)" :disabled="!selectedTps || isOnFetch">Tampilkan Semua</b-button>
+                      <b-button variant="primary" size="sm" class="height-select2 w-100" @click="cariData(true)" :disabled="!selectedTps || isOnFetch || addCollapse">Tampilkan Semua</b-button>
                     </b-col>
                   </b-row>
                 </b-form-group>
               </b-col>
             </b-row>
-            <div class="col-12 d-flex justify-content-center">
+            <b-col sm="12" class="col-12 d-flex justify-content-center">
               <span v-if="isOnFetch">
                   <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
                   Memuat...
               </span>
-            </div>
+              <span v-if="isOnSubmit">
+                  <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                  Menyimpan Data...
+              </span>
+            </b-col>
+            <b-col sm="12">
+              <hr class="hr-horizontal">
+              <b-collapse v-model="addCollapse" id="addManual">
+                <b-form @submit="handleAddManual">
+                  <b-row>
+                    <b-col md="6">
+                      <b-form-group>
+                        <label for="input-manual-name" class="form-label">Nama Lengkap:</label>
+                        <b-form-input class="form-control-sm height-select2" v-model="manualInputName" placeholder="Masukan Nama" id="input-manual-name" required></b-form-input>
+                      </b-form-group>
+                    </b-col>
+                    <b-col md="6">
+                      <b-form-group>
+                        <label for="input-manual-nik" class="form-label">NIK:</label>
+                        <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputNIK" placeholder="Masukan NIK" id="input-manual-nik" required></b-form-input>
+                      </b-form-group>
+                    </b-col>
+                    <b-col md="4">
+                      <b-form-group>
+                        <label for="input-manual-gender" class="form-label">Jenis Kelamin:</label>
+                        <v-select v-model="manualSelectedGender" placeholder="Pilih Jenis Kelamin" :options="genderOptions" id="input-manual-gender" required></v-select>
+                      </b-form-group>
+                    </b-col>
+                    <b-col md="4">
+                      <b-form-group>
+                        <label for="input-manual-usia" class="form-label">Usia:</label>
+                        <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputUsia" placeholder="Masukan Usia" id="input-manual-usia" required></b-form-input>
+                      </b-form-group>
+                    </b-col>
+                    <b-col md="4">
+                      <b-form-group>
+                        <label for="input-manual-phone" class="form-label">No Telp:</label>
+                        <b-form-input class="form-control-sm height-select2" v-model="manualInputTelp" placeholder="Masukan No Telepon" id="input-manual-phone" required></b-form-input>
+                      </b-form-group>
+                    </b-col>
+                    <b-col md="12">
+                      <b-form-group>
+                        <label for="input-manual-address" class="form-label">Alamat:</label>
+                        <b-form-textarea class="form-control-sm height-select2" v-model="manualInputAddress" placeholder="Masukan Alamat" id="input-manual-address" rows="3" max-rows="6" required></b-form-textarea>
+                      </b-form-group>
+                    </b-col>
+                    <b-col md="12 mt-4">
+                      <b-form-group>
+                        <b-button type="submit" class="w-100" variant="primary" :disabled="!selectedKabupaten || !selectedKecamatan || !selectedKelurahan || !selectedTps || isOnSubmit">
+                          <span v-if="!isOnSubmit">
+                            Tambahkan Ke Pemilih
+                          </span>
+                          <span v-if="isOnSubmit">
+                            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                            Memproses Data...
+                          </span>
+                        </b-button>
+                      </b-form-group>
+                    </b-col>
+                  </b-row>
+                </b-form>
+              </b-collapse>
+            </b-col>
           </b-form>
         </b-card-body>
       </b-card>
@@ -124,6 +191,17 @@
           <path d="M5.94118 10.7474V20.7444C5.94118 21.0758 5.81103 21.3936 5.57937 21.628C5.3477 21.8623 5.0335 21.994 4.70588 21.994H2.23529C1.90767 21.994 1.59347 21.8623 1.36181 21.628C1.13015 21.3936 1 21.0758 1 20.7444V11.997C1 11.6656 1.13015 11.3477 1.36181 11.1134C1.59347 10.879 1.90767 10.7474 2.23529 10.7474H5.94118ZM5.94118 10.7474C7.25166 10.7474 8.50847 10.2207 9.43512 9.28334C10.3618 8.34594 10.8824 7.07456 10.8824 5.74887V4.49925C10.8824 3.83641 11.1426 3.20071 11.606 2.73201C12.0693 2.26331 12.6977 2 13.3529 2C14.0082 2 14.6366 2.26331 15.0999 2.73201C15.5632 3.20071 15.8235 3.83641 15.8235 4.49925V10.7474H19.5294C20.1847 10.7474 20.8131 11.0107 21.2764 11.4794C21.7397 11.9481 22 12.5838 22 13.2466L20.7647 19.4947C20.5871 20.2613 20.25 20.9196 19.8045 21.3704C19.3589 21.8211 18.8288 22.04 18.2941 21.994H9.64706C8.6642 21.994 7.72159 21.599 7.0266 20.896C6.33162 20.1929 5.94118 19.2394 5.94118 18.2451" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <strong> Berhasil!</strong> {{ resultValidate.total - resultValidate.error }} data berhasil <u>di tambahkan</u>{{ resultValidate.error != 0 ? `, ${resultValidate.error} data duplikat ditemukan (akan dihapus).` : `. `}}.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    </b-col>
+  </b-row>
+  <b-row v-if="succesSubmit">
+    <b-col sm="12">
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.94118 10.7474V20.7444C5.94118 21.0758 5.81103 21.3936 5.57937 21.628C5.3477 21.8623 5.0335 21.994 4.70588 21.994H2.23529C1.90767 21.994 1.59347 21.8623 1.36181 21.628C1.13015 21.3936 1 21.0758 1 20.7444V11.997C1 11.6656 1.13015 11.3477 1.36181 11.1134C1.59347 10.879 1.90767 10.7474 2.23529 10.7474H5.94118ZM5.94118 10.7474C7.25166 10.7474 8.50847 10.2207 9.43512 9.28334C10.3618 8.34594 10.8824 7.07456 10.8824 5.74887V4.49925C10.8824 3.83641 11.1426 3.20071 11.606 2.73201C12.0693 2.26331 12.6977 2 13.3529 2C14.0082 2 14.6366 2.26331 15.0999 2.73201C15.5632 3.20071 15.8235 3.83641 15.8235 4.49925V10.7474H19.5294C20.1847 10.7474 20.8131 11.0107 21.2764 11.4794C21.7397 11.9481 22 12.5838 22 13.2466L20.7647 19.4947C20.5871 20.2613 20.25 20.9196 19.8045 21.3704C19.3589 21.8211 18.8288 22.04 18.2941 21.994H9.64706C8.6642 21.994 7.72159 21.599 7.0266 20.896C6.33162 20.1929 5.94118 19.2394 5.94118 18.2451" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <strong> Berhasil!</strong> data berhasil di tambahkan
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     </b-col>
@@ -242,6 +320,7 @@ let withHeader = {
 export default {
   data() {
     return {
+      addCollapse: false,
       isAdmin: false,
       isOnFetch: false,
       isOnValidate: false,
@@ -268,12 +347,23 @@ export default {
       resultLimit: 10,
       resultOffset: 0,
       succesValidate: false,
+      succesSubmit: false,
       resultValidate: {
         total: 0,
         error: 0
       },
       openedDetail: null,
       selectedPhoneInput: [],
+      manualInputName: null,
+      manualInputNIK: null,
+      manualInputTelp: null,
+      manualInputUsia: null,
+      manualInputAddress: null,
+      manualSelectedGender: null,
+      genderOptions: [
+        { value: 'L', label: 'Laki-laki' },
+        { value: 'P', label: 'Perempuan' },
+      ],
     }
   },
   watch: {
@@ -529,7 +619,41 @@ export default {
     },
     async processDetail (opened) {
       this.openedDetail = opened;
-    }
+    },
+    async handleAddManual() {
+      this.isOnSubmit = true;
+
+      try {
+        const body = {
+          city: this.selectedKabupaten,
+          district: this.selectedKecamatan,
+          subdistrict: this.selectedKelurahan,
+          tps: this.selectedTps,
+          full_name: this.manualInputName,
+          nik: this.manualInputNIK,
+          age: this.manualInputUsia,
+          no_handphone: this.manualInputTelp,
+          gender: this.manualSelectedGender.value,
+          address: this.manualInputAddress,
+        }
+
+        const response = await axios.post(`${process.env.VUE_APP_BACKEND_API}/api/v1/validresident/store`, body, withHeader);
+        
+        if(response.data.meta.code == 200) {
+          this.succesSubmit = true;
+
+          setTimeout(() => {
+            this.succesSubmit = false;
+          }, 10000);
+        }
+      } catch (error) {
+        console.log('error cant store data: ', error);
+      }
+
+      setTimeout(() => {
+        this.isOnSubmit = false;
+      }, 500);
+    },
   }
 }
 </script>
