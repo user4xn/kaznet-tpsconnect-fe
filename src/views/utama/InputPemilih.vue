@@ -371,6 +371,7 @@ export default {
     selectedKecamatan: 'fetchKelurahanOptions',
     selectedKelurahan: 'fetchTpsOptions',
     selectedTps: 'resetSelected',
+    addCollapse: 'resetAddManual',
   },
   mounted() {
     this.fetchKabupatenOptions();
@@ -631,7 +632,7 @@ export default {
           tps: this.selectedTps,
           full_name: this.manualInputName,
           nik: this.manualInputNIK,
-          age: this.manualInputUsia,
+          age: parseInt(this.manualInputUsia),
           no_handphone: this.manualInputTelp,
           gender: this.manualSelectedGender.value,
           address: this.manualInputAddress,
@@ -650,10 +651,20 @@ export default {
         console.log('error cant store data: ', error);
       }
 
+      this.resetAddManual;
+
       setTimeout(() => {
         this.isOnSubmit = false;
       }, 500);
     },
+    resetAddManual() {
+      this.manualInputName = null;
+      this.manualInputNIK = null;
+      this.manualInputUsia = null;
+      this.manualInputTelp = null;
+      this.manualSelectedGender = null;
+      this.manualInputAddress = null;
+    }
   }
 }
 </script>
