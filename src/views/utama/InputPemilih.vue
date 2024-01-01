@@ -84,13 +84,16 @@
                     <div class="accordion-body">
                       <ol>
                           <li v-for="(result, index) in selectedData" :key="index" class="mt-2">
-                            <div class="d-flex justify-content-between">
+                            <div class="d-flex justify-content-between flex-wrap align-items-center">
                               <div>
                                 {{ `${result.nik} - ${result.nama} - ${result.jenis_kelamin}` }}
                               </div>
+                              <div class="ms-auto me-2">
+                                <b-form-input type="number" class="form-control-sm height-select2" v-model="selectedPhoneInput[index]" placeholder="Masukan No Handphone" id="input-phone"></b-form-input>
+                              </div>
                               <div>
                                 <span class="p-2 badge bg-success rounded-pills" style="min-width: 66px;">TPS {{ result.tps }}</span>
-                                <button class="p-2 badge bg-danger border-0 ms-2 rounded-pills" @click="removeSelected(index)">HAPUS</button>
+                                <button class="p-2 badge bg-danger border-0 ms-2 rounded-pills" @click="removeSelected(index, result.id)">HAPUS</button>
                               </div>
                             </div>
                           </li>
@@ -99,11 +102,11 @@
                       <div class="text-center mt-1">
                           <button class="btn btn-success" :disabled="isOnValidate" @click="processValidate">
                             <span v-if="!isOnValidate">
-                            Validasi Semua
+                            Tambahkan Ke Pemilih
                             </span>
                             <span v-if="isOnValidate">
                               <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-                              Memproses Validasi Data...
+                              Memproses Data...
                             </span>
                           </button>
                       </div>
@@ -120,7 +123,7 @@
         <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M5.94118 10.7474V20.7444C5.94118 21.0758 5.81103 21.3936 5.57937 21.628C5.3477 21.8623 5.0335 21.994 4.70588 21.994H2.23529C1.90767 21.994 1.59347 21.8623 1.36181 21.628C1.13015 21.3936 1 21.0758 1 20.7444V11.997C1 11.6656 1.13015 11.3477 1.36181 11.1134C1.59347 10.879 1.90767 10.7474 2.23529 10.7474H5.94118ZM5.94118 10.7474C7.25166 10.7474 8.50847 10.2207 9.43512 9.28334C10.3618 8.34594 10.8824 7.07456 10.8824 5.74887V4.49925C10.8824 3.83641 11.1426 3.20071 11.606 2.73201C12.0693 2.26331 12.6977 2 13.3529 2C14.0082 2 14.6366 2.26331 15.0999 2.73201C15.5632 3.20071 15.8235 3.83641 15.8235 4.49925V10.7474H19.5294C20.1847 10.7474 20.8131 11.0107 21.2764 11.4794C21.7397 11.9481 22 12.5838 22 13.2466L20.7647 19.4947C20.5871 20.2613 20.25 20.9196 19.8045 21.3704C19.3589 21.8211 18.8288 22.04 18.2941 21.994H9.64706C8.6642 21.994 7.72159 21.599 7.0266 20.896C6.33162 20.1929 5.94118 19.2394 5.94118 18.2451" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <strong> Berhasil Validasi!</strong> {{ resultValidate.total - resultValidate.error }} data berhasil <u>di verifikasi</u>{{ resultValidate.error != 0 ? `, ${resultValidate.error} data duplikat ditemukan (akan dihapus).` : `. `}}.
+        <strong> Berhasil!</strong> {{ resultValidate.total - resultValidate.error }} data berhasil <u>di tambahkan</u>{{ resultValidate.error != 0 ? `, ${resultValidate.error} data duplikat ditemukan (akan dihapus).` : `. `}}.
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     </b-col>
@@ -135,9 +138,10 @@
         </div>
         <b-card-body>
           <div class="table-responsive">
-            <table id="found-citizen-table" class="table table-striped table-sm" role="grid" data-toggle="data-table">
+            <table id="result-dpt" class="table table-hover table-sm">
               <thead>
                 <tr class="ligth">
+                  <th>#</th>
                   <th>Nama</th>
                   <th>NIK</th>
                   <th>TPS</th>
@@ -149,22 +153,59 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(result, index) in resultSearch" :key="index">
-                  <td>{{ result.nama }}</td>
-                  <td>{{ result.nik }}</td>
-                  <td>{{ result.tps }}</td>
-                  <td>{{ result.tanggal_lahir }}</td>
-                  <td>{{ result.jenis_kelamin }}</td>
-                  <td>{{ calculateAge(result.tanggal_lahir) }}</td>
-                  <td>
-                    <span v-if="result.is_verification == true" class="badge bg-soft-success border border-success text-success rounded-pill py-1 px-3"> Sudah Valid </span>
-                    <span v-if="result.is_verification == false" class="badge bg-light border border-gray text-gray rounded-pill py-1 px-3"> Belum Valid </span>
-                  </td>
-                  <td class="d-flex justify-content-center">
-                    <button :disabled="result.is_verification == true" class="btn btn-primary btn-sm" @click="insertSelected(result)">Pilih</button>
-                    <button :disabled="result.is_verification == true" class="btn btn-success btn-sm ms-2" @click="processSingleValidate(result.id)">Validasi</button>
-                  </td>
-                </tr>
+                <template v-for="(result, index) in resultSearch" :key="index">
+                  <tr>
+                    <td>{{ (resultPagination.currentPage - 1) * resultLimit + index + 1 }}</td>
+                    <td>{{ result.nama }}</td>
+                    <td>{{ result.nik }}</td>
+                    <td>{{ result.tps }}</td>
+                    <td>{{ result.tanggal_lahir }}</td>
+                    <td>{{ result.jenis_kelamin }}</td>
+                    <td>{{ calculateAge(result.tanggal_lahir) }}</td>
+                    <td>
+                      <span v-if="result.is_verification == true" class="badge bg-soft-success border border-success text-success rounded-pill py-1 px-3"> Sudah Valid </span>
+                      <span v-if="result.is_verification == false" class="badge bg-light border border-gray text-gray rounded-pill py-1 px-3"> Belum Valid </span>
+                    </td>
+                    <td class="d-flex justify-content-center">
+                      <button :disabled="result.is_verification == true || result.is_selected == true" class="btn btn-primary btn-sm" @click="insertSelected(result, index)">Pilih</button>
+                      <button class="btn btn-success btn-sm ms-2" data-bs-toggle="collapse" :data-bs-target="'#detailRow-' + index"  @click="processDetail(result.id, '#detailRow-' + index)">Detail</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td :colspan="resultSearch.length + 1" style="border:0px !important" class="p-0">
+                      <div class="collapse border-bottom p-4" :id="'detailRow-' + index">
+                        <b-card no-body="" class="card">
+                          <div class="p-4 d-flex justify-content-between flex-wrap align-items-center">
+                            <div class="header-title w-100">
+                              <div class="d-flex justify-content-between flex-wrap">
+                                <h5 class="text-muted mb-0">{{ result.nama }}</h5>
+                                <h5 class="text-muted mb-0">{{ result.jenis_kelamin == 'L' ? 'Laki-Laki' : 'Perempuan' }}</h5>
+                              </div>
+                              <hr class="hr-horizontal">
+                              <div class="d-flex justify-content-between flex-wrap">
+                                <p class="text-muted mb-0">NIK: {{ result.nik }}</p>
+                                <p class="text-muted mb-0">NKK: {{ result.nkk }}</p>
+                              </div>
+                              <div class="d-flex justify-content-between flex-wrap">
+                                <p class="text-muted mb-0">Tempat Tanggal Lahir: {{ `${result.tempat_lahir}, ${result.tanggal_lahir}` }}</p>
+                                <p class="text-muted mb-0">Status: {{ result.kawin == 'S' ? (result.kawin == 'B' ? 'Belum Menikah' : 'Kawin') : 'Pisah' }}</p>
+                              </div>
+                              <div class="d-flex justify-content-between flex-wrap">
+                                <p class="text-muted mb-0">Alamat: {{ result.alamat }}</p>
+                                <p class="text-muted mb-0">RT/RW: {{ `${result.rt}/${result.rw}` }}</p>
+                              </div>
+                              <div class="d-flex justify-content-between flex-wrap">
+                                <p class="text-muted mb-0">No Telp: {{ result.telp ?? '-' }}</p>
+                                <span class="badge bg-primary py-2 ms-auto me-1">TPS: {{ result.status_tps_label }}</span>
+                                <span v-if="result.difabel == '1'" class="badge bg-warning py-2">DIFABEL</span>
+                              </div>
+                            </div>
+                          </div>
+                        </b-card>
+                      </div>
+                    </td>
+                  </tr>
+                </template>
               </tbody>
             </table>
           </div>
@@ -231,6 +272,8 @@ export default {
         total: 0,
         error: 0
       },
+      openedDetail: null,
+      selectedPhoneInput: [],
     }
   },
   watch: {
@@ -241,7 +284,6 @@ export default {
   },
   mounted() {
     this.fetchKabupatenOptions();
-    this.adminCity();
   },
   methods: {
     async fetchKabupatenOptions() {
@@ -253,6 +295,7 @@ export default {
       } catch (error) {
         console.error('Error fetching Kabupaten options:', error);
       }
+      this.adminCity();
     },
     async fetchKecamatanOptions() {
       this.selectedKecamatan = null;
@@ -340,14 +383,19 @@ export default {
 
       console.log(queryParam);
 
-      const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/resident/list?${queryParam}`, withHeader);
+      const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/resident/validate/list?${queryParam}`, withHeader);
 
       if(response.data.meta.code == 200) {
         const data = response.data.data.items;
         const metadata = response.data.data.metadata;
         
         if(data != []) {
-          this.resultSearch = data;
+          const remappedData = data.map(item => ({
+            ...item,
+            is_selected: false
+          }));
+          
+          this.resultSearch = remappedData;
           this.resultTotal = metadata.total_results;
         }
       }  
@@ -393,18 +441,23 @@ export default {
     },
     resetSelected() {
       this.selectedData = [];
-      this.resultSearch = [];
       this.resetSearch();
     },
-    insertSelected(value) {
+    insertSelected(value, index) {
       const isDuplicate = this.selectedData.find(item => item.id === value.id);
-
+    
       if (!isDuplicate) {
         this.selectedData.push(value);
+        this.resultSearch[index].is_selected = true;
       }
+
+      console.log(this.selectedPhoneInput);
     },
-    removeSelected(index) {
+    removeSelected(index, id) {
       this.selectedData.splice(index, 1);
+      this.selectedPhoneInput.splice(index, 1);
+      const resIndex = this.resultSearch.findIndex(item => item.id === id);
+      this.resultSearch[resIndex].is_selected = false;
     },
     calculateAge(birthdate) {
       const birthdateDate = new Date(birthdate);
@@ -432,10 +485,13 @@ export default {
       }
 
       try {
-        var selectedDataID = this.selectedData.map(item => item.id);
+        var selectedDataID = this.selectedData.map((item, index) => ({
+            id: item.id,
+            no_handphone: this.selectedPhoneInput[index],
+        }));
       
         const body = {
-          resident_id: selectedDataID,
+          items: selectedDataID,
           is_true: true
         }
 
@@ -471,53 +527,8 @@ export default {
         this.isOnValidate = false;
       }, 500);
     },
-    async processSingleValidate(id) {
-      this.isOnValidate = true;
-
-      this.resultValidate = {
-        total: 0,
-        error: 0
-      }
-
-      try {
-        var selectedDataID = [id];
-      
-        const body = {
-          resident_id: selectedDataID,
-          is_true: true
-        }
-
-        const response = await axios.post(`${process.env.VUE_APP_BACKEND_API}/api/v1/resident/validate`, body, withHeader);
-        
-        if(response.data.meta.code == 200) {
-          const totalValidate = 1;
-          const errorData = response.data.data.items;
-          let totalError = 0;
-
-          if(errorData) {
-            totalError = errorData.length;
-          }
-
-          this.selectedData = [];
-          this.succesValidate = true;
-          this.resultValidate = {
-            total: totalValidate,
-            error: totalError
-          }
-
-          this.cariData(this.resultMode, this.resultPagination.currentPage);
-
-          setTimeout(() => {
-            this.succesValidate = false;
-          }, 10000);
-        }
-      } catch (error) {
-        console.log('error cant validate data: ', error);
-      }
-
-      setTimeout(() => {
-        this.isOnValidate = false;
-      }, 500);
+    async processDetail (opened) {
+      this.openedDetail = opened;
     }
   }
 }

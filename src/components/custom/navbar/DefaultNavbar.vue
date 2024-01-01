@@ -67,7 +67,22 @@ export default {
       }
     }
 
-    const carts = computed(() => store.getters.carts)
+    const carts = computed(() => store.getters.carts);
+
+    const setProfile = () => {
+      const userData = JSON.parse(localStorage.getItem('userData'))
+      userName.value = userData?.full_name || 'John Doe';
+      userRole.value = userData?.role || 'Admin (Example)';
+    }
+
+    onMounted(() => {
+      window.addEventListener('scroll', onscroll())
+      setProfile()
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener('scroll', onscroll())
+    });
 
     const handleLogout = async()=> {
       try {
@@ -81,20 +96,6 @@ export default {
       }
     }
 
-    const setProfile = () => {
-      const userData = JSON.parse(localStorage.getItem('userData'))
-      userName.value = userData?.full_name || 'John Doe';
-      userRole.value = userData?.role || 'Admin (Example)';
-    }
-
-    onMounted(() => {
-      window.addEventListener('scroll', onscroll())
-      setProfile()
-    })
-
-    onUnmounted(() => {
-      window.removeEventListener('scroll', onscroll())
-    })
     return {
       headerNavbar,
       isHidden,

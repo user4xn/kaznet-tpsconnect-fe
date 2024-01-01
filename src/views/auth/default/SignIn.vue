@@ -1,9 +1,9 @@
 <template>
   <section class="login-content">
-    <b-row class="m-0 align-items-center bg-white h-100">
-      <b-col md="6">
-        <b-row class="justify-content-center">
-          <b-col md="10">
+    <b-row class="m-0 align-items-center justify-content-center bg-white h-100">
+      <b-col md="6" class="vh-100">
+        <b-row class="h-100 justify-content-center align-items-center">
+          <b-col md="10" class="shadow-lg">
             <b-card class="card-transparent shadow-none d-flex justify-content-center mb-0 auth-card iq-auth-form">
               <div class="navbar-brand d-flex align-items-center mb-3 text-primary">
                 <brand-logo></brand-logo>
@@ -30,7 +30,7 @@
                       <input type="checkbox" class="form-check-input" id="customCheck1" />
                       <label class="form-check-label" for="customCheck1">Ingat Saya</label>
                     </div>
-                    <a href="/auth/reset-password">Lupa Password?</a>
+                    <a href="#">Lupa Password?</a>
                   </div>
                 </div>
                 <div class="d-flex justify-content-center">
@@ -51,9 +51,6 @@
           </svg>
         </div>
       </b-col>
-      <div class="col-md-6 d-md-block d-none bg-primary p-0 vh-100 overflow-hidden">
-        <img src="@/assets/images/auth/01.png" class="img-fluid gradient-main animated-scaleX" alt="images" loading="lazy" />
-      </div>
     </b-row>
   </section>
 </template>

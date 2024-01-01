@@ -6,9 +6,9 @@
           <div class="d-flex justify-content-between align-items-center flex-wrap">
             <div>
               <h1>{{ pageTitle }}</h1>
-              <BreadcrumbList :breadcrumbs="breadcrumbs" />
+              <BreadcrumbList :breadcrumbs="breadcrumbs" class="d-none d-md-block" />
             </div>
-            <div>
+            <div class="mt-3 mt-md-0">
               <a target="_blank" href="https://wa.me/6285229931237?text=Halo%20saya%20butuh%20bantuan%20pada%20sistem%20Kaznet!" class="btn btn-link btn-soft-light">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M0 15L1.05086 11.1485C0.402647 10.0212 0.0616892 8.74249 0.0621656 7.43247C0.0638328 3.33422 3.38671 0 7.46987 0C9.45131 0.000836701 11.3112 0.774898 12.7098 2.17983C14.1083 3.58475 14.8782 5.45225 14.8775 7.43844C14.8757 11.5366 11.5523 14.8713 7.46987 14.8713C7.46964 14.8713 7.46999 14.8713 7.46987 14.8713H7.46666C6.22692 14.8708 5.00885 14.5587 3.92691 13.9664L0 15ZM4.10876 12.6209L4.33373 12.7547C5.27883 13.3176 6.36244 13.6154 7.46749 13.616H7.46987C10.8633 13.616 13.6252 10.8444 13.6266 7.43797C13.6272 5.78717 12.9875 4.23486 11.825 3.0672C10.6625 1.89953 9.11679 1.25612 7.47214 1.2554C4.07601 1.2554 1.31417 4.02665 1.31286 7.43295C1.31238 8.60025 1.63774 9.73696 2.25416 10.7207L2.40064 10.9545L1.77851 13.2341L4.10876 12.6209Z" fill="white"/>

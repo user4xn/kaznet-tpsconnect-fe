@@ -7,23 +7,17 @@
       
       <li><hr class="hr-horizontal" /></li>
       <side-menu title="Utama" :static-item="true"></side-menu>
-      <side-menu isTag="router-link" title="Verifikasi Pemilih" icon="shield-check" :route="{ to: 'default.verifikasi-pemilih' }"></side-menu>
-      <side-menu isTag="router-link" title="Data Pemilih" icon="users" :route="{ to: 'default.timeline' }"></side-menu>
+      <side-menu title="Data Pemilih" icon="shield-check" toggle-id="chooser-data" :caret-icon="true" :route="{ popup: 'false', to: 'chooser-data' }" @onClick="toggle" :active="currentRoute.includes('chooser-data')">
+        <b-collapse tag="ul" class="sub-nav" id="chooser-data" accordion="sidebar-menu" :visible="currentRoute.includes('chooser-data')">
+          <side-menu isTag="router-link" title="Input Pemilih" icon="circle" :icon-size="10" icon-type="solid" miniTitle="IP" :route="{ to: 'default.input-pemilih' }"></side-menu>
+          <side-menu isTag="router-link" title="Daftar Pemilih" icon="circle" :icon-size="10" icon-type="solid" miniTitle="DP" :route="{ to: 'default.daftar-pemilih' }"></side-menu>
+        </b-collapse>
+      </side-menu>
 
       <li><hr class="hr-horizontal" /></li>
       <side-menu title="Master Data" :static-item="true"></side-menu>
-      <side-menu title="Data DPT" icon="location-arrow" toggle-id="citizen" :caret-icon="true" :route="{ popup: 'false', to: 'citizen' }" @onClick="toggle" :active="currentRoute.includes('citizen')">
-        <b-collapse tag="ul" class="sub-nav" id="citizen" accordion="sidebar-menu" :visible="currentRoute.includes('citizen')">
-          <side-menu isTag="router-link" title="Tambah Masyarakat" icon="circle" :icon-size="10" icon-type="solid" miniTitle="TM" :route="{ to: 'default.tambah-masyarakat' }"></side-menu>
-          <side-menu isTag="router-link" title="List Masyarakat" icon="circle" :icon-size="10" icon-type="solid" miniTitle="LM" :route="{ to: 'default.daftar-masyarakat' }"></side-menu>
-        </b-collapse>
-      </side-menu>
-      <side-menu title="Pengguna" icon="user-group" toggle-id="users" :caret-icon="true" :route="{ popup: 'false', to: 'user' }" @onClick="toggle" :active="currentRoute.includes('user')">
-        <b-collapse tag="ul" class="sub-nav" id="users" accordion="sidebar-menu" :visible="currentRoute.includes('user')">
-          <side-menu isTag="router-link" title="Tambah Pengguna" icon="circle" :icon-size="10" icon-type="solid" miniTitle="TP" :route="{ to: 'default.tambah-pengguna' }"></side-menu>
-          <side-menu isTag="router-link" title="List Pengguna" icon="circle" :icon-size="10" icon-type="solid" miniTitle="LP" :route="{ to: 'default.daftar-pengguna' }"></side-menu>
-        </b-collapse>
-      </side-menu>
+      <side-menu isTag="router-link" title="Data DPT" icon="location-arrow" :route="{ to: 'default.daftar-dpt' }"></side-menu>
+      <side-menu isTag="router-link" title="Pengguna" icon="user-group" :route="{ to: 'default.daftar-pengguna' }"></side-menu>
       
       <li><hr class="hr-horizontal" /></li>
       <side-menu title="Master Lokasi" :static-item="true"></side-menu>

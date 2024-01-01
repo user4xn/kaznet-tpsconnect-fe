@@ -74,19 +74,36 @@ const defaultChildRoutes = (prefix) => [
   },
   // CORE
   {
-    path: '/verifikasi-pemilih',
-    name: prefix + '.verifikasi-pemilih',
+    path: '/input-pemilih',
+    name: prefix + '.input-pemilih',
     meta: { 
       auth: true, 
-      name: 'Verifikasi Pemilih', 
+      name: 'Input Pemilih', 
       isBanner: true,
-      pageTitle: 'Verifikasi Pemilih', 
+      pageTitle: 'Input Pemilih', 
       breadcrumbs: [
         { text: 'Utama'},
-        { text: 'Verifikasi Pemilih' },
+        { text: 'Data Pemilih'},
+        { text: 'Input Pemilih' },
       ],
      },
-    component: () => import('@/views/utama/VerifikasiPemilih.vue')
+    component: () => import('@/views/utama/InputPemilih.vue')
+  },
+  {
+    path: '/daftar-pemilih',
+    name: prefix + '.daftar-pemilih',
+    meta: { 
+      auth: true, 
+      name: 'Daftar Pemilih', 
+      isBanner: true,
+      pageTitle: 'Daftar Pemilih',
+      breadcrumbs: [
+        { text: 'Utama' },
+        { text: 'Data Pemilih' },
+        { text: 'Daftar Pemilih' },
+      ],
+    },
+    component: () => import('@/views/utama/DaftarPemilih.vue')
   },
   // USER
   {
@@ -100,56 +117,22 @@ const defaultChildRoutes = (prefix) => [
       breadcrumbs: [
         { text: 'Master Data' },
         { text: 'Data Pengguna' },
-        { text: 'Daftar Pengguna' },
       ],
    },
     component: () => import('@/views/user/ListPage.vue')
   },
-  {
-    path: '/tambah-pengguna',
-    name: prefix + '.tambah-pengguna',
-    meta: { 
-      auth: true, 
-      name: 'Tambah Pengguna', 
-      isBanner: true,
-      pageTitle: 'Tambah Pengguna',
-      breadcrumbs: [
-        { text: 'Master Data' },
-        { text: 'Data Pengguna' },
-        { text: 'Tambah Pengguna' },
-      ],
-  },
-    component: () => import('@/views/user/AddPage.vue')
-  },
   // CITIZEN
   {
-    path: '/tambah-masyarakat',
-    name: prefix + '.tambah-masyarakat',
+    path: '/daftar-dpt',
+    name: prefix + '.daftar-dpt',
     meta: { 
       auth: true, 
-      name: 'Tambah Masyarakat', 
-      isBanner: true ,
-      pageTitle: 'Tambah Masyarakat',
-      breadcrumbs: [
-        { text: 'Master Data' },
-        { text: 'Data DPT' },
-        { text: 'Tambah Masyarakat' },
-      ],
-    },
-    component: () => import('@/views/forms/ElementsPage.vue')
-  },
-  {
-    path: '/daftar-masyarakat',
-    name: prefix + '.daftar-masyarakat',
-    meta: { 
-      auth: true, 
-      name: 'Daftar Masyarakat', 
+      name: 'Daftar DPT', 
       isBanner: true,
-      pageTitle: 'Daftar Masyarakat',
+      pageTitle: 'Daftar DPT',
       breadcrumbs: [
         { text: 'Master Data' },
         { text: 'Data DPT' },
-        { text: 'Daftar Masyarakat' },
       ],
     },
     component: () => import('@/views/forms/ValidationPage.vue')
@@ -205,12 +188,6 @@ const defaultChildRoutes = (prefix) => [
     name: prefix + '.pricing',
     meta: { auth: true, name: 'Pricing', isBanner: true },
     component: () => import('@/views/spacial-pages/PricingPage.vue')
-  },
-  {
-    path: '/timeline',
-    name: prefix + '.timeline',
-    meta: { auth: true, name: 'Timeline', isBanner: true },
-    component: () => import('@/views/spacial-pages/TimelinePage.vue')
   },
   {
     path: '/rtl-support',
