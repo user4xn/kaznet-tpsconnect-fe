@@ -179,6 +179,7 @@ export default {
   },
   mounted() {
     this.fetchKabupatenOptions();
+    this.cariData(false);
   },
   methods: {
     async fetchKabupatenOptions() {
