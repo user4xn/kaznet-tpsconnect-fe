@@ -72,7 +72,6 @@ onMounted(() => {
   }
 });
 
-
 const handleSignIn = async () => {
   try {
     const response = await axios.post(`${process.env.VUE_APP_BACKEND_API}/api/v1/user/login`, {

@@ -30,11 +30,9 @@
   </nav>
 </template>
 <script>
-import { computed, ref, onMounted, onUnmounted } from 'vue'
-import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
-
-const router = useRouter();
+import { computed, ref, onMounted, onUnmounted } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 export default {
   components: {},
@@ -49,6 +47,7 @@ export default {
     }
   },
   setup(props, { emit }) {
+    const router = useRouter();
     const store = useStore()
     const headerNavbar = computed(() => store.getters['setting/header_navbar'])
     const isHidden = ref(false)
