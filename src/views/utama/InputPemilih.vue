@@ -651,7 +651,7 @@ export default {
         console.log('error cant store data: ', error);
       }
 
-      this.resetAddManual;
+      this.resetAddManual();
 
       setTimeout(() => {
         this.isOnSubmit = false;
