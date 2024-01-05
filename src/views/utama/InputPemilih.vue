@@ -52,10 +52,10 @@
                   <b-row>
                     <b-col md="8">
                       <label for="input-name" class="form-label">Nama: <span class="text-muted">(minimal 2 karakter)</span></label>
-                      <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama" id="input-name" :disabled="!selectedTps || isOnFetch || addCollapse" @keyup="cariData(false)"></b-form-input>
+                      <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama" id="input-name" :disabled="!selectedKelurahan || isOnFetch || addCollapse" @keyup="cariData(false)"></b-form-input>
                     </b-col>
                     <b-col md="4" class="d-flex align-items-end">
-                      <b-button variant="primary" size="sm" class="height-select2 w-100" @click="cariData(true)" :disabled="!selectedTps || isOnFetch || addCollapse">Tampilkan Semua</b-button>
+                      <b-button variant="primary" size="sm" class="height-select2 w-100" @click="cariData(true)" :disabled="!selectedKelurahan || isOnFetch || addCollapse">Tampilkan Semua</b-button>
                     </b-col>
                   </b-row>
                 </b-form-group>
@@ -72,44 +72,59 @@
               </span>
             </b-col>
             <b-col sm="12">
-              <hr class="hr-horizontal">
               <b-collapse v-model="addCollapse" id="addManual">
+                <hr class="hr-horizontal">
+                <b-col sm="12" v-if="isAlertNik">
+                  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <h4 class="alert-heading">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                      </svg>
+                      Perbedaan Data Terdeteksi!
+                    </h4>
+                    <hr>
+                    <p>NIK <b>{{ this.nikFound.nik }}</b> berasal dari <b>{{ `${this.nikFound.nama_kabupaten}, ${this.nikFound.nama_kecamatan}, ${this.nikFound.nama_kelurahan} - TPS ${this.nikFound.tps}`}}</b></p>
+                    <p class="mb-0">peringatan muncul jika terdeteksi perbedaan data, abaikan jika ada tetap ingin menambahkan data ini.</p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                </b-col>
                 <b-form @submit="handleAddManual">
                   <b-row>
                     <b-col md="6">
                       <b-form-group>
-                        <label for="input-manual-name" class="form-label">Nama Lengkap:</label>
-                        <b-form-input class="form-control-sm height-select2" v-model="manualInputName" placeholder="Masukan Nama" id="input-manual-name" required></b-form-input>
+                        <label for="input-manual-nik" class="form-label">NIK:</label>
+                        <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputNIK" placeholder="Masukan NIK" id="input-manual-nik" @keyup="cariNik()" required :class="nikFound != null ? 'is-valid' : null" :disabled="!selectedTps"></b-form-input>
+                        <i>*data akan terisi otomatis jika NIK terdeteksi dalam database</i>
                       </b-form-group>
                     </b-col>
                     <b-col md="6">
                       <b-form-group>
-                        <label for="input-manual-nik" class="form-label">NIK:</label>
-                        <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputNIK" placeholder="Masukan NIK" id="input-manual-nik" required></b-form-input>
+                        <label for="input-manual-name" class="form-label">Nama Lengkap:</label>
+                        <b-form-input class="form-control-sm height-select2" v-model="manualInputName" placeholder="Masukan Nama" id="input-manual-name" required :disabled="!manualInputNIK || !nikSearched"></b-form-input>
                       </b-form-group>
                     </b-col>
                     <b-col md="4">
                       <b-form-group>
                         <label for="input-manual-gender" class="form-label">Jenis Kelamin:</label>
-                        <v-select v-model="manualSelectedGender" placeholder="Pilih Jenis Kelamin" :options="genderOptions" id="input-manual-gender" required></v-select>
+                        <v-select class="style-chooser" v-model="manualSelectedGender" placeholder="Pilih Jenis Kelamin" :options="genderOptions" id="input-manual-gender" required :disabled="!manualInputNIK || !nikSearched"></v-select>
                       </b-form-group>
                     </b-col>
                     <b-col md="4">
                       <b-form-group>
                         <label for="input-manual-usia" class="form-label">Usia:</label>
-                        <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputUsia" placeholder="Masukan Usia" id="input-manual-usia" required></b-form-input>
+                        <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputUsia" placeholder="Masukan Usia" id="input-manual-usia" required :disabled="!manualInputNIK || !nikSearched"></b-form-input>
                       </b-form-group>
                     </b-col>
                     <b-col md="4">
                       <b-form-group>
                         <label for="input-manual-phone" class="form-label">No Telp:</label>
-                        <b-form-input class="form-control-sm height-select2" v-model="manualInputTelp" placeholder="Masukan No Telepon" id="input-manual-phone" required></b-form-input>
+                        <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputTelp" placeholder="Masukan No Telepon" id="input-manual-phone" :class="nikSearched && !manualInputTelp ? 'is-invalid' : null" :disabled="!manualInputNIK || !nikSearched"></b-form-input>
                       </b-form-group>
                     </b-col>
                     <b-col md="12">
                       <b-form-group>
                         <label for="input-manual-address" class="form-label">Alamat:</label>
-                        <b-form-textarea class="form-control-sm height-select2" v-model="manualInputAddress" placeholder="Masukan Alamat" id="input-manual-address" rows="3" max-rows="6" required></b-form-textarea>
+                        <b-form-textarea class="form-control-sm height-select2" v-model="manualInputAddress" placeholder="Masukan Alamat" id="input-manual-address" rows="3" max-rows="6" required :disabled="!manualInputNIK || !nikSearched"></b-form-textarea>
                       </b-form-group>
                     </b-col>
                     <b-col md="12 mt-4">
@@ -150,7 +165,7 @@
                 <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                       <ol>
-                          <li v-for="(result, index) in selectedData" :key="index" class="mt-2">
+                          <li v-for="(result, index) in selectedData" :key="index" class="mt-2 position-relative">
                             <div class="d-flex justify-content-between flex-wrap align-items-center">
                               <div>
                                 {{ `${result.nik} - ${result.nama} - ${result.jenis_kelamin}` }}
@@ -159,7 +174,7 @@
                                 <b-form-input type="number" class="form-control-sm height-select2" v-model="selectedPhoneInput[index]" placeholder="Masukan No Handphone" id="input-phone"></b-form-input>
                               </div>
                               <div>
-                                <span class="p-2 badge bg-success rounded-pills" style="min-width: 66px;">TPS {{ result.tps }}</span>
+                                <button class="p-2 badge bg-success border-0 rounded-pills" style="min-width: 66px;" v-b-modal.modalChangeTps @click="modalChangeTPS(index)">TPS {{ result.tps }}</button>
                                 <button class="p-2 badge bg-danger border-0 ms-2 rounded-pills" @click="removeSelected(index, result.id)">HAPUS</button>
                               </div>
                             </div>
@@ -306,10 +321,18 @@
       </b-card>
     </b-col>
   </b-row>
+  <b-modal ref="modalChangeTps" id="modalChangeTps" hide-backdrop hide-footer centered size="lg" title="Ubah TPS">
+    <b-row class="justify-content-center">
+      <button v-for="(item, index) in tpsOptions" :key="index" data-bs-dismiss="modal" class="col-1 mx-1 p-2 btn bg-success text-white border-0 rounded-pills my-1" style="min-width: 66px;" @click="handleChangeTPS(item)">
+        {{ item }}
+      </button>
+    </b-row>
+  </b-modal>
 </template>
 <script scoped>
 import axios from 'axios';
 import debounce from 'lodash/debounce';
+import AOS from 'aos';
 
 let withHeader = {
   headers: { 
@@ -320,7 +343,12 @@ let withHeader = {
 export default {
   data() {
     return {
+      savedIndexSelected: null,
+      nikSearched: false,
+      nikFound: null,
       addCollapse: false,
+      isAlertNik: false,
+      isOnSubmit: false,
       isAdmin: false,
       isOnFetch: false,
       isOnValidate: false,
@@ -375,6 +403,16 @@ export default {
   },
   mounted() {
     this.fetchKabupatenOptions();
+    if (typeof AOS !== typeof undefined) {
+        AOS.init({
+            disable: function () {
+            var maxWidth = 996
+            return window.innerWidth < maxWidth
+            },
+            once: true,
+            duration: 800
+        })
+    }
   },
   methods: {
     async fetchKabupatenOptions() {
@@ -461,18 +499,29 @@ export default {
         offset = this.resultPagination.currentLimit * (page - 1);
       }
       
-      var queryParam = `nama_kabupaten=${this.selectedKabupaten}`;
-          queryParam += `&nama_kecamatan=${this.selectedKecamatan}`;
-          queryParam += `&nama_kelurahan=${this.selectedKelurahan}`;
-          queryParam += `&tps=${this.selectedTps}`;
-          queryParam += `&limit=${limit}`;
-          queryParam += `&offset=${offset}`;
-      
-      if(showAll == false) {
-        queryParam += `&nama=${this.inputName}`;
+      var queryParam = '?';
+
+      if (this.selectedKabupaten) {
+        queryParam += `nama_kabupaten=${this.selectedKabupaten}&`;
       }
 
-      console.log(queryParam);
+      if (this.selectedKecamatan) {
+        queryParam += `nama_kecamatan=${this.selectedKecamatan}&`;
+      }
+
+      if (this.selectedKelurahan) {
+        queryParam += `nama_kelurahan=${this.selectedKelurahan}&`;
+      }
+
+      if (this.selectedTps) {
+        queryParam += `tps=${this.selectedTps}&`;
+      }
+
+      if (!showAll && this.inputName) {
+        queryParam += `nama=${this.inputName}&`;
+      }
+      queryParam += `limit=${limit}&`;
+      queryParam += `offset=${offset}`;
 
       const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/resident/validate/list?${queryParam}`, withHeader);
 
@@ -504,7 +553,11 @@ export default {
       let count = current + x;
       let mod = this.resultTotal % this.resultPagination.currentLimit;
 
-      if ((count > 0 && count <= (this.resultTotal / this.resultPagination.currentLimit)) || mod != 0 && ((this.resultPagination.currentLimit * (count - 1)) + mod) <= this.resultTotal) {
+      if(count == 0) {
+        return;
+      }
+
+      if ((count > 0 && count <= (this.resultTotal / this.resultPagination.currentLimit)) || (mod != 0 && ((this.resultPagination.currentLimit * (count - 1)) + mod) <= this.resultTotal)) {
         this.resultPagination.currentPage = count;
         this.cariData(this.resultMode, this.resultPagination.currentPage);
       }
@@ -541,8 +594,6 @@ export default {
         this.selectedData.push(value);
         this.resultSearch[index].is_selected = true;
       }
-
-      console.log(this.selectedPhoneInput);
     },
     removeSelected(index, id) {
       this.selectedData.splice(index, 1);
@@ -579,6 +630,7 @@ export default {
         var selectedDataID = this.selectedData.map((item, index) => ({
             id: item.id,
             no_handphone: this.selectedPhoneInput[index],
+            tps: item.tps,
         }));
       
         const body = {
@@ -634,7 +686,7 @@ export default {
           nik: this.manualInputNIK,
           age: parseInt(this.manualInputUsia),
           no_handphone: this.manualInputTelp,
-          gender: this.manualSelectedGender.value,
+          gender: this.manualSelectedGender.value ?? this.manualSelectedGender,
           address: this.manualInputAddress,
         }
 
@@ -649,6 +701,13 @@ export default {
         }
       } catch (error) {
         console.log('error cant store data: ', error);
+
+        if (error.response.data.meta.message == "NIK already exists") {
+          this.swalAlert('error', 'Gagal', 'NIK Sudah Terpilih!');
+        }
+        this.manualInputNIK = null;
+        this.isAlertNik = false;
+        this.nikFound = null;
       }
 
       this.resetAddManual();
@@ -659,11 +718,69 @@ export default {
     },
     resetAddManual() {
       this.manualInputName = null;
-      this.manualInputNIK = null;
       this.manualInputUsia = null;
       this.manualInputTelp = null;
       this.manualSelectedGender = null;
       this.manualInputAddress = null;
+    },
+    cariNik: debounce(async function(){
+      if (!this.manualInputNIK) {
+        return
+      }
+
+      this.nikFound = null;
+      this.nikSearched = false;
+      this.isOnFetch = true;
+      this.isAlertNik =  false;
+      this.resetAddManual();
+      
+      try {
+        const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/resident/by-nik?nik=${this.manualInputNIK}`, withHeader);
+        if(response.data.meta.code == 200) {
+          const data = response.data.data;
+          this.nikFound = data;
+          this.manualInputName = data.nama;
+          this.manualInputTelp = data.telp;
+          this.manualSelectedGender = {
+            value: data.jenis_kelamin,
+            label: data.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan',
+          };
+          this.manualInputUsia = this.calculateAge(data.tanggal_lahir);
+          this.manualInputAddress = data.alamat;
+
+          if(
+            this.selectedKabupaten != data.nama_kabupaten
+            ||this.selectedKecamatan != data.nama_kecamatan
+            ||this.selectedKelurahan != data.nama_kelurahan
+            ||this.selectedTps != data.tps
+          ) {
+            setTimeout(() => {
+              this.isAlertNik = true;
+            }, 1000);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching nik search:', error);
+      }
+
+      this.nikSearched = true;
+      setTimeout(() => {
+        this.isOnFetch = false;
+      }, 500);
+    }, 500),
+    swalAlert (paramIcon, paramTitle, paramText) {
+      this.$swal({
+        title: paramTitle,
+        text: paramText,
+        icon: paramIcon,
+      });
+    },
+    modalChangeTPS(index) {
+      this.savedIndexSelected = index;
+    },
+    handleChangeTPS(selected) {
+      const savedIndex = this.savedIndexSelected;
+      this.selectedData[savedIndex].tps = selected;
     }
   }
 }

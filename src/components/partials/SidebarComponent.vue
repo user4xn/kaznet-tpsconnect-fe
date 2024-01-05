@@ -20,6 +20,12 @@
       <side-menu isTag="router-link" title="Pengguna" icon="user-group" :route="{ to: 'default.daftar-pengguna' }"></side-menu>
       
       <li><hr class="hr-horizontal" /></li>
+      <side-menu title="Master Koordinator" :static-item="true"></side-menu>
+      <side-menu isTag="router-link" title="Kor Kecamatan" icon="adjustment" :route="{ to: 'default.koordinator-kecamatan' }"></side-menu>
+      <side-menu isTag="router-link" title="Kor Kelurahan" icon="adjustment" :route="{ to: 'default.koordinator-kelurahan' }"></side-menu>
+      <side-menu isTag="router-link" title="Kor TPS" icon="adjustment" :route="{ to: 'default.koordinator-tps' }"></side-menu>
+
+      <li><hr class="hr-horizontal" /></li>
       <side-menu title="Master Lokasi" :static-item="true"></side-menu>
       <side-menu isTag="router-link" title="Kabupaten" icon="location" :route="{ to: 'default.daftar-kabupaten' }"></side-menu>
       <side-menu isTag="router-link" title="Kecamatan" icon="location" :route="{ to: 'default.daftar-kecamatan' }"></side-menu>

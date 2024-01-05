@@ -179,6 +179,51 @@ const defaultChildRoutes = (prefix) => [
     },
     component: () => import('@/views/master-lokasi/DaftarKelurahan.vue')
   },
+  {
+    path: '/koordinator-kecamatan',
+    name: prefix + '.koordinator-kecamatan',
+    meta: { 
+      auth: true, 
+      name: 'Data Koordinator Kecamatan', 
+      isBanner: true,
+      pageTitle: 'Data Koordinator Kecamatan',
+      breadcrumbs: [
+        { text: 'Master Koordinator' },
+        { text: 'Data Koordinator Kecamatan' },
+      ],
+    },
+    component: () => import('@/views/master-koordinator/KoordinatorKecamatan.vue')
+  },
+  {
+    path: '/koordinator-kelurahan',
+    name: prefix + '.koordinator-kelurahan',
+    meta: { 
+      auth: true, 
+      name: 'Data Koordinator Kelurahan', 
+      isBanner: true,
+      pageTitle: 'Data Koordinator Kelurahan',
+      breadcrumbs: [
+        { text: 'Master Koordinator' },
+        { text: 'Data Koordinator Kelurahan' },
+      ],
+    },
+    component: () => import('@/views/master-koordinator/KoordinatorKelurahan.vue')
+  },
+  {
+    path: '/koordinator-tps',
+    name: prefix + '.koordinator-tps',
+    meta: { 
+      auth: true, 
+      name: 'Data Koordinator TPS', 
+      isBanner: true,
+      pageTitle: 'Data Koordinator TPS',
+      breadcrumbs: [
+        { text: 'Master Koordinator' },
+        { text: 'Data Koordinator TPS' },
+      ],
+    },
+    component: () => import('@/views/master-koordinator/KoordinatorTPS.vue')
+  },
   // NOT USED BELOW
   {
     path: '/pricing',

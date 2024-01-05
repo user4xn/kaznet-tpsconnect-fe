@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col-md-12 col-lg-12">
-      <div class="row row-cols-1" data-aos="fade-up" data-aos-delay="800">
+      <!-- <div class="row row-cols-1" data-aos="fade-up" data-aos-delay="800">
         <div class="d-slider1 overflow-hidden swiper-container-initialized swiper-container-horizontal swiper-container-pointer-events">
           <Swiper
             class="p-0 m-0 mb-2 swiper-wrapper list-inline"
@@ -45,68 +45,68 @@
           <div class="swiper-button swiper-button-prev" id="blog-tranding-prev"></div>
           <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script>
-import { onMounted, ref } from 'vue'
-import { Navigation } from 'swiper'
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import AnalyticsWidget from '@/components/widgets/AnalyticsWidget.vue'
-import AOS from 'aos'
+  // import { onMounted, ref } from 'vue'
+  // import { Navigation } from 'swiper'
+  // import { Swiper, SwiperSlide } from 'swiper/vue'
+  // import AnalyticsWidget from '@/components/widgets/AnalyticsWidget.vue'
+  // import AOS from 'aos'
 export default {
-  components: {
-    Swiper,
-    SwiperSlide,
-    AnalyticsWidget
-  },
-  setup() {
-    const modules = [Navigation]
-    const swiperItems = ref([
-      {
-        size: 100,
-        amount: '2.8JT',
-        subTitle: 'Data DPT',
-        color: 'primary'
-      },
-      {
-        size: 10,
-        amount: '185K',
-        subTitle: 'Ter Input',
-        color: 'info'
-      },
-      {
-        size: 100,
-        amount: '2',
-        subTitle: 'Total Kabupaten',
-        color: 'primary'
-      },
-      {
-        size: 100,
-        amount: '246',
-        subTitle: 'Total Kecamatan',
-        color: 'info'
-      },
-      {
-        size: 100,
-        amount: '1.3K',
-        subTitle: 'Total Kelurahan',
-        color: 'primary'
-      }
-    ])
-    onMounted(() => {
-      AOS.init({
-        disable: function () {
-          var maxWidth = 996
-          return window.innerWidth < maxWidth
-        },
-        once: true,
-        duration: 800
-      })
-    })
-    return { modules, swiperItems }
-  }
+  // components: {
+  //   Swiper,
+  //   SwiperSlide,
+  //   AnalyticsWidget
+  // },
+  // setup() {
+  //   const modules = [Navigation]
+  //   const swiperItems = ref([
+  //     {
+  //       size: 100,
+  //       amount: '2.8JT',
+  //       subTitle: 'Data DPT',
+  //       color: 'primary'
+  //     },
+  //     {
+  //       size: 10,
+  //       amount: '185K',
+  //       subTitle: 'Ter Input',
+  //       color: 'info'
+  //     },
+  //     {
+  //       size: 100,
+  //       amount: '2',
+  //       subTitle: 'Total Kabupaten',
+  //       color: 'primary'
+  //     },
+  //     {
+  //       size: 100,
+  //       amount: '246',
+  //       subTitle: 'Total Kecamatan',
+  //       color: 'info'
+  //     },
+  //     {
+  //       size: 100,
+  //       amount: '1.3K',
+  //       subTitle: 'Total Kelurahan',
+  //       color: 'primary'
+  //     }
+  //   ])
+  //   onMounted(() => {
+  //     AOS.init({
+  //       disable: function () {
+  //         var maxWidth = 996
+  //         return window.innerWidth < maxWidth
+  //       },
+  //       once: true,
+  //       duration: 800
+  //     })
+  //   })
+  //   return { modules, swiperItems }
+  // }
 }
 </script>
