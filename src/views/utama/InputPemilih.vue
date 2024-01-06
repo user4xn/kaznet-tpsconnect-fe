@@ -51,11 +51,11 @@
                 <b-form-group>
                   <b-row>
                     <b-col md="8">
-                      <label for="input-name" class="form-label">Nama: <span class="text-muted">(minimal 2 karakter)</span></label>
-                      <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama" id="input-name" :disabled="!selectedKelurahan || isOnFetch || addCollapse" @keyup="cariData(false)"></b-form-input>
+                      <label for="input-name" class="form-label">Nama: <span class="text-muted">(enter untuk memuat data)</span></label>
+                      <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama" id="input-name" :disabled="!selectedKabupaten || isOnFetch || addCollapse" @keyup.enter="cariData(false)"></b-form-input>
                     </b-col>
                     <b-col md="4" class="d-flex align-items-end">
-                      <b-button variant="primary" size="sm" class="height-select2 w-100" @click="cariData(true)" :disabled="!selectedKelurahan || isOnFetch || addCollapse">Tampilkan Semua</b-button>
+                      <b-button variant="primary" size="sm" class="height-select2 w-100" @click="cariData(true)" :disabled="!selectedKabupaten || isOnFetch || addCollapse">Tampilkan Semua</b-button>
                     </b-col>
                   </b-row>
                 </b-form-group>
@@ -165,7 +165,7 @@
                 <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                       <ol>
-                          <li v-for="(result, index) in selectedData" :key="index" class="mt-2 position-relative">
+                          <li v-for="(result, index) in selectedData" :key="index" class="mt-2">
                             <div class="d-flex justify-content-between flex-wrap align-items-center">
                               <div>
                                 {{ `${result.nik} - ${result.nama} - ${result.jenis_kelamin}` }}
@@ -321,11 +321,26 @@
       </b-card>
     </b-col>
   </b-row>
-  <b-modal ref="modalChangeTps" id="modalChangeTps" hide-backdrop hide-footer centered size="lg" title="Ubah TPS">
-    <b-row class="justify-content-center">
+  <b-modal id="modalChangeTps" hide-backdrop hide-footer centered size="lg" title="Ubah TPS">
+    <b-row v-if="tpsOptions.length > 0" class="justify-content-center">
       <button v-for="(item, index) in tpsOptions" :key="index" data-bs-dismiss="modal" class="col-1 mx-1 p-2 btn bg-success text-white border-0 rounded-pills my-1" style="min-width: 66px;" @click="handleChangeTPS(item)">
         {{ item }}
       </button>
+      <hr class="horizontal-line">
+    </b-row>
+    <b-row class="justify-content-center">
+      <b-col sm="5" class="mt-3">
+        <b-form-group>
+          <b-row>
+            <b-col md="8" class="pe-0">
+              <b-form-input type="number" v-model="customTpsInput" class="form-control-sm height-select2" placeholder="Masukan No TPS"></b-form-input>
+            </b-col>
+            <b-col md="4" class="d-flex align-items-end ps-2">
+              <b-button variant="primary" size="sm" class="height-select2 w-100" data-bs-dismiss="modal" @click="handleChangeTPS(customTpsInput)">PILIH</b-button>
+            </b-col>
+          </b-row>
+        </b-form-group>
+      </b-col>
     </b-row>
   </b-modal>
 </template>
@@ -343,6 +358,7 @@ let withHeader = {
 export default {
   data() {
     return {
+      customTpsInput: null,
       savedIndexSelected: null,
       nikSearched: false,
       nikFound: null,
@@ -424,6 +440,7 @@ export default {
       } catch (error) {
         console.error('Error fetching Kabupaten options:', error);
       }
+
       this.adminCity();
     },
     async fetchKecamatanOptions() {
@@ -439,6 +456,8 @@ export default {
         } catch (error) {
           console.error('Error fetching Kecamatan options:', error);
         }
+        
+        this.cariData(false, this.resultOffset);
       }
     },
     async fetchKelurahanOptions() {
@@ -453,6 +472,8 @@ export default {
         } catch (error) {
           console.error('Error fetching Kelurahan options:', error);
         }
+        this.cariData(false, this.resultOffset);
+        this.tpsOptions = [];
       }
     },
     async fetchTpsOptions() {
@@ -472,17 +493,10 @@ export default {
         } catch (error) {
           console.error('Error fetching Kelurahan options:', error);
         }
+        this.cariData(false, this.resultOffset);
       }
     },
     cariData: debounce(async function (showAll, page) {      
-      if(showAll == false && !this.inputName) {
-        return
-      }
-
-      if(showAll == false && this.inputName.length < 2) {
-        return
-      }
-
       if(showAll == false && !page) {
         this.resetSearch();
       }
@@ -547,7 +561,7 @@ export default {
       setTimeout(() => {
         this.isOnFetch = false;
       }, 500);
-    },500),
+    },300),
     prevNextCariData(x) {
       let current = this.resultPagination.currentPage;
       let count = current + x;
@@ -571,6 +585,8 @@ export default {
         if(this.kabupatenOptions.includes(region)) {
           this.selectedKabupaten = region;
         }
+
+        this.cariData(false, this.resultOffset);
       } else {
         this.isAdmin = true;
       }

@@ -51,8 +51,8 @@
                 <b-form-group>
                   <b-row>
                     <b-col md="8">
-                      <label for="input-name" class="form-label">Nama: <span class="text-muted">(minimal 2 karakter)</span></label>
-                      <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama" id="input-name" :disabled="!selectedKabupaten" @keyup="cariData(false)"></b-form-input>
+                      <label for="input-name" class="form-label">Nama: <span class="text-muted">(enter untuk memuat data)</span></label>
+                      <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama" id="input-name" :disabled="!selectedKabupaten" @keyup.enter="cariData(false)"></b-form-input>
                     </b-col>
                     <b-col md="4" class="d-flex align-items-end">
                       <b-button variant="success" size="sm" class="height-select2 w-100">
@@ -414,7 +414,7 @@ export default {
       setTimeout(() => {
         this.isOnFetch = false;
       }, 500);
-    },500),
+    },300),
     prevNextCariData(x) {
       let current = this.resultPagination.currentPage;
       let count = current + x;

@@ -38,8 +38,8 @@
                   <b-form-group>
                     <b-row>
                       <b-col md="8">
-                        <label for="input-name" class="form-label">Nama: <span class="text-muted">(minimal 2 karakter)</span></label>
-                        <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama" id="input-name" :disabled="!selectedKabupaten || isOnFetch" @keyup="cariData(false)"></b-form-input>
+                        <label for="input-name" class="form-label">Nama: <span class="text-muted">(enter untuk memuat data)</span></label>
+                        <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama" id="input-name" :disabled="!selectedKabupaten || isOnFetch" @keyup.enter="cariData(false)"></b-form-input>
                       </b-col>
                       <b-col md="4" class="d-flex align-items-end">
                         <b-button variant="success" size="sm" class="height-select2 w-100">
@@ -103,7 +103,7 @@
                                 <span v-if="result.is_verification == false" class="badge bg-light border border-gray text-gray rounded-pill py-1 px-3"> Belum Valid </span>
                             </td>
                             <td class="d-flex justify-content-center">
-                                <button class="btn btn-success btn-sm ms-2" data-bs-toggle="collapse" :data-bs-target="'#detailRow-' + index"  @click="processDetail(result.id, '#detailRow-' + index)">Detail</button>
+                                <button class="btn btn-success btn-sm ms-2" data-bs-toggle="collapse" :data-bs-target="'#detailRow-' + index">Detail</button>
                             </td>
                         </tr>
                         <tr>
@@ -336,7 +336,7 @@
         setTimeout(() => {
           this.isOnFetch = false;
         }, 500);
-      },500),
+      },300),
       prevNextCariData(x) {
         let current = this.resultPagination.currentPage;
         let count = current + x;
