@@ -183,6 +183,7 @@
                   <th>JK</th>
                   <th>Usia</th>
                   <th>Telp</th>
+                  <th>Jaringan</th>
                 </tr>
               </thead>
               <tbody>
@@ -197,6 +198,7 @@
                     <td>{{ result.jenis_kelamin }}</td>
                     <td>{{ result.usia }}</td>
                     <td>{{ result.telp }}</td>
+                    <td>{{ result.jaringan }}</td>
                   </tr>
                 </template>
               </tbody>
@@ -340,7 +342,7 @@ export default {
               queryParam += `&nama_kecamatan=${this.selectedKecamatan}`;
               queryParam += `&nama_kelurahan=${this.selectedKelurahan}`;
 
-          const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/resident/tps/subdistrict?${queryParam}`, withHeader);
+          const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/validresident/tps/subdistrict?${queryParam}`, withHeader);
           if(response.data.meta.code == 200) {
             this.tpsOptions = response.data.data;
           }  

@@ -149,56 +149,6 @@
       </b-card>
     </b-col>
   </b-row>
-  <b-row v-if="selectedData.length > 0">
-    <b-col sm="12">
-      <b-card no-body class="card">
-        <div class="accordion" id="accordionExample">
-            <div class="accordion-item">
-                <h4 class="accordion-header" id="headingOne">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        Data Terpilih
-                        <span class="badge rounded-pill bg-danger ms-1">
-                          {{ selectedData.length }}
-                        </span>
-                    </button>
-                </h4>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
-                      <ol>
-                          <li v-for="(result, index) in selectedData" :key="index" class="mt-2">
-                            <div class="d-flex justify-content-between flex-wrap align-items-center">
-                              <div>
-                                {{ `${result.nik} - ${result.nama} - ${result.jenis_kelamin}` }}
-                              </div>
-                              <div class="ms-auto me-2">
-                                <b-form-input type="number" class="form-control-sm height-select2" v-model="selectedPhoneInput[index]" placeholder="Masukan No Handphone" id="input-phone"></b-form-input>
-                              </div>
-                              <div>
-                                <button class="p-2 badge bg-success border-0 rounded-pills" style="min-width: 66px;" v-b-modal.modalChangeTps @click="modalChangeTPS(index)">TPS {{ result.tps }}</button>
-                                <button class="p-2 badge bg-danger border-0 ms-2 rounded-pills" @click="removeSelected(index, result.id)">HAPUS</button>
-                              </div>
-                            </div>
-                          </li>
-                      </ol>
-                      <hr class="hr-horizontal"/>
-                      <div class="text-center mt-1">
-                          <button class="btn btn-success" :disabled="isOnValidate" @click="processValidate">
-                            <span v-if="!isOnValidate">
-                            Tambahkan Ke Pemilih
-                            </span>
-                            <span v-if="isOnValidate">
-                              <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-                              Memproses Data...
-                            </span>
-                          </button>
-                      </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-      </b-card>
-    </b-col>
-  </b-row>
   <b-row v-if="succesValidate">
     <b-col sm="12">
       <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -219,6 +169,58 @@
         <strong> Berhasil!</strong> data berhasil di tambahkan
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
+    </b-col>
+  </b-row>
+  <b-row v-if="selectedData.length > 0">
+    <b-col sm="12">
+      <b-card no-body class="card">
+        <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+                <h4 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Data Terpilih
+                        <span class="badge rounded-pill bg-danger ms-1">
+                          {{ selectedData.length }}
+                        </span>
+                    </button>
+                </h4>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      <ol>
+                          <li v-for="(result, index) in selectedData" :key="index" class="p-2 border-bottom">
+                            <b-row>
+                              <b-col lg="6" md="6" class="d-flex align-items-center">
+                                <strong>{{ `${result.nik} - ${result.nama} - ${result.jenis_kelamin}` }}</strong>
+                              </b-col>
+                              <b-col lg="4" md="6" class="d-flex align-items-center justify-content-end">
+                                <div class="w-100">
+                                  <b-form-input type="number" class="rounded-1 height-select2 mb-2" v-model="selectedPhoneInput[index]" placeholder="Masukan No Telepon" id="input-phone"></b-form-input>
+                                  <b-form-select class="rounded-1 height-select2" :class="selectedJaringanInput[index] != null ? null : 'is-invalid'" v-model="selectedJaringanInput[index]" placeholder="Pilih Jaringan" :options="jaringanOptions" id="input-jaringan"></b-form-select>
+                                </div>
+                              </b-col>
+                              <b-col lg="2" sm="12" class="d-flex align-items-center justify-content-end mt-2 mt-lg-0">
+                                <button class="p-2 btn btn-success btn-sm border-0 height-select2 mt-2 mt-md-0" style="min-width: 66px;" v-b-modal.modalChangeTps @click="modalChangeTPS(index)">TPS {{ result.tps }}</button>
+                                <button class="p-2 btn btn-danger btn-sm border-0 height-select2 ms-2 mt-2 mt-md-0" style="min-width: 66px;" @click="removeSelected(index, result.id)">Batal</button>
+                              </b-col>
+                            </b-row>
+                          </li>
+                      </ol>
+                      <div class="text-center mt-1">
+                          <button class="btn btn-success" :disabled="isOnValidate" @click="processValidate">
+                            <span v-if="!isOnValidate">
+                            Tambahkan Ke Pemilih
+                            </span>
+                            <span v-if="isOnValidate">
+                              <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                              Memproses Data...
+                            </span>
+                          </button>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </b-card>
     </b-col>
   </b-row>
   <b-row v-if="resultSearch.length > 0">
@@ -398,6 +400,7 @@ export default {
       },
       openedDetail: null,
       selectedPhoneInput: [],
+      selectedJaringanInput: [],
       manualInputName: null,
       manualInputNIK: null,
       manualInputTelp: null,
@@ -407,6 +410,14 @@ export default {
       genderOptions: [
         { value: 'L', label: 'Laki-laki' },
         { value: 'P', label: 'Perempuan' },
+      ],
+      jaringanOptions: [
+        { value: null, text: 'Pilih Jaringan' },
+        { value: 'BOBOTOH', text: 'BOBOTOH' },
+        { value: 'ANSOR JAMBRONG', text: 'ANSOR JAMBRONG' },
+        { value: 'IBU-IBU CIANJUR', text: 'IBU-IBU CIANJUR' },
+        { value: 'JANUR BOGOR', text: 'JANUR BOGOR' },
+        { value: 'PMCK', text: 'PMCK' },
       ],
     }
   },
@@ -614,6 +625,7 @@ export default {
     removeSelected(index, id) {
       this.selectedData.splice(index, 1);
       this.selectedPhoneInput.splice(index, 1);
+      this.selectedJaringanInput.splice(index, 1);
       const resIndex = this.resultSearch.findIndex(item => item.id === id);
       this.resultSearch[resIndex].is_selected = false;
     },
@@ -635,6 +647,10 @@ export default {
       return age;
     },
     async processValidate() {
+      if(this.selectedData.length != this.selectedJaringanInput.length) {
+        return 
+      }
+      
       this.isOnValidate = true;
 
       this.resultValidate = {
@@ -647,6 +663,7 @@ export default {
             id: item.id,
             no_handphone: this.selectedPhoneInput[index],
             tps: item.tps,
+            jaringan: this.selectedJaringanInput[index],
         }));
       
         const body = {
@@ -666,6 +683,7 @@ export default {
           }
 
           this.selectedData = [];
+          this.selectedPhoneInput = [];
           this.succesValidate = true;
           this.resultValidate = {
             total: totalValidate,
