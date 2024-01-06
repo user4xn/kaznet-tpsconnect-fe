@@ -51,7 +51,7 @@
                 <b-form-group>
                   <b-row>
                     <b-col md="8">
-                      <label for="input-name" class="form-label">Nama: <span class="text-muted">(enter untuk memuat data)</span></label>
+                      <label for="input-name" class="form-label">Nama: <i>(enter untuk memuat data)</i></label>
                       <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama" id="input-name" :disabled="!selectedKabupaten || isOnFetch || addCollapse" @keyup.enter="cariData(false)"></b-form-input>
                     </b-col>
                     <b-col md="4" class="d-flex align-items-end">
@@ -326,7 +326,7 @@
       <button v-for="(item, index) in tpsOptions" :key="index" data-bs-dismiss="modal" class="col-1 mx-1 p-2 btn bg-success text-white border-0 rounded-pills my-1" style="min-width: 66px;" @click="handleChangeTPS(item)">
         {{ item }}
       </button>
-      <hr class="horizontal-line">
+      <hr class="horizontal-line mt-4">
     </b-row>
     <b-row class="justify-content-center">
       <b-col sm="5" class="mt-3">

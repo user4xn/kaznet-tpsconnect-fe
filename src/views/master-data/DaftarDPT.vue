@@ -38,7 +38,7 @@
                   <b-form-group>
                     <b-row>
                       <b-col md="8">
-                        <label for="input-name" class="form-label">Nama: <span class="text-muted">(enter untuk memuat data)</span></label>
+                        <label for="input-name" class="form-label">Nama: <i>(enter untuk memuat data)</i></label>
                         <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama" id="input-name" :disabled="!selectedKabupaten || isOnFetch" @keyup.enter="cariData(false)"></b-form-input>
                       </b-col>
                       <b-col md="4" class="d-flex align-items-end">
