@@ -21,6 +21,7 @@
       
       <li><hr class="hr-horizontal" /></li>
       <side-menu title="Master Koordinator" :static-item="true"></side-menu>
+      <side-menu isTag="router-link" title="Kor Kabupaten" icon="adjustment" :route="{ to: 'default.koordinator-kabupaten' }"></side-menu>
       <side-menu isTag="router-link" title="Kor Kecamatan" icon="adjustment" :route="{ to: 'default.koordinator-kecamatan' }"></side-menu>
       <side-menu isTag="router-link" title="Kor Kelurahan" icon="adjustment" :route="{ to: 'default.koordinator-kelurahan' }"></side-menu>
       <side-menu isTag="router-link" title="Kor TPS" icon="adjustment" :route="{ to: 'default.koordinator-tps' }"></side-menu>

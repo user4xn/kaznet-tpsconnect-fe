@@ -180,6 +180,21 @@ const defaultChildRoutes = (prefix) => [
     component: () => import('@/views/master-lokasi/DaftarKelurahan.vue')
   },
   {
+    path: '/koordinator-kabupaten',
+    name: prefix + '.koordinator-kabupaten',
+    meta: { 
+      auth: true, 
+      name: 'Data Koordinator Kabupaten', 
+      isBanner: true,
+      pageTitle: 'Data Koordinator Kabupaten',
+      breadcrumbs: [
+        { text: 'Master Koordinator' },
+        { text: 'Data Koordinator Kabupaten' },
+      ],
+    },
+    component: () => import('@/views/master-koordinator/KoordinatorKabupaten.vue')
+  },
+  {
     path: '/koordinator-kecamatan',
     name: prefix + '.koordinator-kecamatan',
     meta: { 

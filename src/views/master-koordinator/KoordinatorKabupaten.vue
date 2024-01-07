@@ -29,24 +29,6 @@
                   <v-select v-model="selectedKabupaten" placeholder="Pilih Kabupaten" :options="kabupatenOptions" id="input-kabupaten" :disabled="!isAdmin"></v-select>
                 </b-form-group>
               </b-col>
-              <b-col sm="4">
-                <b-form-group>
-                  <label for="input-kecamatan" class="form-label">Kecamatan:</label>
-                  <v-select v-model="selectedKecamatan" placeholder="Pilih Kecamatan" :options="kecamatanOptions" id="input-kecamatan" :disabled="!selectedKabupaten"></v-select>
-                </b-form-group>
-              </b-col>
-              <b-col sm="4">
-                <b-form-group>
-                  <label for="input-kelurahan" class="form-label">Kelurahan:</label>
-                  <v-select v-model="selectedKelurahan" placeholder="Pilih Kelurahan" :options="kelurahanOptions" id="input-kelurahan" :disabled="!selectedKecamatan"></v-select>
-                </b-form-group>
-              </b-col>
-              <b-col sm="4">
-                <b-form-group>
-                  <label for="input-tps" class="form-label">TPS:</label>
-                  <v-select v-model="selectedTps" placeholder="Pilih TPS" :options="tpsOptions" id="input-tps" :disabled="!selectedKelurahan"></v-select>
-                </b-form-group>
-              </b-col>
               <b-col sm="8" :class="addCollapse == true ? 'd-none' : ''">
                 <b-form-group>
                   <b-row>
@@ -90,7 +72,7 @@
                     <b-col md="4">
                       <b-form-group>
                         <label for="input-manual-nik" class="form-label">NIK:</label>
-                        <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputNIK" placeholder="Masukan NIK" id="input-manual-nik" @keyup="cariNik()" required :class="nikFound != null ? 'is-valid' : null" :disabled="!selectedTps"></b-form-input>
+                        <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputNIK" placeholder="Masukan NIK" id="input-manual-nik" @keyup="cariNik()" required :class="nikFound != null ? 'is-valid' : null" :disabled="!selectedKabupaten"></b-form-input>
                       </b-form-group>
                     </b-col>
                     <b-col md="4">
@@ -158,7 +140,7 @@
         <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M5.94118 10.7474V20.7444C5.94118 21.0758 5.81103 21.3936 5.57937 21.628C5.3477 21.8623 5.0335 21.994 4.70588 21.994H2.23529C1.90767 21.994 1.59347 21.8623 1.36181 21.628C1.13015 21.3936 1 21.0758 1 20.7444V11.997C1 11.6656 1.13015 11.3477 1.36181 11.1134C1.59347 10.879 1.90767 10.7474 2.23529 10.7474H5.94118ZM5.94118 10.7474C7.25166 10.7474 8.50847 10.2207 9.43512 9.28334C10.3618 8.34594 10.8824 7.07456 10.8824 5.74887V4.49925C10.8824 3.83641 11.1426 3.20071 11.606 2.73201C12.0693 2.26331 12.6977 2 13.3529 2C14.0082 2 14.6366 2.26331 15.0999 2.73201C15.5632 3.20071 15.8235 3.83641 15.8235 4.49925V10.7474H19.5294C20.1847 10.7474 20.8131 11.0107 21.2764 11.4794C21.7397 11.9481 22 12.5838 22 13.2466L20.7647 19.4947C20.5871 20.2613 20.25 20.9196 19.8045 21.3704C19.3589 21.8211 18.8288 22.04 18.2941 21.994H9.64706C8.6642 21.994 7.72159 21.599 7.0266 20.896C6.33162 20.1929 5.94118 19.2394 5.94118 18.2451" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <strong> Berhasil!</strong> data berhasil di tambahkan
+        <strong> Berhasil!</strong> data berhasil di {{ editInputID != null ? 'simpan' : 'tambahkan' }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     </b-col>
@@ -179,13 +161,13 @@
                   <th>#</th>
                   <th>Nama</th>
                   <th>NIK</th>
-                  <th>KEC</th>
-                  <th>KEL</th>
-                  <th>TPS</th>
+                  <th>ALAMAT</th>
+                  <th>WILAYAH</th>
                   <th>JK</th>
                   <th>Usia</th>
                   <th>Telp</th>
                   <th>Jaringan</th>
+                  <th class="text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody>
@@ -194,13 +176,15 @@
                     <td>{{ (resultPagination.currentPage - 1) * resultLimit + index + 1 }}.</td>
                     <td>{{ result.nama }}</td>
                     <td>{{ result.nik }}</td>
-                    <td>{{ result.nama_kecamatan }}</td>
-                    <td>{{ result.nama_kelurahan }}</td>
-                    <td>{{ result.tps }}</td>
+                    <td>{{ result.alamat }}</td>
+                    <td>{{ result.nama_kabupaten }}</td>
                     <td>{{ result.jenis_kelamin }}</td>
                     <td>{{ result.usia }}</td>
                     <td>{{ result.telp }}</td>
                     <td>{{ result.jaringan }}</td>
+                    <td class="d-flex justify-content-center">
+                      <button class="btn btn-info btn-sm ms-2" v-b-modal.modalEdit @click="enableEdit(index)">Edit</button>
+                    </td>
                   </tr>
                 </template>
               </tbody>
@@ -225,6 +209,73 @@
       </b-card>
     </b-col>
   </b-row>
+  <b-modal id="modalEdit" hide-backdrop hide-footer centered size="lg" title="Ubah Data Koordinator">
+    <b-form @submit="handleEdit">
+      <b-row>
+        <b-col md="12">
+          <b-form-group>
+            <label class="form-label">Wilayah:</label>
+            <b-form-input v-model="editInputKab" class="form-control-sm height-select2" disabled></b-form-input>
+          </b-form-group>
+        </b-col>
+        <b-col md="4">
+          <b-form-group>
+            <label for="input-manual-nik" class="form-label">NIK:</label>
+            <b-form-input type="number" v-model="editInputNIK" class="form-control-sm height-select2" disabled></b-form-input>
+          </b-form-group>
+        </b-col>
+        <b-col md="4">
+          <b-form-group>
+            <label for="input-manual-name" class="form-label">Nama Lengkap:</label>
+            <b-form-input class="form-control-sm height-select2" v-model="editInputName" placeholder="Masukan Nama" id="input-manual-name" required></b-form-input>
+          </b-form-group>
+        </b-col>
+        <b-col md="4">
+          <b-form-group>
+            <label for="input-manual-jaringan" class="form-label">Jaringan:</label>
+            <v-select v-model="editSelectedJaringan" placeholder="Pilih Jaringan" :options="jaringanOptions2" id="input-manual-jaringan" required></v-select>
+          </b-form-group>
+        </b-col>
+        <b-col md="4">
+          <b-form-group>
+            <label for="input-manual-gender" class="form-label">Jenis Kelamin:</label>
+            <v-select class="style-chooser" v-model="editSelectedGender" placeholder="Pilih Jenis Kelamin" :options="genderOptions" id="input-manual-gender" required></v-select>
+          </b-form-group>
+        </b-col>
+        <b-col md="4">
+          <b-form-group>
+            <label for="input-manual-usia" class="form-label">Usia:</label>
+            <b-form-input type="number" class="form-control-sm height-select2" v-model="editInputUsia" placeholder="Masukan Usia" id="input-manual-usia" required></b-form-input>
+          </b-form-group>
+        </b-col>
+        <b-col md="4">
+          <b-form-group>
+            <label for="input-manual-phone" class="form-label">No Telp:</label>
+            <b-form-input type="number" class="form-control-sm height-select2" v-model="editInputTelp" placeholder="Masukan No Telepon" id="input-manual-phone"></b-form-input>
+          </b-form-group>
+        </b-col>
+        <b-col md="12">
+          <b-form-group>
+            <label for="input-manual-address" class="form-label">Alamat:</label>
+            <b-form-textarea class="form-control-sm height-select2" v-model="editInputAddress" placeholder="Masukan Alamat" id="input-manual-address" rows="3" max-rows="6" required></b-form-textarea>
+          </b-form-group>
+        </b-col>
+        <b-col md="12 mt-4">
+          <b-form-group>
+            <b-button type="submit" class="w-100" data-bs-dismiss="modal" variant="primary" :disabled="!editSelectedJaringan || isOnSubmit">
+              <span v-if="!isOnSubmit">
+                Simpan Data
+              </span>
+              <span v-if="isOnSubmit">
+                <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                Memproses Data...
+              </span>
+            </b-button>
+          </b-form-group>
+        </b-col>
+      </b-row>
+    </b-form>
+  </b-modal>
 </template>
 <script scoped>
 import axios from 'axios';
@@ -248,14 +299,10 @@ export default {
       isAdmin: false,
       isOnFetch: false,
       selectedKabupaten: null,
-      selectedKecamatan: null,
-      selectedKelurahan: null,
       selectedTps: null,
       selectedJaringan: null,
       inputName: null,
       kabupatenOptions: [],
-      kecamatanOptions: [],
-      kelurahanOptions: [],
       tpsOptions: [],
       resultSearch: [],
       resultTotal: null,
@@ -276,6 +323,15 @@ export default {
       manualInputAddress: null,
       manualSelectedGender: null,
       manualSelectedJaringan: null,
+      editInputID: null,
+      editInputKab: null,
+      editInputName: null,
+      editInputNIK: null,
+      editInputTelp: null,
+      editInputUsia: null,
+      editInputAddress: null,
+      editSelectedGender: null,
+      editSelectedJaringan: null,
       genderOptions: [
         { value: 'L', label: 'Laki-laki' },
         { value: 'P', label: 'Perempuan' },
@@ -289,17 +345,71 @@ export default {
       ],
     }
   },
-  watch: {
-    selectedKabupaten: 'fetchKecamatanOptions',
-    selectedKecamatan: 'fetchKelurahanOptions',
-    selectedKelurahan: 'fetchTpsOptions',
-    selectedTps: 'resetSelected',
-  },
   mounted() {
     this.fetchKabupatenOptions();
     this.cariData(false);
   },
   methods: {
+    enableEdit(index) {
+      const data = this.resultSearch[index];
+      this.editInputID = data.id;
+      this.editInputKab = data.nama_kabupaten;
+      this.editInputName = data.nama;
+      this.editInputNIK = data.nik;
+      this.editInputTelp = data.telp;
+      this.editInputUsia = data.usia;
+      this.editInputAddress = data.alamat;
+      this.editSelectedGender = { value: data.jenis_kelamin, label: data.jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' };
+      this.editSelectedJaringan = { value: data.jaringan, label: data.jaringan };
+    },
+    async handleEdit() {
+      if (!this.editSelectedJaringan) {
+        return
+      }
+
+      this.isOnSubmit = true;
+      
+      try {
+        const body = {
+          full_name: this.editInputName,
+          nik: this.editInputNIK,
+          no_handphone: this.editInputTelp,
+          age: parseInt(this.editInputUsia),
+          gender: this.editSelectedGender.value ?? this.editSelectedGender,
+          address: this.editInputAddress,
+          city: this.editInputKab,
+          jaringan: this.editSelectedJaringan.value ?? this.editSelectedJaringan,
+        }
+
+        const response = await axios.put(`${process.env.VUE_APP_BACKEND_API}/api/v1/kordinator/kabupaten/update/${this.editInputID}`, body, withHeader);
+        
+        if(response.data.meta.code == 200) {
+          this.succesSubmit = true;
+          this.cariData(false);
+
+          setTimeout(() => {
+            this.succesSubmit = false;
+          }, 10000);
+        }
+      } catch (error) {
+        console.log('error cant store data: ', error);
+      }
+
+      this.editInputID = null;
+      this.editInputKab = null;
+      this.editInputKec = null;
+      this.editInputName = null;
+      this.editInputNIK = null;
+      this.editInputTelp = null;
+      this.editInputUsia = null;
+      this.editInputAddress = null;
+      this.editSelectedGender = null;
+      this.editSelectedJaringan = null;
+
+      setTimeout(() => {
+        this.isOnSubmit = false;
+      }, 500);
+    },
     async fetchKabupatenOptions() {
       try {
         const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/city/list`, withHeader);
@@ -311,57 +421,6 @@ export default {
       }
 
       this.adminCity();
-    },
-    async fetchKecamatanOptions() {
-      this.selectedKecamatan = null;
-      this.selectedKelurahan = null;
-      this.selectedTps = null;
-      if (this.selectedKabupaten) {
-        try {
-          const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/district/by-city?nama_kabupaten=${this.selectedKabupaten}`, withHeader);
-          if(response.data.meta.code == 200) {
-            this.kecamatanOptions = response.data.data;
-          }        
-        } catch (error) {
-          console.error('Error fetching Kecamatan options:', error);
-        }
-        this.cariData(false, this.resultOffset);
-      }
-    },
-    async fetchKelurahanOptions() {
-      this.selectedKelurahan = null;
-      this.selectedTps = null;
-      if (this.selectedKecamatan) {
-        try {
-          const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/subdistrict/by-district?nama_kecamatan=${this.selectedKecamatan}`, withHeader);
-          if(response.data.meta.code == 200) {
-            this.kelurahanOptions = response.data.data;
-          }  
-        } catch (error) {
-          console.error('Error fetching Kelurahan options:', error);
-        }
-        this.cariData(false, this.resultOffset);
-      }
-    },
-    async fetchTpsOptions() {
-      this.selectedTps = null;
-      this.inputName = null;
-
-      if (this.selectedKelurahan) {
-        try {
-          var queryParam = `nama_kabupaten=${this.selectedKabupaten}`;
-              queryParam += `&nama_kecamatan=${this.selectedKecamatan}`;
-              queryParam += `&nama_kelurahan=${this.selectedKelurahan}`;
-
-          const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/validresident/tps/subdistrict?${queryParam}`, withHeader);
-          if(response.data.meta.code == 200) {
-            this.tpsOptions = response.data.data;
-          }  
-        } catch (error) {
-          console.error('Error fetching Kelurahan options:', error);
-        }
-        this.cariData(false, this.resultOffset);
-      }
     },
     cariData: debounce(async function (showAll, page) {      
       if(this.addCollapse == true) {
@@ -390,18 +449,6 @@ export default {
         queryParam += `nama_kabupaten=${this.selectedKabupaten}&`;
       }
 
-      if (this.selectedKecamatan) {
-        queryParam += `nama_kecamatan=${this.selectedKecamatan}&`;
-      }
-
-      if (this.selectedKelurahan) {
-        queryParam += `nama_kelurahan=${this.selectedKelurahan}&`;
-      }
-
-      if (this.selectedTps) {
-        queryParam += `tps=${this.selectedTps}&`;
-      }
-
       if (this.selectedJaringan) {
         queryParam += `jaringan=${this.selectedJaringan.value}&`;
       }
@@ -412,7 +459,7 @@ export default {
       queryParam += `limit=${limit}&`;
       queryParam += `offset=${offset}`;
 
-      const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/validresident/list${queryParam ?? ''}`, withHeader);
+      const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/kordinator/kabupaten/list${queryParam ?? ''}`, withHeader);
 
       if(response.data.meta.code == 200) {
         const data = response.data.data.items;
@@ -545,7 +592,6 @@ export default {
       this.manualInputUsia = null;
       this.manualInputTelp = null;
       this.manualSelectedGender = null;
-      this.manualSelectedJaringan = null;
       this.manualInputAddress = null;
     },
     cariNik: debounce(async function(){

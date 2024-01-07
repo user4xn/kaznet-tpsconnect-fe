@@ -90,17 +90,22 @@
                 </b-col>
                 <b-form @submit="handleAddManual">
                   <b-row>
-                    <b-col md="6">
+                    <b-col md="4">
                       <b-form-group>
                         <label for="input-manual-nik" class="form-label">NIK:</label>
                         <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputNIK" placeholder="Masukan NIK" id="input-manual-nik" @keyup="cariNik()" required :class="nikFound != null ? 'is-valid' : null" :disabled="!selectedTps"></b-form-input>
-                        <i>*data akan terisi otomatis jika NIK terdeteksi dalam database</i>
                       </b-form-group>
                     </b-col>
-                    <b-col md="6">
+                    <b-col md="4">
                       <b-form-group>
                         <label for="input-manual-name" class="form-label">Nama Lengkap:</label>
                         <b-form-input class="form-control-sm height-select2" v-model="manualInputName" placeholder="Masukan Nama" id="input-manual-name" required :disabled="!manualInputNIK || !nikSearched"></b-form-input>
+                      </b-form-group>
+                    </b-col>
+                    <b-col md="4">
+                      <b-form-group>
+                        <label for="input-manual-jaringan" class="form-label">Jaringan:</label>
+                        <v-select v-model="manualSelectedJaringan" placeholder="Pilih Jaringan" :options="jaringanOptions2" id="input-manual-jaringan" required :disabled="!manualInputNIK || !nikSearched"></v-select>
                       </b-form-group>
                     </b-col>
                     <b-col md="4">
@@ -125,11 +130,12 @@
                       <b-form-group>
                         <label for="input-manual-address" class="form-label">Alamat:</label>
                         <b-form-textarea class="form-control-sm height-select2" v-model="manualInputAddress" placeholder="Masukan Alamat" id="input-manual-address" rows="3" max-rows="6" required :disabled="!manualInputNIK || !nikSearched"></b-form-textarea>
+                        <i>*data akan terisi otomatis jika NIK terdeteksi dalam database</i>
                       </b-form-group>
                     </b-col>
                     <b-col md="12 mt-4">
                       <b-form-group>
-                        <b-button type="submit" class="w-100" variant="primary" :disabled="!selectedKabupaten || !selectedKecamatan || !selectedKelurahan || !selectedTps || isOnSubmit">
+                        <b-button type="submit" class="w-100" variant="primary" :disabled="!manualSelectedJaringan || !selectedKabupaten || !selectedKecamatan || !selectedKelurahan || !selectedTps || isOnSubmit">
                           <span v-if="!isOnSubmit">
                             Tambahkan Ke Pemilih
                           </span>
@@ -407,6 +413,7 @@ export default {
       manualInputUsia: null,
       manualInputAddress: null,
       manualSelectedGender: null,
+      manualSelectedJaringan: null,
       genderOptions: [
         { value: 'L', label: 'Laki-laki' },
         { value: 'P', label: 'Perempuan' },
@@ -418,6 +425,13 @@ export default {
         { value: 'IBU-IBU CIANJUR', text: 'IBU-IBU CIANJUR' },
         { value: 'JANUR BOGOR', text: 'JANUR BOGOR' },
         { value: 'PMCK', text: 'PMCK' },
+      ],
+      jaringanOptions2: [
+        { value: 'BOBOTOH', label: 'BOBOTOH' },
+        { value: 'ANSOR JAMBRONG', label: 'ANSOR JAMBRONG' },
+        { value: 'IBU-IBU CIANJUR', label: 'IBU-IBU CIANJUR' },
+        { value: 'JANUR BOGOR', label: 'JANUR BOGOR' },
+        { value: 'PMCK', label: 'PMCK' },
       ],
     }
   },
@@ -708,6 +722,10 @@ export default {
       this.openedDetail = opened;
     },
     async handleAddManual() {
+      if (!this.manualSelectedJaringan) {
+        return
+      }
+
       this.isOnSubmit = true;
 
       try {
@@ -722,8 +740,9 @@ export default {
           no_handphone: this.manualInputTelp,
           gender: this.manualSelectedGender.value ?? this.manualSelectedGender,
           address: this.manualInputAddress,
+          jaringan: this.manualSelectedJaringan.value ?? this.manualSelectedJaringan,
         }
-
+        
         const response = await axios.post(`${process.env.VUE_APP_BACKEND_API}/api/v1/validresident/store`, body, withHeader);
         
         if(response.data.meta.code == 200) {
@@ -755,6 +774,7 @@ export default {
       this.manualInputUsia = null;
       this.manualInputTelp = null;
       this.manualSelectedGender = null;
+      this.manualSelectedJaringan = null;
       this.manualInputAddress = null;
     },
     cariNik: debounce(async function(){
