@@ -128,7 +128,7 @@
                         <b-form-group>
                           <b-button type="submit" class="w-100" variant="primary" :disabled="!manualSelectedJaringan || !selectedKabupaten || !selectedKecamatan || !selectedKelurahan || isOnSubmit">
                             <span v-if="!isOnSubmit">
-                              Tambahkan Ke Pemilih
+                              Tambahkan Ke Koordinator
                             </span>
                             <span v-if="isOnSubmit">
                               <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
@@ -181,6 +181,7 @@
                     <th>Usia</th>
                     <th>Telp</th>
                     <th>Jaringan</th>
+                    <th class="text-center">Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -197,6 +198,10 @@
                       <td>{{ result.usia }}</td>
                       <td>{{ result.telp }}</td>
                       <td>{{ result.jaringan }}</td>
+                      <td class="d-flex justify-content-center">
+                        <button class="btn btn-info btn-sm" v-b-modal.modalEdit @click="enableEdit(index)">Ubah</button>
+                        <button class="btn btn-danger btn-sm ms-2" @click="handleDelete(index)">Hapus</button>
+                      </td>
                     </tr>
                   </template>
                 </tbody>
@@ -221,6 +226,79 @@
         </b-card>
       </b-col>
     </b-row>
+    <b-modal id="modalEdit" hide-backdrop hide-footer centered size="lg" title="Ubah Data Koordinator">
+      <b-form @submit="handleEdit">
+        <b-row>
+          <b-col md="6">
+            <b-form-group>
+              <label for="input-manual-nik" class="form-label">Korcam:</label>
+              <b-form-input v-model="editInputKec" class="form-control-sm height-select2" disabled></b-form-input>
+            </b-form-group>
+          </b-col>
+          <b-col md="6">
+            <b-form-group>
+              <label for="input-manual-nik" class="form-label">Wilayah:</label>
+              <b-form-input v-model="editInputKel" class="form-control-sm height-select2" disabled></b-form-input>
+            </b-form-group>
+          </b-col>
+          <b-col md="4">
+            <b-form-group>
+              <label for="input-manual-nik" class="form-label">NIK:</label>
+              <b-form-input type="number" v-model="editInputNIK" class="form-control-sm height-select2" disabled></b-form-input>
+            </b-form-group>
+          </b-col>
+          <b-col md="4">
+            <b-form-group>
+              <label for="input-manual-name" class="form-label">Nama Lengkap:</label>
+              <b-form-input class="form-control-sm height-select2" v-model="editInputName" placeholder="Masukan Nama" id="input-manual-name" required></b-form-input>
+            </b-form-group>
+          </b-col>
+          <b-col md="4">
+            <b-form-group>
+              <label for="input-manual-jaringan" class="form-label">Jaringan:</label>
+              <v-select v-model="editSelectedJaringan" placeholder="Pilih Jaringan" :options="jaringanOptions2" id="input-manual-jaringan" required></v-select>
+            </b-form-group>
+          </b-col>
+          <b-col md="4">
+            <b-form-group>
+              <label for="input-manual-gender" class="form-label">Jenis Kelamin:</label>
+              <v-select class="style-chooser" v-model="editSelectedGender" placeholder="Pilih Jenis Kelamin" :options="genderOptions" id="input-manual-gender" required></v-select>
+            </b-form-group>
+          </b-col>
+          <b-col md="4">
+            <b-form-group>
+              <label for="input-manual-usia" class="form-label">Usia:</label>
+              <b-form-input type="number" class="form-control-sm height-select2" v-model="editInputUsia" placeholder="Masukan Usia" id="input-manual-usia" required></b-form-input>
+            </b-form-group>
+          </b-col>
+          <b-col md="4">
+            <b-form-group>
+              <label for="input-manual-phone" class="form-label">No Telp:</label>
+              <b-form-input type="number" class="form-control-sm height-select2" v-model="editInputTelp" placeholder="Masukan No Telepon" id="input-manual-phone"></b-form-input>
+            </b-form-group>
+          </b-col>
+          <b-col md="12">
+            <b-form-group>
+              <label for="input-manual-address" class="form-label">Alamat:</label>
+              <b-form-textarea class="form-control-sm height-select2" v-model="editInputAddress" placeholder="Masukan Alamat" id="input-manual-address" rows="3" max-rows="6" required></b-form-textarea>
+            </b-form-group>
+          </b-col>
+          <b-col md="12 mt-4">
+            <b-form-group>
+              <b-button type="submit" class="w-100" data-bs-dismiss="modal" variant="primary" :disabled="!editSelectedJaringan || isOnSubmit">
+                <span v-if="!isOnSubmit">
+                  Simpan Data
+                </span>
+                <span v-if="isOnSubmit">
+                  <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                  Memproses Data...
+                </span>
+              </b-button>
+            </b-form-group>
+          </b-col>
+        </b-row>
+      </b-form>
+    </b-modal>
   </template>
   <script scoped>
   import axios from 'axios';
@@ -270,6 +348,17 @@
         manualInputAddress: null,
         manualSelectedGender: null,
         manualSelectedJaringan: null,
+        editInputID: null,
+        editInputKab: null,
+        editInputKec: null,
+        editInputKel: null,
+        editInputName: null,
+        editInputNIK: null,
+        editInputTelp: null,
+        editInputUsia: null,
+        editInputAddress: null,
+        editSelectedGender: null,
+        editSelectedJaringan: null,
         genderOptions: [
           { value: 'L', label: 'Laki-laki' },
           { value: 'P', label: 'Perempuan' },
@@ -293,6 +382,102 @@
       selectedJaringan: 'fetchData',
     },
     methods: {
+      enableEdit(index) {
+        const data = this.resultSearch[index];
+        this.editInputID = data.id;
+        this.editInputKab = data.nama_kabupaten;
+        this.editInputKec = data.nama_kecamatan;
+        this.editInputKel = data.nama_kelurahan;
+        this.editInputName = data.nama;
+        this.editInputNIK = data.nik;
+        this.editInputTelp = data.telp;
+        this.editInputUsia = data.usia;
+        this.editInputAddress = data.alamat;
+        this.editSelectedGender = { value: data.jenis_kelamin, label: data.jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' };
+        this.editSelectedJaringan = { value: data.jaringan, label: data.jaringan };
+      },
+      handleDelete(index) {
+        const id = this.resultSearch[index].id;
+
+        this.$swal({
+          title: "Konfirmasi Hapus!",
+          icon: "warning",
+          showCancelButton: true,
+          cancelButtonText: "Batal",
+          confirmButtonText: "Ya, Hapus!"
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              const response = await axios.delete(`${process.env.VUE_APP_BACKEND_API}/api/v1/kordinator/kelurahan/delete/${id}`, withHeader);
+              
+              if(response.data.meta.code == 200) {
+                this.cariData(false, this.resultOffset);
+                return
+              }
+              
+            } catch (error) {
+              this.$swal({
+                title: "Error!",
+                text: error.message,
+                icon: "error"
+              });
+
+              console.log('error cant delete data: ', error);
+            }
+          }
+        });
+      },
+      async handleEdit() {
+        if (!this.editSelectedJaringan) {
+          return
+        }
+  
+        this.isOnSubmit = true;
+        
+        try {
+          const body = {
+            full_name: this.editInputName,
+            nik: this.editInputNIK,
+            no_handphone: this.editInputTelp,
+            age: parseInt(this.editInputUsia),
+            gender: this.editSelectedGender.value ?? this.editSelectedGender,
+            address: this.editInputAddress,
+            city: this.editInputKab,
+            district: this.editInputKec,
+            subdistrict: this.editInputKel,
+            jaringan: this.editSelectedJaringan.value ?? this.editSelectedJaringan,
+          }
+  
+          const response = await axios.put(`${process.env.VUE_APP_BACKEND_API}/api/v1/kordinator/kelurahan/update/${this.editInputID}`, body, withHeader);
+          
+          if(response.data.meta.code == 200) {
+            this.succesSubmit = true;
+            this.cariData(false);
+  
+            setTimeout(() => {
+              this.succesSubmit = false;
+            }, 10000);
+          }
+        } catch (error) {
+          console.log('error cant store data: ', error);
+        }
+  
+        this.editInputID = null;
+        this.editInputKab = null;
+        this.editInputKec = null;
+        this.editInputKel = null;
+        this.editInputName = null;
+        this.editInputNIK = null;
+        this.editInputTelp = null;
+        this.editInputUsia = null;
+        this.editInputAddress = null;
+        this.editSelectedGender = null;
+        this.editSelectedJaringan = null;
+
+        setTimeout(() => {
+          this.isOnSubmit = false;
+        }, 500);
+      },
       fetchData(){
         this.cariData(false, this.resultOffset);
       },

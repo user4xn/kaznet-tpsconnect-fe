@@ -44,7 +44,7 @@
               <b-col sm="4">
                 <b-form-group>
                   <label for="input-tps" class="form-label">TPS:</label>
-                  <v-select v-model="selectedTps" placeholder="Pilih TPS" :options="tpsOptions" id="input-tps" :disabled="!selectedKelurahan"></v-select>
+                  <v-select taggable v-model="selectedTps" placeholder="Pilih TPS" :options="tpsOptions" id="input-tps" :disabled="!selectedKelurahan"></v-select>
                 </b-form-group>
               </b-col>
               <b-col sm="8" :class="addCollapse == true ? 'd-none' : ''">

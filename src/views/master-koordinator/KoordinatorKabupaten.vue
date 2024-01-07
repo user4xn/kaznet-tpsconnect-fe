@@ -114,9 +114,9 @@
                     </b-col>
                     <b-col md="12 mt-4">
                       <b-form-group>
-                        <b-button type="submit" class="w-100" variant="primary" :disabled="!manualSelectedJaringan || !selectedKabupaten || !selectedKecamatan || !selectedKelurahan || !selectedTps || isOnSubmit">
+                        <b-button type="submit" class="w-100" variant="primary" :disabled="!manualSelectedJaringan || !selectedKabupaten || isOnSubmit">
                           <span v-if="!isOnSubmit">
-                            Tambahkan Ke Pemilih
+                            Tambahkan Ke Koordinator
                           </span>
                           <span v-if="isOnSubmit">
                             <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
@@ -183,7 +183,8 @@
                     <td>{{ result.telp }}</td>
                     <td>{{ result.jaringan }}</td>
                     <td class="d-flex justify-content-center">
-                      <button class="btn btn-info btn-sm ms-2" v-b-modal.modalEdit @click="enableEdit(index)">Edit</button>
+                      <button class="btn btn-info btn-sm" v-b-modal.modalEdit @click="enableEdit(index)">Ubah</button>
+                      <button class="btn btn-danger btn-sm ms-2" @click="handleDelete(index)">Hapus</button>
                     </td>
                   </tr>
                 </template>
@@ -362,6 +363,37 @@ export default {
       this.editSelectedGender = { value: data.jenis_kelamin, label: data.jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' };
       this.editSelectedJaringan = { value: data.jaringan, label: data.jaringan };
     },
+    handleDelete(index) {
+      const id = this.resultSearch[index].id;
+
+      this.$swal({
+        title: "Konfirmasi Hapus!",
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "Batal",
+        confirmButtonText: "Ya, Hapus!"
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const response = await axios.delete(`${process.env.VUE_APP_BACKEND_API}/api/v1/kordinator/kabupaten/delete/${id}`, withHeader);
+            
+            if(response.data.meta.code == 200) {
+              this.cariData(false, this.resultOffset);
+              return
+            }
+            
+          } catch (error) {
+            this.$swal({
+              title: "Error!",
+              text: error.message,
+              icon: "error"
+            });
+
+            console.log('error cant delete data: ', error);
+          }
+        }
+      });
+    },
     async handleEdit() {
       if (!this.editSelectedJaringan) {
         return
@@ -397,7 +429,6 @@ export default {
 
       this.editInputID = null;
       this.editInputKab = null;
-      this.editInputKec = null;
       this.editInputName = null;
       this.editInputNIK = null;
       this.editInputTelp = null;
@@ -547,9 +578,6 @@ export default {
       try {
         const body = {
           city: this.selectedKabupaten,
-          district: this.selectedKecamatan,
-          subdistrict: this.selectedKelurahan,
-          tps: this.selectedTps,
           full_name: this.manualInputName,
           nik: this.manualInputNIK,
           age: parseInt(this.manualInputUsia),
@@ -559,7 +587,7 @@ export default {
           jaringan: this.manualSelectedJaringan.value ?? this.manualSelectedJaringan,
         }
 
-        const response = await axios.post(`${process.env.VUE_APP_BACKEND_API}/api/v1/validresident/store`, body, withHeader);
+        const response = await axios.post(`${process.env.VUE_APP_BACKEND_API}/api/v1/kordinator/kabupaten/store`, body, withHeader);
         
         if(response.data.meta.code == 200) {
           this.succesSubmit = true;
