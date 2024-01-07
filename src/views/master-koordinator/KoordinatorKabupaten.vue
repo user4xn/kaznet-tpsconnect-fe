@@ -350,6 +350,9 @@ export default {
     this.fetchKabupatenOptions();
     this.cariData(false);
   },
+  watch: {
+    selectedKabupaten: 'fetchData',
+  },
   methods: {
     enableEdit(index) {
       const data = this.resultSearch[index];
@@ -440,6 +443,9 @@ export default {
       setTimeout(() => {
         this.isOnSubmit = false;
       }, 500);
+    },
+    fetchData(){
+      this.cariData(false, this.resultOffset);
     },
     async fetchKabupatenOptions() {
       try {
