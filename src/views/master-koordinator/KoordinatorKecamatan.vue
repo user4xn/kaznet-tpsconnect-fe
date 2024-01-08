@@ -23,19 +23,27 @@
           <b-card-body>
             <b-form>
               <b-row>
-                <b-col sm="6">
+                <b-col sm="4">
                   <b-form-group>
                     <label for="input-kabupaten" class="form-label">Kota/Kabupaten:</label>
                     <v-select v-model="selectedKabupaten" placeholder="Pilih Kabupaten" :options="kabupatenOptions" id="input-kabupaten" :disabled="!isAdmin"></v-select>
                   </b-form-group>
                 </b-col>
-                <b-col sm="6">
+                <b-col sm="4">
                   <b-form-group>
                     <label for="input-kecamatan" class="form-label">Kecamatan:</label>
                     <v-select v-model="selectedKecamatan" placeholder="Pilih Kecamatan" :options="kecamatanOptions" id="input-kecamatan" :disabled="!selectedKabupaten"></v-select>
                   </b-form-group>
                 </b-col>
-                <b-col sm="12" :class="addCollapse == true ? 'd-none' : ''">
+                <b-col sm="4" class="d-flex justify-content-end  align-items-end" v-if="addCollapse">
+                  <button v-b-modal.modalCariNama class="text-center btn btn-primary btn-sm d-flex gap-2 height-select2 mb-3">
+                    <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M2 10.6699C2 5.88166 5.84034 2 10.5776 2C12.8526 2 15.0343 2.91344 16.6429 4.53936C18.2516 6.16529 19.1553 8.37052 19.1553 10.6699C19.1553 15.4582 15.3149 19.3399 10.5776 19.3399C5.84034 19.3399 2 15.4582 2 10.6699ZM19.0134 17.6543L21.568 19.7164H21.6124C22.1292 20.2388 22.1292 21.0858 21.6124 21.6082C21.0955 22.1306 20.2576 22.1306 19.7407 21.6082L17.6207 19.1785C17.4203 18.9766 17.3076 18.7024 17.3076 18.4164C17.3076 18.1304 17.4203 17.8562 17.6207 17.6543C18.0072 17.2704 18.6268 17.2704 19.0134 17.6543Z" fill="currentColor"></path>
+                    </svg>                        
+                    Cari Data By Nama
+                  </button>
+                </b-col>
+                <b-col sm="12" v-if="!addCollapse">
                   <b-form-group>
                     <b-row>
                       <b-col md="6">
@@ -77,43 +85,43 @@
                     <b-row>
                       <b-col md="4">
                         <b-form-group>
-                          <label for="input-manual-nik" class="form-label">NIK:</label>
+                          <label for="input-manual-nik" class="form-label">NIK*</label>
                           <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputNIK" placeholder="Masukan NIK" id="input-manual-nik" @keyup="cariNik()" required :class="nikFound != null ? 'is-valid' : null" :disabled="!selectedKecamatan"></b-form-input>
                         </b-form-group>
                       </b-col>
                       <b-col md="4">
                         <b-form-group>
-                          <label for="input-manual-name" class="form-label">Nama Lengkap:</label>
-                          <b-form-input class="form-control-sm height-select2" v-model="manualInputName" placeholder="Masukan Nama" id="input-manual-name" required></b-form-input>
+                          <label for="input-manual-name" class="form-label">Nama Lengkap*</label>
+                          <b-form-input class="form-control-sm height-select2" v-model="manualInputName" placeholder="Masukan Nama" id="input-manual-name" required :disabled="!manualInputNIK || !nikSearched"></b-form-input>
                         </b-form-group>
                       </b-col>
                       <b-col md="4">
                         <b-form-group>
-                          <label for="input-manual-jaringan" class="form-label">Jaringan:  <i>(mandatory)</i></label>
+                          <label for="input-manual-jaringan" class="form-label">Jaringan*</label>
                           <v-select v-model="manualSelectedJaringan" placeholder="Pilih Jaringan" :options="jaringanOptions2" id="input-manual-jaringan" required :disabled="!manualInputNIK || !nikSearched"></v-select>
                         </b-form-group>
                       </b-col>
                       <b-col md="4">
                         <b-form-group>
-                          <label for="input-manual-gender" class="form-label">Jenis Kelamin:</label>
+                          <label for="input-manual-gender" class="form-label">Jenis Kelamin</label>
                           <v-select class="style-chooser" v-model="manualSelectedGender" placeholder="Pilih Jenis Kelamin" :options="genderOptions" id="input-manual-gender" :disabled="!manualInputNIK || !nikSearched"></v-select>
                         </b-form-group>
                       </b-col>
                       <b-col md="4">
                         <b-form-group>
-                          <label for="input-manual-usia" class="form-label">Usia:</label>
+                          <label for="input-manual-usia" class="form-label">Usia</label>
                           <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputUsia" placeholder="Masukan Usia" id="input-manual-usia" :disabled="!manualInputNIK || !nikSearched"></b-form-input>
                         </b-form-group>
                       </b-col>
                       <b-col md="4">
                         <b-form-group>
-                          <label for="input-manual-phone" class="form-label">No Telp:</label>
+                          <label for="input-manual-phone" class="form-label">No Telp</label>
                           <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputTelp" placeholder="Masukan No Telepon" id="input-manual-phone" :disabled="!manualInputNIK || !nikSearched"></b-form-input>
                         </b-form-group>
                       </b-col>
                       <b-col md="12">
                         <b-form-group>
-                          <label for="input-manual-address" class="form-label">Alamat:</label>
+                          <label for="input-manual-address" class="form-label">Alamat</label>
                           <b-form-textarea class="form-control-sm height-select2" v-model="manualInputAddress" placeholder="Masukan Alamat" id="input-manual-address" rows="3" max-rows="6" :disabled="!manualInputNIK || !nikSearched"></b-form-textarea>
                           <i>*data akan terisi otomatis jika NIK terdeteksi dalam database</i>
                         </b-form-group>
@@ -212,66 +220,163 @@
         </b-card>
       </b-col>
     </b-row>
+    <b-modal id="modalCariNama" hide-backdrop hide-footer centered size="lg" title="Cari Data DPT">
+      <b-row>
+        <b-col md="12">
+          <b-form-group>
+            <label class="form-label">Nama <i>(enter untuk mencari)</i></label>
+            <b-form-input v-model="searchNamaInput" @keyup.enter="cariDataNama()" class="form-control-sm height-select2" placeholder="Masukan nama ..."></b-form-input>
+          </b-form-group>
+        </b-col>
+      </b-row>
+      <b-row>
+        <div class="col-12 d-flex justify-content-center">
+          <span v-if="isOnFetchNama">
+              <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+              Memuat...
+          </span>
+        </div>
+      </b-row>
+      <b-row v-if="resultNama.length > 0">
+        <p class="text-muted mb-0">Tampil {{ `${(resultPaginationNama.currentPage * (resultPaginationNama.currentLimit ?? resultLimit)) - (resultPaginationNama.currentLimit ?? resultLimit) + 1} - ${((resultPaginationNama.currentPage * (resultPaginationNama.currentLimit ?? resultLimit)) - (resultPaginationNama.currentLimit ?? resultLimit)) + this.resultNama.length} dari ${resultTotalNama.toLocaleString()}` }} data...</p>
+        <div class="table-responsive">
+          <table id="result-dpt" class="table table-hover table-sm">
+            <thead>
+              <tr class="ligth">
+                <th>#</th>
+                <th>Nama</th>
+                <th>NIK</th>
+                <th>JK</th>
+                <th style="min-width: 100px" class="text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template v-for="(result, index) in resultNama" :key="index">
+                <tr>
+                  <td>{{ (resultPaginationNama.currentPage - 1) * resultLimit + index + 1 }}.</td>
+                  <td>{{ result.nama }}</td>
+                  <td>{{ result.nik }}</td>
+                  <td>{{ result.jenis_kelamin }}</td>
+                  <td class="d-flex justify-content-center">
+                    <button class="btn btn-primary btn-sm" data-bs-dismiss="modal" @click="handlePilih(index)">Pilih</button>
+                    <button class="btn btn-success btn-sm ms-2" data-bs-toggle="collapse" :data-bs-target="'#detailRow-' + index">Detail</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td :colspan="resultNama.length + 1" style="border:0px !important" class="p-0">
+                    <div class="collapse border-bottom p-4" :id="'detailRow-' + index">
+                      <b-card no-body="" class="card">
+                        <div class="p-4 d-flex justify-content-between flex-wrap align-items-center">
+                          <div class="header-title w-100">
+                            <div class="d-flex justify-content-between flex-wrap">
+                              <h5 class="text-muted mb-0">{{ result.nama }}</h5>
+                              <h5 class="text-muted mb-0">{{ result.jenis_kelamin == 'L' ? 'Laki-Laki' : 'Perempuan' }}</h5>
+                            </div>
+                            <hr class="hr-horizontal">
+                            <div class="d-flex justify-content-between flex-wrap">
+                              <p class="text-muted mb-0">NIK: {{ result.nik }}</p>
+                              <p class="text-muted mb-0">NKK: {{ result.nkk }}</p>
+                            </div>
+                            <div class="d-flex justify-content-between flex-wrap">
+                              <p class="text-muted mb-0">Tempat Tanggal Lahir: {{ `${result.tempat_lahir}, ${result.tanggal_lahir}` }}</p>
+                              <p class="text-muted mb-0">Status: {{ result.kawin == 'S' ? (result.kawin == 'B' ? 'Belum Menikah' : 'Kawin') : 'Pisah' }}</p>
+                            </div>
+                            <div class="d-flex justify-content-between flex-wrap">
+                              <p class="text-muted mb-0">Alamat: {{ result.alamat }}</p>
+                              <p class="text-muted mb-0">RT/RW: {{ `${result.rt}/${result.rw}` }}</p>
+                            </div>
+                            <div class="d-flex justify-content-between flex-wrap">
+                              <p class="text-muted mb-0">No Telp: {{ result.telp ?? '-' }}</p>
+                              <span class="badge bg-primary py-2 ms-auto me-1">TPS: {{ result.status_tps_label }}</span>
+                              <span v-if="result.difabel == '1'" class="badge bg-warning py-2">DIFABEL</span>
+                            </div>
+                          </div>
+                        </div>
+                      </b-card>
+                    </div>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+        <div class="text-center mt-1">
+          <button class="btn btn-primary btn-sm rounded-0 rounded-start" @click="prevNextCariDataNama(-1)">
+            <svg class="icon-32" width="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M2 12C2 6.48 6.49 2 12 2L12.2798 2.00384C17.6706 2.15216 22 6.57356 22 12C22 17.51 17.52 22 12 22C6.49 22 2 17.51 2 12ZM13.98 16C14.27 15.7 14.27 15.23 13.97 14.94L11.02 12L13.97 9.06C14.27 8.77 14.27 8.29 13.98 8C13.68 7.7 13.21 7.7 12.92 8L9.43 11.47C9.29 11.61 9.21 11.8 9.21 12C9.21 12.2 9.29 12.39 9.43 12.53L12.92 16C13.06 16.15 13.25 16.22 13.44 16.22C13.64 16.22 13.83 16.15 13.98 16Z" fill="currentColor"></path>
+            </svg>                        
+          </button>
+          <button class="btn btn-primary rounded-0" disabled>
+            {{ this.resultPaginationNama.currentPage }}
+          </button>
+          <button class="btn btn-primary btn-sm rounded-0 rounded-end" @click="prevNextCariDataNama(+1)">
+            <svg class="icon-32" width="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M22 12C22 17.52 17.51 22 12 22L11.7202 21.9962C6.32942 21.8478 2 17.4264 2 12C2 6.49 6.48 2 12 2C17.51 2 22 6.49 22 12ZM10.02 8C9.73 8.3 9.73 8.77 10.03 9.06L12.98 12L10.03 14.94C9.73 15.23 9.73 15.71 10.02 16C10.32 16.3 10.79 16.3 11.08 16L14.57 12.53C14.71 12.39 14.79 12.2 14.79 12C14.79 11.8 14.71 11.61 14.57 11.47L11.08 8C10.94 7.85 10.75 7.78 10.56 7.78C10.36 7.78 10.17 7.85 10.02 8Z" fill="currentColor"></path>
+            </svg>                                               
+          </button>
+        </div>
+      </b-row>
+    </b-modal>
     <b-modal id="modalEdit" hide-backdrop hide-footer centered size="lg" title="Ubah Data Koordinator">
       <b-form @submit="handleEdit">
         <b-row>
           <b-col md="6">
             <b-form-group>
-              <label for="input-manual-nik" class="form-label">Korkab:</label>
+              <label for="input-edit-nik" class="form-label">Kabupaten:</label>
               <b-form-input v-model="editInputKab" class="form-control-sm height-select2" disabled></b-form-input>
             </b-form-group>
           </b-col>
           <b-col md="6">
             <b-form-group>
-              <label for="input-manual-nik" class="form-label">Wilayah:</label>
+              <label for="input-edit-nik" class="form-label">Kecamatan:</label>
               <b-form-input v-model="editInputKec" class="form-control-sm height-select2" disabled></b-form-input>
             </b-form-group>
           </b-col>
           <b-col md="4">
             <b-form-group>
-              <label for="input-manual-nik" class="form-label">NIK:</label>
+              <label for="input-edit-nik" class="form-label">NIK:</label>
               <b-form-input type="number" v-model="editInputNIK" class="form-control-sm height-select2" disabled></b-form-input>
             </b-form-group>
           </b-col>
           <b-col md="4">
             <b-form-group>
-              <label for="input-manual-name" class="form-label">Nama Lengkap:</label>
-              <b-form-input class="form-control-sm height-select2" v-model="editInputName" placeholder="Masukan Nama" id="input-manual-name" required></b-form-input>
+              <label for="input-edit-name" class="form-label">Nama Lengkap:</label>
+              <b-form-input class="form-control-sm height-select2" v-model="editInputName" placeholder="Masukan Nama" id="input-edit-name" required></b-form-input>
             </b-form-group>
           </b-col>
           <b-col md="4">
             <b-form-group>
-              <label for="input-manual-jaringan" class="form-label">Jaringan:</label>
-              <v-select v-model="editSelectedJaringan" placeholder="Pilih Jaringan" :options="jaringanOptions2" id="input-manual-jaringan" required></v-select>
+              <label for="input-edit-jaringan" class="form-label">Jaringan:</label>
+              <v-select v-model="editSelectedJaringan" placeholder="Pilih Jaringan" :options="jaringanOptions2" id="input-edit-jaringan" required></v-select>
             </b-form-group>
           </b-col>
           <b-col md="4">
             <b-form-group>
-              <label for="input-manual-gender" class="form-label">Jenis Kelamin:</label>
-              <v-select class="style-chooser" v-model="editSelectedGender" placeholder="Pilih Jenis Kelamin" :options="genderOptions" id="input-manual-gender" required></v-select>
+              <label for="input-edit-gender" class="form-label">Jenis Kelamin:</label>
+              <v-select class="style-chooser" v-model="editSelectedGender" placeholder="Pilih Jenis Kelamin" :options="genderOptions" id="input-edit-gender"></v-select>
             </b-form-group>
           </b-col>
           <b-col md="4">
             <b-form-group>
-              <label for="input-manual-usia" class="form-label">Usia:</label>
-              <b-form-input type="number" class="form-control-sm height-select2" v-model="editInputUsia" placeholder="Masukan Usia" id="input-manual-usia" required></b-form-input>
+              <label for="input-edit-usia" class="form-label">Usia:</label>
+              <b-form-input type="number" class="form-control-sm height-select2" v-model="editInputUsia" placeholder="Masukan Usia" id="input-edit-usia"></b-form-input>
             </b-form-group>
           </b-col>
           <b-col md="4">
             <b-form-group>
-              <label for="input-manual-phone" class="form-label">No Telp:</label>
-              <b-form-input type="number" class="form-control-sm height-select2" v-model="editInputTelp" placeholder="Masukan No Telepon" id="input-manual-phone"></b-form-input>
+              <label for="input-edit-phone" class="form-label">No Telp:</label>
+              <b-form-input type="number" class="form-control-sm height-select2" v-model="editInputTelp" placeholder="Masukan No Telepon" id="input-edit-phone"></b-form-input>
             </b-form-group>
           </b-col>
           <b-col md="12">
             <b-form-group>
-              <label for="input-manual-address" class="form-label">Alamat:</label>
-              <b-form-textarea class="form-control-sm height-select2" v-model="editInputAddress" placeholder="Masukan Alamat" id="input-manual-address" rows="3" max-rows="6" required></b-form-textarea>
+              <label for="input-edit-address" class="form-label">Alamat:</label>
+              <b-form-textarea class="form-control-sm height-select2" v-model="editInputAddress" placeholder="Masukan Alamat" id="input-edit-address" rows="3" max-rows="6"></b-form-textarea>
             </b-form-group>
           </b-col>
           <b-col md="12 mt-4">
             <b-form-group>
-              <b-button type="submit" class="w-100" data-bs-dismiss="modal" variant="primary" :disabled="!editSelectedJaringan || isOnSubmit">
+              <b-button type="submit" class="w-100" data-bs-dismiss="modal" variant="primary" :disabled="!editInputName || !editSelectedJaringan || isOnSubmit">
                 <span v-if="!isOnSubmit">
                   Simpan Data
                 </span>
@@ -318,6 +423,15 @@
         resultTotal: null,
         resultMode: true,
         resultPagination: {
+          currentLimit: null,
+          currentOffset: null,
+          currentPage: 1,
+        },
+        isOnFetchNama: false,
+        searchNamaInput: null,
+        resultNama: [],
+        resultTotalNama: null,
+        resultPaginationNama: {
           currentLimit: null,
           currentOffset: null,
           currentPage: 1,
@@ -494,10 +608,6 @@
         }
       },
       cariData: debounce(async function (showAll, page) {      
-        if(this.addCollapse == true) {
-          return;
-        }
-  
         if(showAll == false && !page) {
           this.resetSearch();
         }
@@ -554,6 +664,78 @@
           this.isOnFetch = false;
         }, 500);
       },300),
+      cariDataNama: debounce(async function (page) {      
+        if(!page) {
+          this.resultNama = [];
+        }
+
+        this.isOnFetchNama= true;
+        let limit = this.resultPaginationNama.currentLimit ?? this.resultLimit;
+        let offset = this.resultPaginationNama.currentOffset ?? this.resultOffset;
+
+        if(page) {
+          offset = this.resultPaginationNama.currentLimit * (page - 1);
+        }
+
+        var queryParam = '?';
+
+        if (this.searchNamaInput) {
+          queryParam += `nama=${this.searchNamaInput}&`;
+        }
+        queryParam += `limit=${limit}&`;
+        queryParam += `offset=${offset}`;
+
+        const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/resident/list${queryParam ?? ''}`, withHeader);
+
+        if(response.data.meta.code == 200) {
+          const data = response.data.data.items;
+          const metadata = response.data.data.metadata;
+          
+          if(data != []) {
+            this.resultNama = data;
+            this.resultTotalNama = metadata.total_results;
+          }
+        }  
+
+        this.resultPaginationNama.currentLimit = limit;
+        this.resultPaginationNama.currentOffset = offset;
+
+        setTimeout(() => {
+          this.isOnFetchNama = false;
+        }, 500);
+      },300),
+      handlePilih(index){
+        const data = this.resultNama[index];
+
+        this.nikSearched = true;
+        this.nikFound = data;
+        this.manualInputNIK = data.nik;
+        this.manualInputName = data.nama;
+        this.manualInputTelp = data.telp;
+        this.manualSelectedGender = {
+          value: data.jenis_kelamin,
+          label: data.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan',
+        };
+        this.manualInputUsia = this.calculateAge(data.tanggal_lahir);
+        this.manualInputAddress = data.alamat;
+        
+        this.alertNik = true;
+        this.resultNama = [];
+      },
+      prevNextCariDataNama(x) {
+        let current = this.resultPaginationNama.currentPage;
+        let count = current + x;
+        let mod = this.resultTotalNama % this.resultPaginationNama.currentLimit;
+        
+        if(count == 0) {
+          return;
+        }
+
+        if ((count > 0 && count <= (this.resultTotalNama / this.resultPaginationNama.currentLimit)) || (mod != 0 && ((this.resultPaginationNama.currentLimit * (count - 1)) + mod) <= this.resultTotal)) {
+          this.resultPaginationNama.currentPage = count;
+          this.cariDataNama(this.resultPaginationNama.currentPage);
+        }
+      },
       prevNextCariData(x) {
         let current = this.resultPagination.currentPage;
         let count = current + x;
@@ -607,19 +789,22 @@
             full_name: this.manualInputName,
             nik: this.manualInputNIK,
             no_handphone: this.manualInputTelp,
-            age: parseInt(this.manualInputUsia),
-            gender: this.manualSelectedGender.value ?? this.manualSelectedGender,
+            age: this.manualInputUsia ? parseInt(this.manualInputUsia) : null,
+            gender: this.manualSelectedGender ? (this.manualSelectedGender.value ?? this.manualSelectedGender) : null,
             address: this.manualInputAddress,
             city: this.selectedKabupaten,
             district: this.selectedKecamatan,
-            jaringan: this.manualSelectedJaringan.value ?? this.manualSelectedJaringan,
+            jaringan: this.manualSelectedJaringan ? (this.manualSelectedJaringan.value ?? this.manualSelectedJaringan) : null,
           }
   
           const response = await axios.post(`${process.env.VUE_APP_BACKEND_API}/api/v1/kordinator/kecamatan/store`, body, withHeader);
           
           if(response.data.meta.code == 200) {
             this.succesSubmit = true;
-            this.addCollapse = false;
+            this.manualInputNIK = null;
+            this.isAlertNik = false;
+            this.nikFound = null;
+            this.resetAddManual();
             this.cariData(false);
   
             setTimeout(() => {
@@ -632,11 +817,11 @@
           if (error.response.data.meta.message == "NIK already exists") {
             this.swalAlert('error', 'Gagal', 'NIK Sudah Terpilih!');
           }
-          this.manualInputNIK = null;
-          this.isAlertNik = false;
-          this.nikFound = null;
         }
-  
+        
+        this.manualInputNIK = null;
+        this.isAlertNik = false;
+        this.nikFound = null;
         this.resetAddManual();
   
         setTimeout(() => {
