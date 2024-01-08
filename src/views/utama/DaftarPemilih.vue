@@ -173,7 +173,9 @@
                 <p class="text-muted mb-0">Tampil {{ `${(resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit) + 1} - ${((resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit)) + this.resultSearch.length} dari ${resultTotal.toLocaleString()}` }} data...</p>
               </b-col>
               <b-col sm="4" class="text-end">
-                <b-button variant="success" @click="handleExport()" size="sm">Export</b-button>
+                <b-button variant="success" @click="handleExport()" :disabled="isOnExport" size="sm">
+                  {{ isOnExport ? 'Mengekspor..' : 'Export XLS' }}
+                </b-button>
               </b-col>
             </b-row>
           </div>
@@ -400,6 +402,7 @@ export default {
         { value: 'JANUR BOGOR', label: 'JANUR BOGOR' },
         { value: 'PMCK', label: 'PMCK' },
       ],
+      isOnExport: false,
     }
   },
   watch: {
@@ -414,7 +417,69 @@ export default {
     this.cariData(false);
   },
   methods: {
-    wathhAddManual(){
+    handleExport: debounce(async function () {
+      this.isOnExport = true;
+
+      var queryParam = '?';
+      let filename = 'DaftarPemilih';
+      this.isOnFetchExport = true;
+
+      if (this.selectedKabupaten) {
+        queryParam += `nama_kabupaten=${this.selectedKabupaten}&`;
+        filename += `-${this.selectedKabupaten}`;
+      }
+
+      if (this.selectedKecamatan) {
+        queryParam += `nama_kecamatan=${this.selectedKecamatan}&`;
+        filename += `-${this.selectedKecamatan}`;
+      }
+
+      if (this.selectedKelurahan) {
+        queryParam += `nama_kelurahan=${this.selectedKelurahan}&`;
+        filename += `-${this.selectedKelurahan}`;
+      }
+
+      if (this.selectedTps) {
+        queryParam += `tps=${this.selectedTps}&`;
+        filename += `-${this.selectedTps}`;
+      }
+
+      if (this.selectedJaringan) {
+        queryParam += `jaringan=${this.selectedJaringan.value}&`;
+        filename += `-${this.selectedJaringan.value}`;
+      }
+
+      if (this.inputName) {
+        queryParam += `nama=${this.inputName}&`;
+        filename += `-${this.inputName}%`;
+      }
+
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      filename += `-${timestamp}`;
+      
+      await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/validresident/export${queryParam ?? ''}`, {
+        headers: { 
+          'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+        },
+        responseType: 'arraybuffer'
+      }).then(response => {
+        const blob = new Blob([response.data], { type: response.headers['content-type'] });
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = `${filename}.xlsx`; 
+        document.body.appendChild(link);
+        link.click();        
+        document.body.removeChild(link);
+      })
+      .catch(error => {
+        console.error('Error downloading data:', error);
+      });
+
+      setTimeout(() => {
+        this.isOnExport = false;
+      }, 500);
+    },300),
+    watchAddManual(){
       this.manualInputNIK = null;
       this.resetAddManual();
     },
@@ -674,70 +739,6 @@ export default {
 
       setTimeout(() => {
         this.isOnFetch = false;
-      }, 500);
-    },300),
-    handleExport: debounce(async function () {
-      var queryParam = '?';
-      this.isOnFetchExport = true;
-
-      if (this.selectedKabupaten) {
-        queryParam += `nama_kabupaten=${this.selectedKabupaten}&`;
-      }
-
-      if (this.selectedKecamatan) {
-        queryParam += `nama_kecamatan=${this.selectedKecamatan}&`;
-      }
-
-      if (this.selectedKelurahan) {
-        queryParam += `nama_kelurahan=${this.selectedKelurahan}&`;
-      }
-
-      if (this.selectedTps) {
-        queryParam += `tps=${this.selectedTps}&`;
-      }
-
-      if (this.selectedJaringan) {
-        queryParam += `jaringan=${this.selectedJaringan.value}&`;
-      }
-
-      if (this.inputName) {
-        queryParam += `nama=${this.inputName}&`;
-      }
-      
-      await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/validresident/export${queryParam ?? ''}`, {
-        headers: { 
-          'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
-        },
-        responseType: 'blob'
-      }).then(response => {
-        // Create a Blob from the response data
-        const blob = new Blob([response.data], { type: response.headers['content-type'] });
-
-        // Create a link element
-        const link = document.createElement('a');
-
-        // Set the href attribute with a Blob URL
-        link.href = window.URL.createObjectURL(blob);
-
-        // Set the download attribute to specify the filename
-        link.download = 'exportedData.xlsx'; // You can set the desired filename here
-
-        // Append the link to the document body
-        document.body.appendChild(link);
-
-        // Trigger a click on the link to initiate the download
-        link.click();
-
-        // Remove the link from the document body
-        document.body.removeChild(link);
-      })
-      .catch(error => {
-        // Handle errors here
-        console.error('Error downloading data:', error);
-      });
-
-      setTimeout(() => {
-        this.isOnFetchExport = false;
       }, 500);
     },300),
     prevNextCariData(x) {

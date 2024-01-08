@@ -163,8 +163,17 @@
       <b-col sm="12">
         <b-card no-body class="card">
           <div class="card-header d-flex justify-content-between flex-wrap align-items-center">
-            <div class="header-title">
-              <p class="text-muted mb-0">Tampil {{ `${(resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit) + 1} - ${((resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit)) + this.resultSearch.length} dari ${resultTotal.toLocaleString()}` }} data...</p>
+            <div class="header-title w-100">
+              <b-row>
+                <b-col sm="8" class="d-flex align-items-center">
+                  <p class="text-muted mb-0">Tampil {{ `${(resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit) + 1} - ${((resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit)) + this.resultSearch.length} dari ${resultTotal.toLocaleString()}` }} data...</p>
+                </b-col>
+                <b-col sm="4" class="text-end">
+                  <b-button variant="success" @click="handleExport()" :disabled="isOnExport" size="sm">
+                    {{ isOnExport ? 'Mengekspor..' : 'Export XLS' }}
+                  </b-button>
+                </b-col>
+              </b-row>
             </div>
           </div>
           <b-card-body>
@@ -468,6 +477,7 @@
           { value: 'JANUR BOGOR', label: 'JANUR BOGOR' },
           { value: 'PMCK', label: 'PMCK' },
         ],
+        isOnExport: false,
       }
     },
     mounted() {
@@ -479,6 +489,58 @@
       selectedJaringan: 'fetchData',
     },
     methods: {
+      handleExport: debounce(async function () {
+        this.isOnExport = true;
+
+        var queryParam = '?';
+        let filename = 'KoordinatorKecamatan';
+        this.isOnFetchExport = true;
+
+        if (this.selectedKabupaten) {
+          queryParam += `nama_kabupaten=${this.selectedKabupaten}&`;
+          filename += `-${this.selectedKabupaten}`;
+        }
+
+        if (this.selectedKecamatan) {
+          queryParam += `nama_kecamatan=${this.selectedKecamatan}&`;
+          filename += `-${this.selectedKecamatan}`;
+        }
+
+        if (this.selectedJaringan) {
+          queryParam += `jaringan=${this.selectedJaringan.value}&`;
+          filename += `-${this.selectedJaringan.value}`;
+        }
+
+        if (this.inputName) {
+          queryParam += `nama=${this.inputName}&`;
+          filename += `-${this.inputName}%`;
+        }
+
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        filename += `-${timestamp}`;
+        
+        await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/kordinator/kecamatan/export${queryParam ?? ''}`, {
+          headers: { 
+            'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+          },
+          responseType: 'arraybuffer'
+        }).then(response => {
+          const blob = new Blob([response.data], { type: response.headers['content-type'] });
+          const link = document.createElement('a');
+          link.href = window.URL.createObjectURL(blob);
+          link.download = `${filename}.xlsx`; 
+          document.body.appendChild(link);
+          link.click();        
+          document.body.removeChild(link);
+        })
+        .catch(error => {
+          console.error('Error downloading data:', error);
+        });
+
+        setTimeout(() => {
+          this.isOnExport = false;
+        }, 500);
+      },300),
       enableEdit(index) {
         const data = this.resultSearch[index];
         this.editInputID = data.id;
