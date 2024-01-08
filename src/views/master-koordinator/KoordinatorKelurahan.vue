@@ -90,37 +90,37 @@
                       <b-col md="4">
                         <b-form-group>
                           <label for="input-manual-name" class="form-label">Nama Lengkap:</label>
-                          <b-form-input class="form-control-sm height-select2" v-model="manualInputName" placeholder="Masukan Nama" id="input-manual-name" required :disabled="!manualInputNIK || !nikSearched"></b-form-input>
+                          <b-form-input class="form-control-sm height-select2" v-model="manualInputName" placeholder="Masukan Nama" id="input-manual-name" required></b-form-input>
                         </b-form-group>
                       </b-col>
                       <b-col md="4">
                         <b-form-group>
-                          <label for="input-manual-jaringan" class="form-label">Jaringan:</label>
+                          <label for="input-manual-jaringan" class="form-label">Jaringan: <i>(mandatory)</i></label>
                           <v-select v-model="manualSelectedJaringan" placeholder="Pilih Jaringan" :options="jaringanOptions2" id="input-manual-jaringan" required :disabled="!manualInputNIK || !nikSearched"></v-select>
                         </b-form-group>
                       </b-col>
                       <b-col md="4">
                         <b-form-group>
                           <label for="input-manual-gender" class="form-label">Jenis Kelamin:</label>
-                          <v-select class="style-chooser" v-model="manualSelectedGender" placeholder="Pilih Jenis Kelamin" :options="genderOptions" id="input-manual-gender" required :disabled="!manualInputNIK || !nikSearched"></v-select>
+                          <v-select class="style-chooser" v-model="manualSelectedGender" placeholder="Pilih Jenis Kelamin" :options="genderOptions" id="input-manual-gender" :disabled="!manualInputNIK || !nikSearched"></v-select>
                         </b-form-group>
                       </b-col>
                       <b-col md="4">
                         <b-form-group>
                           <label for="input-manual-usia" class="form-label">Usia:</label>
-                          <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputUsia" placeholder="Masukan Usia" id="input-manual-usia" required :disabled="!manualInputNIK || !nikSearched"></b-form-input>
+                          <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputUsia" placeholder="Masukan Usia" id="input-manual-usia" :disabled="!manualInputNIK || !nikSearched"></b-form-input>
                         </b-form-group>
                       </b-col>
                       <b-col md="4">
                         <b-form-group>
                           <label for="input-manual-phone" class="form-label">No Telp:</label>
-                          <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputTelp" placeholder="Masukan No Telepon" id="input-manual-phone" :class="nikSearched && !manualInputTelp ? 'is-invalid' : null" :disabled="!manualInputNIK || !nikSearched"></b-form-input>
+                          <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputTelp" placeholder="Masukan No Telepon" id="input-manual-phone" :disabled="!manualInputNIK || !nikSearched"></b-form-input>
                         </b-form-group>
                       </b-col>
                       <b-col md="12">
                         <b-form-group>
                           <label for="input-manual-address" class="form-label">Alamat:</label>
-                          <b-form-textarea class="form-control-sm height-select2" v-model="manualInputAddress" placeholder="Masukan Alamat" id="input-manual-address" rows="3" max-rows="6" required :disabled="!manualInputNIK || !nikSearched"></b-form-textarea>
+                          <b-form-textarea class="form-control-sm height-select2" v-model="manualInputAddress" placeholder="Masukan Alamat" id="input-manual-address" rows="3" max-rows="6" :disabled="!manualInputNIK || !nikSearched"></b-form-textarea>
                           <i>*data akan terisi otomatis jika NIK terdeteksi dalam database</i>
                         </b-form-group>
                       </b-col>
@@ -172,15 +172,12 @@
                   <tr class="ligth">
                     <th>#</th>
                     <th>Nama</th>
+                    <th>KABUPATEN</th>
+                    <th>KECAMATAN</th>
+                    <th>KELURAHAN</th>
                     <th>NIK</th>
-                    <th>ALAMAT</th>
-                    <th>KORCAM</th>
-                    <th>WILAYAH</th>
-                    <th>TPS</th>
-                    <th>JK</th>
-                    <th>Usia</th>
-                    <th>Telp</th>
-                    <th>Jaringan</th>
+                    <th>JARINGAN</th>
+                    <th>TELP</th>
                     <th class="text-center">Aksi</th>
                   </tr>
                 </thead>
@@ -189,15 +186,12 @@
                     <tr>
                       <td>{{ (resultPagination.currentPage - 1) * resultLimit + index + 1 }}.</td>
                       <td>{{ result.nama }}</td>
-                      <td>{{ result.nik }}</td>
-                      <td>{{ result.alamat }}</td>
+                      <td>{{ result.nama_kabupaten }}</td>
                       <td>{{ result.nama_kecamatan }}</td>
                       <td>{{ result.nama_kelurahan }}</td>
-                      <td>{{ result.tps }}</td>
-                      <td>{{ result.jenis_kelamin }}</td>
-                      <td>{{ result.usia }}</td>
-                      <td>{{ result.telp }}</td>
+                      <td>{{ result.nik }}</td>
                       <td>{{ result.jaringan }}</td>
+                      <td>{{ result.telp }}</td>
                       <td class="d-flex justify-content-center">
                         <button class="btn btn-info btn-sm" v-b-modal.modalEdit @click="enableEdit(index)">Ubah</button>
                         <button class="btn btn-danger btn-sm ms-2" @click="handleDelete(index)">Hapus</button>
@@ -411,6 +405,11 @@
               const response = await axios.delete(`${process.env.VUE_APP_BACKEND_API}/api/v1/kordinator/kelurahan/delete/${id}`, withHeader);
               
               if(response.data.meta.code == 200) {
+                this.$swal({
+                  title: "Ok",
+                  text: "data sudah dihapus!",
+                  icon: "success"
+                });
                 this.cariData(false, this.resultOffset);
                 return
               }
@@ -708,7 +707,6 @@
         this.nikSearched = false;
         this.isOnFetch = true;
         this.isAlertNik =  false;
-        this.resetAddManual();
         
         try {
           const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/resident/by-nik?nik=${this.manualInputNIK}`, withHeader);
