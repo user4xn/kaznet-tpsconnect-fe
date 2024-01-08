@@ -794,7 +794,9 @@
         this.manualInputUsia = this.calculateAge(data.tanggal_lahir);
         this.manualInputAddress = data.alamat;
         
-        this.alertNik = true;
+        setTimeout(() => {
+        this.isAlertNik = true;
+      }, 1000);
         this.resultNama = [];
       },
       prevNextCariDataNama(x) {
