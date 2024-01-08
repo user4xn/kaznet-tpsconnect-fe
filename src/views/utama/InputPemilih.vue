@@ -25,25 +25,25 @@
             <b-row>
               <b-col sm="4">
                 <b-form-group>
-                  <label for="input-kabupaten" class="form-label">Kota/Kabupaten:</label>
+                  <label for="input-kabupaten" class="form-label">Kota/Kabupaten*</label>
                   <v-select v-model="selectedKabupaten" placeholder="Pilih Kabupaten" :options="kabupatenOptions" id="input-kabupaten" :disabled="!isAdmin"></v-select>
                 </b-form-group>
               </b-col>
               <b-col sm="4">
                 <b-form-group>
-                  <label for="input-kecamatan" class="form-label">Kecamatan:</label>
+                  <label for="input-kecamatan" class="form-label">Kecamatan*</label>
                   <v-select v-model="selectedKecamatan" placeholder="Pilih Kecamatan" :options="kecamatanOptions" id="input-kecamatan" :disabled="!selectedKabupaten"></v-select>
                 </b-form-group>
               </b-col>
               <b-col sm="4">
                 <b-form-group>
-                  <label for="input-kelurahan" class="form-label">Kelurahan:</label>
+                  <label for="input-kelurahan" class="form-label">Kelurahan*</label>
                   <v-select v-model="selectedKelurahan" placeholder="Pilih Kelurahan" :options="kelurahanOptions" id="input-kelurahan" :disabled="!selectedKecamatan"></v-select>
                 </b-form-group>
               </b-col>
               <b-col sm="4">
                 <b-form-group>
-                  <label for="input-tps" class="form-label">TPS:</label>
+                  <label for="input-tps" class="form-label">TPS*</label>
                   <v-select taggable v-model="selectedTps" placeholder="Pilih TPS" :options="tpsOptions" id="input-tps" :disabled="!selectedKelurahan"></v-select>
                 </b-form-group>
               </b-col>
@@ -51,7 +51,7 @@
                 <b-form-group>
                   <b-row>
                     <b-col md="8">
-                      <label for="input-name" class="form-label">Nama: <i>(enter untuk memuat data)</i></label>
+                      <label for="input-name" class="form-label">Nama <i>(enter untuk memuat data)</i></label>
                       <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama" id="input-name" :disabled="!selectedKabupaten || isOnFetch || addCollapse" @keyup.enter="cariData(false)"></b-form-input>
                     </b-col>
                     <b-col md="4" class="d-flex align-items-end">
@@ -92,44 +92,44 @@
                   <b-row>
                     <b-col md="4">
                       <b-form-group>
-                        <label for="input-manual-nik" class="form-label">NIK:</label>
+                        <label for="input-manual-nik" class="form-label">NIK*</label>
                         <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputNIK" placeholder="Masukan NIK" id="input-manual-nik" @keyup="cariNik()" required :class="nikFound != null ? 'is-valid' : null" :disabled="!selectedTps"></b-form-input>
                       </b-form-group>
                     </b-col>
                     <b-col md="4">
                       <b-form-group>
-                        <label for="input-manual-name" class="form-label">Nama Lengkap:</label>
+                        <label for="input-manual-name" class="form-label">Nama Lengkap*</label>
                         <b-form-input class="form-control-sm height-select2" v-model="manualInputName" placeholder="Masukan Nama" id="input-manual-name" required :disabled="!manualInputNIK || !nikSearched"></b-form-input>
                       </b-form-group>
                     </b-col>
                     <b-col md="4">
                       <b-form-group>
-                        <label for="input-manual-jaringan" class="form-label">Jaringan:</label>
+                        <label for="input-manual-jaringan" class="form-label">Jaringan*</label>
                         <v-select v-model="manualSelectedJaringan" placeholder="Pilih Jaringan" :options="jaringanOptions2" id="input-manual-jaringan" required :disabled="!manualInputNIK || !nikSearched"></v-select>
                       </b-form-group>
                     </b-col>
                     <b-col md="4">
                       <b-form-group>
-                        <label for="input-manual-gender" class="form-label">Jenis Kelamin:</label>
-                        <v-select class="style-chooser" v-model="manualSelectedGender" placeholder="Pilih Jenis Kelamin" :options="genderOptions" id="input-manual-gender" required :disabled="!manualInputNIK || !nikSearched"></v-select>
+                        <label for="input-manual-gender" class="form-label">Jenis Kelamin</label>
+                        <v-select class="style-chooser" v-model="manualSelectedGender" placeholder="Pilih Jenis Kelamin" :options="genderOptions" id="input-manual-gender" :disabled="!manualInputNIK || !nikSearched"></v-select>
                       </b-form-group>
                     </b-col>
                     <b-col md="4">
                       <b-form-group>
-                        <label for="input-manual-usia" class="form-label">Usia:</label>
-                        <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputUsia" placeholder="Masukan Usia" id="input-manual-usia" required :disabled="!manualInputNIK || !nikSearched"></b-form-input>
+                        <label for="input-manual-usia" class="form-label">Usia</label>
+                        <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputUsia" placeholder="Masukan Usia" id="input-manual-usia" :disabled="!manualInputNIK || !nikSearched"></b-form-input>
                       </b-form-group>
                     </b-col>
                     <b-col md="4">
                       <b-form-group>
-                        <label for="input-manual-phone" class="form-label">No Telp:</label>
-                        <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputTelp" placeholder="Masukan No Telepon" id="input-manual-phone" :class="nikSearched && !manualInputTelp ? 'is-invalid' : null" :disabled="!manualInputNIK || !nikSearched"></b-form-input>
+                        <label for="input-manual-phone" class="form-label">No Telp</label>
+                        <b-form-input type="number" class="form-control-sm height-select2" v-model="manualInputTelp" placeholder="Masukan No Telepon" id="input-manual-phone" :disabled="!manualInputNIK || !nikSearched"></b-form-input>
                       </b-form-group>
                     </b-col>
                     <b-col md="12">
                       <b-form-group>
-                        <label for="input-manual-address" class="form-label">Alamat:</label>
-                        <b-form-textarea class="form-control-sm height-select2" v-model="manualInputAddress" placeholder="Masukan Alamat" id="input-manual-address" rows="3" max-rows="6" required :disabled="!manualInputNIK || !nikSearched"></b-form-textarea>
+                        <label for="input-manual-address" class="form-label">Alamat</label>
+                        <b-form-textarea class="form-control-sm height-select2" v-model="manualInputAddress" placeholder="Masukan Alamat" id="input-manual-address" rows="3" max-rows="6" :disabled="!manualInputNIK || !nikSearched"></b-form-textarea>
                         <i>*data akan terisi otomatis jika NIK terdeteksi dalam database</i>
                       </b-form-group>
                     </b-col>
@@ -440,7 +440,7 @@ export default {
     selectedKecamatan: 'fetchKelurahanOptions',
     selectedKelurahan: 'fetchTpsOptions',
     selectedTps: 'resetSelected',
-    addCollapse: 'resetAddManual',
+    addCollapse: 'watchAddManual',
   },
   mounted() {
     this.fetchKabupatenOptions();
@@ -456,6 +456,10 @@ export default {
     }
   },
   methods: {
+    wathhAddManual(){
+      this.manualInputNIK = null;
+      this.resetAddManual();
+    },
     async fetchKabupatenOptions() {
       try {
         const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/city/list`, withHeader);
@@ -627,6 +631,7 @@ export default {
     resetSelected() {
       this.selectedData = [];
       this.resetSearch();
+      this.cariData(false, this.resultOffset);
     },
     insertSelected(value, index) {
       const isDuplicate = this.selectedData.find(item => item.id === value.id);
@@ -763,6 +768,10 @@ export default {
         this.nikFound = null;
       }
 
+      this.nikFound = null;
+      this.nikSearched = false;
+      this.isAlertNik =  false;
+      this.manualInputNIK = null;
       this.resetAddManual();
 
       setTimeout(() => {
