@@ -26,11 +26,11 @@
       <side-menu isTag="router-link" title="Kor Kelurahan" icon="adjustment" :route="{ to: 'default.koordinator-kelurahan' }"></side-menu>
       <side-menu isTag="router-link" title="Kor TPS" icon="adjustment" :route="{ to: 'default.koordinator-tps' }"></side-menu>
 
-      <li><hr class="hr-horizontal" /></li>
+      <!-- <li><hr class="hr-horizontal" /></li>
       <side-menu title="Master Lokasi" :static-item="true"></side-menu>
       <side-menu isTag="router-link" title="Kabupaten" icon="location" :route="{ to: 'default.daftar-kabupaten' }"></side-menu>
       <side-menu isTag="router-link" title="Kecamatan" icon="location" :route="{ to: 'default.daftar-kecamatan' }"></side-menu>
-      <side-menu isTag="router-link" title="Kelurahan" icon="location" :route="{ to: 'default.daftar-kelurahan' }"></side-menu>
+      <side-menu isTag="router-link" title="Kelurahan" icon="location" :route="{ to: 'default.daftar-kelurahan' }"></side-menu> -->
     </ul>
   </default-sidebar>
   <!-- Sidebar Component End Here-->

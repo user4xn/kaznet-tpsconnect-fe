@@ -426,13 +426,20 @@ export default {
         { value: 'JANUR BOGOR', text: 'JANUR BOGOR' },
         { value: 'PMCK', text: 'PMCK' },
       ],
-      jaringanOptions2: [
-        { value: 'BOBOTOH', label: 'BOBOTOH' },
-        { value: 'ANSOR JAMBRONG', label: 'ANSOR JAMBRONG' },
-        { value: 'IBU-IBU CIANJUR', label: 'IBU-IBU CIANJUR' },
-        { value: 'JANUR BOGOR', label: 'JANUR BOGOR' },
-        { value: 'PMCK', label: 'PMCK' },
-      ],
+      jaringanOptions2: [],
+      dataJaringan: {
+        'CIANJUR': [
+          { value: 'BOBOTOH', label: 'BOBOTOH' },
+          { value: 'JAMBRONG', label: 'JAMBRONG' },
+          { value: 'IBU-IBU MILENIAL CIANJUR', label: 'IBU-IBU MILENIAL CIANJUR' },
+          { value: 'TEH DEVI SELATAN', label: 'TEH DEVI SELATAN' },
+        ],
+        'BOGOR': [
+          { value: 'JANUR BOGOR', label: 'JANUR BOGOR' },
+          { value: 'EVENT BOGOR', label: 'EVENT BOGOR' },
+          { value: 'IBU-IBU MILENIAL BOGOR', label: 'IBU-IBU MILENIAL BOGOR' },
+        ]
+      },
     }
   },
   watch: {
@@ -472,7 +479,11 @@ export default {
 
       this.adminCity();
     },
+    setJaringanOption() {
+      this.jaringanOptions2 = this.dataJaringan[this.selectedKabupaten];
+    },
     async fetchKecamatanOptions() {
+      this.setJaringanOption();
       this.selectedKecamatan = null;
       this.selectedKelurahan = null;
       this.selectedTps = null;
