@@ -709,19 +709,19 @@
         this.manualSelectedJaringan = this.jaringanOptions2[0];
       },
       async fetchKecamatanOptions() {
-        this.setJaringanOption();
         this.selectedKecamatan = null;
         this.selectedKelurahan = null;
         if (this.selectedKabupaten) {
-            try {
-            const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/district/by-city?nama_kabupaten=${this.selectedKabupaten}`, withHeader);
-            if(response.data.meta.code == 200) {
-                this.kecamatanOptions = response.data.data;
-            }        
-            } catch (error) {
-            console.error('Error fetching Kecamatan options:', error);
-            }
-            this.cariData(false, this.resultOffset);
+          this.setJaringanOption();
+          try {
+          const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/district/by-city?nama_kabupaten=${this.selectedKabupaten}`, withHeader);
+          if(response.data.meta.code == 200) {
+              this.kecamatanOptions = response.data.data;
+          }        
+          } catch (error) {
+          console.error('Error fetching Kecamatan options:', error);
+          }
+          this.cariData(false, this.resultOffset);
         }
       },
       async fetchKelurahanOptions() {

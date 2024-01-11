@@ -418,6 +418,7 @@ export default {
     selectedKelurahan: 'fetchTpsOptions',
     selectedTps: 'resetSelected',
     addCollapse: 'watchAddManual',
+    editInputKab: 'setJaringanOptionEdit'
   },
   mounted() {
     this.fetchKabupatenOptions();
@@ -608,16 +609,19 @@ export default {
 
       this.adminCity();
     },
+    setJaringanOptionEdit() {
+      this.jaringanOptions2 = this.dataJaringan[this.editInputKab];
+    },
     setJaringanOption() {
       this.jaringanOptions2 = this.dataJaringan[this.selectedKabupaten];
-      this.selectedJaringan = this.jaringanOptions2[0];
+      this.manualSelectedJaringan = this.jaringanOptions2[0];
     },
     async fetchKecamatanOptions() {
-      this.setJaringanOption();
       this.selectedKecamatan = null;
       this.selectedKelurahan = null;
       this.selectedTps = null;
       if (this.selectedKabupaten) {
+        this.setJaringanOption();
         try {
           const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/district/by-city?nama_kabupaten=${this.selectedKabupaten}`, withHeader);
           if(response.data.meta.code == 200) {
