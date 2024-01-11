@@ -457,8 +457,8 @@ export default {
       jaringanOptions2: [],
       dataJaringan: {
         'CIANJUR': [
-          { value: 'BOBOTOH', label: 'BOBOTOH' },
           { value: 'JAMBRONG', label: 'JAMBRONG' },
+          { value: 'BOBOTOH', label: 'BOBOTOH' },
           { value: 'IBU-IBU MILENIAL CIANJUR', label: 'IBU-IBU MILENIAL CIANJUR' },
           { value: 'TEH DEVI SELATAN', label: 'TEH DEVI SELATAN' },
         ],
@@ -639,6 +639,7 @@ export default {
     },
     setJaringanOption() {
       this.jaringanOptions2 = this.dataJaringan[this.selectedKabupaten];
+      this.manualSelectedJaringan = this.jaringanOptions2[0];
     },
     cariData: debounce(async function (showAll, page) {      
       if(showAll == false && !page) {

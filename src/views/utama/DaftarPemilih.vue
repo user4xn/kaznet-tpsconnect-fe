@@ -16,7 +16,7 @@
               <svg width="20" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
               </svg>
-              Tambah Manual
+              Tambah
             </button>
           </div>
         </div>
@@ -398,8 +398,8 @@ export default {
       jaringanOptions2: [],
       dataJaringan: {
         'CIANJUR': [
-          { value: 'BOBOTOH', label: 'BOBOTOH' },
           { value: 'JAMBRONG', label: 'JAMBRONG' },
+          { value: 'BOBOTOH', label: 'BOBOTOH' },
           { value: 'IBU-IBU MILENIAL CIANJUR', label: 'IBU-IBU MILENIAL CIANJUR' },
           { value: 'TEH DEVI SELATAN', label: 'TEH DEVI SELATAN' },
         ],
@@ -610,6 +610,7 @@ export default {
     },
     setJaringanOption() {
       this.jaringanOptions2 = this.dataJaringan[this.selectedKabupaten];
+      this.selectedJaringan = this.jaringanOptions2[0];
     },
     async fetchKecamatanOptions() {
       this.setJaringanOption();

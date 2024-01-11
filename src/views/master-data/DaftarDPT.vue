@@ -72,6 +72,9 @@
                             <th>#</th>
                             <th>Nama</th>
                             <th>NIK</th>
+                            <th>KAB</th>
+                            <th>KEC</th>
+                            <th>KEL</th>
                             <th>TPS</th>
                             <th>Tanggal Lahir</th>
                             <th>JK</th>
@@ -86,6 +89,9 @@
                             <td>{{ (resultPagination.currentPage - 1) * resultLimit + index + 1 }}.</td>
                             <td>{{ result.nama }}</td>
                             <td>{{ result.nik }}</td>
+                            <td>{{ result.nama_kabupaten }}</td>
+                            <td>{{ result.nama_kecamatan }}</td>
+                            <td>{{ result.nama_kelurahan }}</td>
                             <td>{{ result.tps }}</td>
                             <td>{{ result.tanggal_lahir }}</td>
                             <td>{{ result.jenis_kelamin }}</td>

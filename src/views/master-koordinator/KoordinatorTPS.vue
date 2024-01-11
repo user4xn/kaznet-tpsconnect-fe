@@ -497,8 +497,8 @@
         jaringanOptions2: [],
         dataJaringan: {
           'CIANJUR': [
-            { value: 'BOBOTOH', label: 'BOBOTOH' },
             { value: 'JAMBRONG', label: 'JAMBRONG' },
+            { value: 'BOBOTOH', label: 'BOBOTOH' },
             { value: 'IBU-IBU MILENIAL CIANJUR', label: 'IBU-IBU MILENIAL CIANJUR' },
             { value: 'TEH DEVI SELATAN', label: 'TEH DEVI SELATAN' },
           ],
@@ -513,6 +513,7 @@
     },
     mounted() {
       this.fetchKabupatenOptions();
+      this.cariData(false);
     },
     watch: {
       selectedKabupaten: 'fetchKecamatanOptions',
@@ -705,6 +706,7 @@
       },
       setJaringanOption() {
         this.jaringanOptions2 = this.dataJaringan[this.selectedKabupaten];
+        this.manualSelectedJaringan = this.jaringanOptions2[0];
       },
       async fetchKecamatanOptions() {
         this.setJaringanOption();

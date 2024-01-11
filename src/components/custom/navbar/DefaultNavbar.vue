@@ -88,6 +88,8 @@ export default {
         localStorage.removeItem('jwtToken');
         localStorage.removeItem('userData');
 
+        console.log('logout hit');
+
         // Redirect to the login page
         router.push({ name: 'auth.login' });
       } catch (error) {

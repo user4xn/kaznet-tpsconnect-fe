@@ -16,7 +16,7 @@
               <svg width="20" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
               </svg>
-              Tambah Manual
+              Tambah
             </button>
           </div>
         </div>
@@ -418,19 +418,27 @@ export default {
         { value: 'L', label: 'Laki-laki' },
         { value: 'P', label: 'Perempuan' },
       ],
-      jaringanOptions: [
-        { value: null, text: 'Pilih Jaringan' },
-        { value: 'BOBOTOH', text: 'BOBOTOH' },
-        { value: 'ANSOR JAMBRONG', text: 'ANSOR JAMBRONG' },
-        { value: 'IBU-IBU CIANJUR', text: 'IBU-IBU CIANJUR' },
-        { value: 'JANUR BOGOR', text: 'JANUR BOGOR' },
-        { value: 'PMCK', text: 'PMCK' },
-      ],
-      jaringanOptions2: [],
+      jaringanOptions: [],
       dataJaringan: {
         'CIANJUR': [
-          { value: 'BOBOTOH', label: 'BOBOTOH' },
+          { value: null, text: 'Pilih Jaringan' },
+          { value: 'JAMBRONG', text: 'JAMBRONG' },
+          { value: 'BOBOTOH', text: 'BOBOTOH' },
+          { value: 'IBU-IBU MILENIAL CIANJUR', text: 'IBU-IBU MILENIAL CIANJUR' },
+          { value: 'TEH DEVI SELATAN', text: 'TEH DEVI SELATAN' },
+        ],
+        'BOGOR': [
+          { value: null, text: 'Pilih Jaringan' },
+          { value: 'JANUR BOGOR', text: 'JANUR BOGOR' },
+          { value: 'EVENT BOGOR', text: 'EVENT BOGOR' },
+          { value: 'IBU-IBU MILENIAL BOGOR', text: 'IBU-IBU MILENIAL BOGOR' },
+        ]
+      },
+      jaringanOptions2: [],
+      dataJaringan2: {
+        'CIANJUR': [
           { value: 'JAMBRONG', label: 'JAMBRONG' },
+          { value: 'BOBOTOH', label: 'BOBOTOH' },
           { value: 'IBU-IBU MILENIAL CIANJUR', label: 'IBU-IBU MILENIAL CIANJUR' },
           { value: 'TEH DEVI SELATAN', label: 'TEH DEVI SELATAN' },
         ],
@@ -480,7 +488,9 @@ export default {
       this.adminCity();
     },
     setJaringanOption() {
-      this.jaringanOptions2 = this.dataJaringan[this.selectedKabupaten];
+      this.jaringanOptions = this.dataJaringan[this.selectedKabupaten];
+      this.jaringanOptions2 = this.dataJaringan2[this.selectedKabupaten];
+      this.manualSelectedJaringan = this.jaringanOptions2[0];
     },
     async fetchKecamatanOptions() {
       this.setJaringanOption();
