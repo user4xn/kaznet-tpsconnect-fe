@@ -221,8 +221,26 @@
       </b-card>
     </b-col>
   </b-row>
-  <b-modal id="modalCariNama" hide-backdrop hide-footer centered size="lg" title="Cari Data DPT">
+  <b-modal id="modalCariNama" hide-backdrop hide-footer centered size="xl" title="Cari Data DPT">
     <b-row>
+      <b-col sm="6">
+        <b-form-group>
+          <label for="input-kabupaten" class="form-label">Kota/Kabupaten</label>
+          <v-select v-model="selectedCariNamaKabupaten" placeholder="Pilih Kabupaten" :options="kabupatenOptions" id="input-kabupaten" :disabled="!isAdmin"></v-select>
+        </b-form-group>
+      </b-col>
+      <b-col sm="6">
+        <b-form-group>
+          <label for="input-kecamatan" class="form-label">Kecamatan</label>
+          <v-select v-model="selectedCariNamaKecamatan" placeholder="Pilih Kecamatan" :options="kecamatanCariNamaOptions" id="input-kecamatan" :disabled="!selectedCariNamaKabupaten"></v-select>
+        </b-form-group>
+      </b-col>
+      <b-col sm="6">
+        <b-form-group>
+          <label for="input-kelurahan" class="form-label">Kelurahan</label>
+          <v-select v-model="selectedCariNamaKelurahan" placeholder="Pilih Kelurahan" :options="kelurahanCariNamaOptions" id="input-kelurahan" :disabled="!selectedCariNamaKecamatan"></v-select>
+        </b-form-group>
+      </b-col>
       <b-col md="12">
         <b-form-group>
           <label class="form-label">Nama <i>(enter untuk mencari)</i></label>
@@ -248,6 +266,9 @@
               <th>Nama</th>
               <th>NIK</th>
               <th>JK</th>
+              <th>KAB</th>
+              <th>KEC</th>
+              <th>KEL</th>
               <th style="min-width: 100px" class="text-center">Aksi</th>
             </tr>
           </thead>
@@ -258,6 +279,9 @@
                 <td>{{ result.nama }}</td>
                 <td>{{ result.nik }}</td>
                 <td>{{ result.jenis_kelamin }}</td>
+                <td>{{ result.nama_kabupaten }}</td>
+                <td>{{ result.nama_kecamatan }}</td>
+                <td>{{ result.nama_kelurahan }}</td>
                 <td class="d-flex justify-content-center">
                   <button class="btn btn-primary btn-sm" data-bs-dismiss="modal" @click="handlePilih(index)">Pilih</button>
                   <button class="btn btn-success btn-sm ms-2" data-bs-toggle="collapse" :data-bs-target="'#detailRow-' + index">Detail</button>
@@ -412,6 +436,8 @@ export default {
       selectedJaringan: null,
       inputName: null,
       kabupatenOptions: [],
+      kecamatanCariNamaOptions: [],
+      kelurahanCariNamaOptions: [],
       tpsOptions: [],
       resultSearch: [],
       resultTotal: null,
@@ -450,6 +476,9 @@ export default {
       editInputAddress: null,
       editSelectedGender: null,
       editSelectedJaringan: null,
+      selectedCariNamaKabupaten: null,
+      selectedCariNamaKecamatan: null,
+      selectedCariNamaKelurahan: null,
       genderOptions: [
         { value: 'L', label: 'Laki-laki' },
         { value: 'P', label: 'Perempuan' },
@@ -477,6 +506,10 @@ export default {
   },
   watch: {
     selectedKabupaten: 'fetchData',
+    selectedCariNamaKabupaten: 'fetchKecamatanCariNamaOptions',
+    selectedCariNamaKecamatan: 'fetchKelurahanCariNamaOptions',
+    selectedCariNamaKelurahan: 'cariDataNama',
+    editInputKab: 'setJaringanOptionEdit',
   },
   methods: {
     handleExport: debounce(async function () {
@@ -624,6 +657,8 @@ export default {
     fetchData(){
       this.setJaringanOption();
       this.cariData(false, this.resultOffset);
+      this.selectedCariNamaKabupaten = this.selectedKabupaten;
+      this.fetchKelurahanCariNamaOptions();
     },
     async fetchKabupatenOptions() {
       try {
@@ -636,6 +671,39 @@ export default {
       }
 
       this.adminCity();
+    },
+    async fetchKecamatanCariNamaOptions() {
+      this.selectedCariNamaKecamatan = null;
+      this.selectedCariNamaKelurahan = null;
+      if (this.selectedCariNamaKabupaten) {
+        this.setJaringanOption();
+        try {
+          const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/district/by-city?nama_kabupaten=${this.selectedCariNamaKabupaten}`, withHeader);
+          if(response.data.meta.code == 200) {
+              this.kecamatanCariNamaOptions = response.data.data;
+          }        
+        } catch (error) {
+          console.error('Error fetching Kecamatan options:', error);
+        }
+        this.cariDataNama();
+      }
+    },
+    async fetchKelurahanCariNamaOptions() {
+      this.selectedCariNamaKelurahan = null;
+      if (this.selectedCariNamaKecamatan) {
+        try {
+          const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/subdistrict/by-district?nama_kecamatan=${this.selectedCariNamaKecamatan}`, withHeader);
+          if(response.data.meta.code == 200) {
+            this.kelurahanCariNamaOptions = response.data.data;
+          }  
+        } catch (error) {
+          console.error('Error fetching Kelurahan options:', error);
+        }
+        this.cariDataNama();
+      }
+    },
+    setJaringanOptionEdit() {
+      this.jaringanOptions2 = this.dataJaringan[this.editInputKab];
     },
     setJaringanOption() {
       this.jaringanOptions2 = this.dataJaringan[this.selectedKabupaten];
@@ -697,6 +765,11 @@ export default {
     cariDataNama: debounce(async function (page) {      
       if(!page) {
         this.resultNama = [];
+        this.resultPaginationNama = {
+          currentLimit: null,
+          currentOffset: null,
+          currentPage: 1,
+        }
       }
 
       this.isOnFetchNama= true;
@@ -708,6 +781,18 @@ export default {
       }
 
       var queryParam = '?';
+
+      if (this.selectedCariNamaKabupaten) {
+        queryParam += `nama_kabupaten=${this.selectedCariNamaKabupaten}&`;
+      }
+
+      if (this.selectedCariNamaKecamatan) {
+          queryParam += `nama_kecamatan=${this.selectedCariNamaKecamatan}&`;
+      }
+
+      if (this.selectedCariNamaKelurahan) {
+        queryParam += `nama_kelurahan=${this.selectedCariNamaKelurahan}&`;
+      }
 
       if (this.searchNamaInput) {
         queryParam += `nama=${this.searchNamaInput}&`;
