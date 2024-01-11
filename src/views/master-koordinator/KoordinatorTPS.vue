@@ -215,8 +215,8 @@
                       <td>{{ result.nama_kelurahan }}</td>
                       <td>{{ result.tps }}</td>
                       <td>{{ result.nik }}</td>
-                      <td>{{ result.telp }}</td>
                       <td>{{ result.jaringan }}</td>
+                      <td>{{ result.telp }}</td>
                       <td class="d-flex justify-content-center">
                         <button class="btn btn-info btn-sm" v-b-modal.modalEdit @click="enableEdit(index)">Ubah</button>
                         <button class="btn btn-danger btn-sm ms-2" @click="handleDelete(index)">Hapus</button>
