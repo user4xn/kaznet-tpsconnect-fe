@@ -33,6 +33,21 @@ export default {
         }
       }
     }
+
+    const setDefaultTheme = () => {
+      const redTheme = {
+        value: 'theme-color-red',
+        colors: {
+          '--{{prefix}}primary': '#DB5363',
+          '--{{prefix}}info': '#366AF0'
+        }
+      }
+      store.dispatch('setting/theme_color', redTheme)
+    }
+
+    // Call setDefaultTheme when the component is created
+    setDefaultTheme()
+
     onMounted(() => {
       window.addEventListener('resize', resizePlugin)
       setTimeout(() => {

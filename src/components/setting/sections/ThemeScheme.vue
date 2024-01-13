@@ -1,6 +1,6 @@
 <template>
   <h6 class="mb-3">Theme</h6>
-  <div class="d-grid gap-3 grid-cols-3 mb-3">
+  <!-- <div class="d-grid gap-3 grid-cols-3 mb-3">
     <radio-input btn-name="theme_scheme" id="color-mode-auto" label-class="d-block" :default-checked="themeScheme" value="auto" @onChange="updateRadio">
       <icon-component type="solid" icon-name="lighting" />
       Auto
@@ -15,10 +15,7 @@
       </svg>
       Light
     </radio-input>
-  </div>
-  <!-- Theme Scheme color customizer -->
-  <color-customizer />
-  <!-- Theme Scheme color customizer End -->
+  </div> -->
   <div class="d-grid gap-3 grid-cols-2 mb-4">
     <radio-input btn-name="theme_scheme_direction" :img-component="true" label-title="LTR" class-name="text-center" label-class="p-0" id="theme-scheme-direction-ltr" :default-checked="themeSchemeDirection" value="ltr" @onChange="updateRadio">
       <img src="@/assets/images/settings/dark/01.png" alt="ltr" class="mode dark-img img-fluid" loading="lazy" />
@@ -34,11 +31,10 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import RadioInput from '@/components/custom/elements/RadioInput'
-import ColorCustomizer from '@/components/setting/sections/ColorCustomizer.vue'
+
 export default {
   components: {
     RadioInput,
-    ColorCustomizer
   },
   setup() {
     const store = useStore()
