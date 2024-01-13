@@ -20,6 +20,13 @@ const createSettingObj = (state) => {
 }
 
 export default {
+  saveTokenCheckIntervalId(state, intervalId) {
+    state.tokenCheckIntervalId = intervalId;
+  },
+  clearTokenCheckIntervalId(state) {
+    clearInterval(state.tokenCheckIntervalId);
+    state.tokenCheckIntervalId = null;
+  },
   setSetting: (state) => {
     const json = getStorage(state.storeKey)
     if (json === 'none') state.saveLocal = 'none'

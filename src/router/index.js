@@ -47,7 +47,7 @@ const dashboardRoutes = (prefix) => [
       isBanner: false,
       pageTitle: 'Dashboard', 
       breadcrumbs: [
-        { text: 'Selamat datang di Kaznet, Sistem Verifikasi Data Pemilu'},
+        { text: 'Selamat datang di Kaznet, Kang Zaman Volunteer Network'},
       ],
     },
     component: () => import('@/views/dashboards/IndexPage.vue')
@@ -66,7 +66,7 @@ const defaultChildRoutes = (prefix) => [
       isBanner: true,
       pageTitle: 'Dashboard', 
       breadcrumbs: [
-        { text: 'Selamat datang di Kaznet, Sistem Verifikasi Data Pemilu'},
+        { text: 'Selamat datang di Kaznet, Kang Zaman Volunteer Network'},
       ],
   },
     component: () => import('@/views/dashboards/IndexPage.vue')

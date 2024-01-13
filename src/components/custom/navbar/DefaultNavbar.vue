@@ -33,6 +33,7 @@
 import { computed, ref, onMounted, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 export default {
   components: {},
@@ -53,6 +54,14 @@ export default {
     const isHidden = ref(false)
     const userName = ref('');
     const userRole = ref('');
+    const tokenExpirationCheckInterval = 60000*5;
+    let withHeader = {
+      headers: { 
+        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+      }
+    }
+      
+    const carts = computed(() => store.getters.carts);
 
     const onscroll = () => {
       const yOffset = document.documentElement.scrollTop
@@ -66,12 +75,57 @@ export default {
       }
     }
 
-    const carts = computed(() => store.getters.carts);
-
     const setProfile = () => {
       const userData = JSON.parse(localStorage.getItem('userData'))
       userName.value = userData?.full_name || 'John Doe';
       userRole.value = userData?.role || 'Admin (Example)';
+
+      // Check token expiration periodically
+      const tokenCheckIntervalId = setInterval(checkTokenExpiration, tokenExpirationCheckInterval);
+
+      // Save the interval ID to clear it later
+      store.commit('setting/saveTokenCheckIntervalId', tokenCheckIntervalId);
+    }
+
+    const checkTokenExpiration = async () => {
+      try {
+        const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/city/list`, withHeader); // Replace with your profile endpoint
+        if (response.data.meta.code == 200) {
+          // Token is still valid
+          console.log('Token is still valid');
+        } else {
+          // Token has expired
+          console.log('Token has expired');
+          handleLogout();
+        }
+      } catch (error) {
+        console.error('Token validation failed:', error);
+        handleLogout();
+      }
+    }
+
+    const handleLogout = async () => {
+      try {
+        localStorage.removeItem('jwtToken');
+        localStorage.removeItem('userData');
+
+        console.log('logout hit');
+
+        // Clear the token check interval
+        clearTokenCheckInterval();
+
+        // Redirect to the login page after a delay
+        setTimeout(() => {
+          router.push({ name: 'auth.login' });
+        }, 500);
+      } catch (error) {
+        console.error('Logout failed:', error);
+      }
+    }
+
+    const clearTokenCheckInterval = () => {
+      clearInterval(store.state.setting.tokenCheckIntervalId);
+      store.commit('setting/clearTokenCheckIntervalId');
     }
 
     onMounted(() => {
@@ -81,21 +135,10 @@ export default {
 
     onUnmounted(() => {
       window.removeEventListener('scroll', onscroll())
+
+      // Clear the token check interval on component unmount
+      clearTokenCheckInterval();
     });
-
-    const handleLogout = async()=> {
-      try {
-        localStorage.removeItem('jwtToken');
-        localStorage.removeItem('userData');
-
-        console.log('logout hit');
-
-        // Redirect to the login page
-        router.push({ name: 'auth.login' });
-      } catch (error) {
-        console.error('Logout failed:', error);
-      }
-    }
 
     return {
       headerNavbar,

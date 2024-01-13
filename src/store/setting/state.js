@@ -1,5 +1,6 @@
 // Initial Setting State
 export const initialState = {
+  tokenCheckIntervalId: null,
   saveLocal: 'sessionStorage',
   storeKey: 'huisetting',
   setting: {
@@ -48,6 +49,7 @@ export const initialState = {
 
 // Default Setting State
 export const defaultState = {
+  tokenCheckIntervalId: null,
   saveLocal: 'sessionStorage',
   storeKey: 'huisetting',
   setting: {
