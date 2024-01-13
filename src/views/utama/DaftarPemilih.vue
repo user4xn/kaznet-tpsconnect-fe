@@ -228,7 +228,8 @@
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M2 12C2 6.48 6.49 2 12 2L12.2798 2.00384C17.6706 2.15216 22 6.57356 22 12C22 17.51 17.52 22 12 22C6.49 22 2 17.51 2 12ZM13.98 16C14.27 15.7 14.27 15.23 13.97 14.94L11.02 12L13.97 9.06C14.27 8.77 14.27 8.29 13.98 8C13.68 7.7 13.21 7.7 12.92 8L9.43 11.47C9.29 11.61 9.21 11.8 9.21 12C9.21 12.2 9.29 12.39 9.43 12.53L12.92 16C13.06 16.15 13.25 16.22 13.44 16.22C13.64 16.22 13.83 16.15 13.98 16Z" fill="currentColor"></path>
               </svg>                        
             </button>
-             <!-- Display first page number if not on the first page -->
+
+            <!-- Display first page number if not on the first page -->
             <button v-if="resultPagination.currentPage > 2 && resultPagination.currentPage != 3" class="btn btn-primary rounded-0" @click="prevNextCariData(-(resultPagination.currentPage-1))">1</button>
 
             <!-- Display ellipsis (...) if not on the first page -->
@@ -243,14 +244,14 @@
             </button>
 
             <!-- Display two pages after the current page -->
-            <button v-if="resultPagination.currentPage < (Math.ceil(this.resultTotal / this.resultPagination.currentLimit))" class="btn btn-primary rounded-0" @click="prevNextCariData(+1)">{{ resultPagination.currentPage + 1 }}</button>
-            <button v-if="resultPagination.currentPage < (Math.ceil(this.resultTotal / this.resultPagination.currentLimit)) - 1" class="btn btn-primary rounded-0" @click="prevNextCariData(+2)">{{ resultPagination.currentPage + 2 }}</button>
+            <button v-if="resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit))" class="btn btn-primary rounded-0" @click="prevNextCariData(+1)">{{ resultPagination.currentPage + 1 }}</button>
+            <button v-if="resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 1" class="btn btn-primary rounded-0" @click="prevNextCariData(+2)">{{ resultPagination.currentPage + 2 }}</button>
 
             <!-- Display ellipsis (...) if not on the last page -->
-            <span v-if="resultPagination.currentPage < (Math.ceil(this.resultTotal / this.resultPagination.currentLimit)) - 2" class="btn btn-primary rounded-0">...</span>
+            <span v-if="resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 2" class="btn btn-primary rounded-0">...</span>
 
             <!-- Display last page number if not on the last page -->
-            <button v-if="(resultPagination.currentPage < (Math.ceil(this.resultTotal / this.resultPagination.currentLimit)) - 1) && resultPagination.currentPage != (Math.ceil(this.resultTotal / this.resultPagination.currentLimit))" class="btn btn-primary rounded-0" @click="prevNextCariData(+(Math.ceil(this.resultTotal / this.resultPagination.currentLimit)))">{{ Math.ceil(this.resultTotal / this.resultPagination.currentLimit) }}</button>
+            <button v-if="(resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 1) && resultPagination.currentPage != (Math.ceil(resultTotal / resultPagination.currentLimit))" class="btn btn-primary rounded-0" @click="prevNextCariData(+(Math.ceil(resultTotal / resultPagination.currentLimit) - resultPagination.currentPage))">{{ Math.ceil(resultTotal / resultPagination.currentLimit) }}</button>
             
             <button class="btn btn-primary btn-sm rounded-0 rounded-end" @click="prevNextCariData(+1)">
               <svg class="icon-32" width="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -634,7 +635,12 @@ export default {
       this.jaringanOptions2 = this.dataJaringan[this.editInputKab];
     },
     setJaringanOption() {
+      console.log(this.selectedKabupaten);
+      console.log(this.dataJaringan);
+      console.log(this.jaringanOptions2, 'before');
       this.jaringanOptions2 = this.dataJaringan[this.selectedKabupaten];
+      console.log(this.jaringanOptions2, 'after');
+      
       this.manualSelectedJaringan = this.jaringanOptions2[0];
     },
     async fetchKecamatanOptions() {
