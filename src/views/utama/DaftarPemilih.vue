@@ -635,12 +635,7 @@ export default {
       this.jaringanOptions2 = this.dataJaringan[this.editInputKab];
     },
     setJaringanOption() {
-      console.log(this.selectedKabupaten);
-      console.log(this.dataJaringan);
-      console.log(this.jaringanOptions2, 'before');
       this.jaringanOptions2 = this.dataJaringan[this.selectedKabupaten];
-      console.log(this.jaringanOptions2, 'after');
-      
       this.manualSelectedJaringan = this.jaringanOptions2[0];
     },
     async fetchKecamatanOptions() {

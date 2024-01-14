@@ -87,6 +87,7 @@ const handleSignIn = async () => {
     const regency = response.data.data.regency;
     const status = response.data.data.status;
     const role = response.data.data.role;
+    const user_network = response.data.data.user_network;
 
     const userData = {
       id: id,
@@ -95,6 +96,7 @@ const handleSignIn = async () => {
       regency: regency,
       status: status,
       role: role,
+      user_network: user_network,
     }
 
     localStorage.setItem('jwtToken', token);

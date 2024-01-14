@@ -377,7 +377,6 @@
 <script scoped>
 import axios from 'axios';
 import debounce from 'lodash/debounce';
-import AOS from 'aos';
 
 let withHeader = {
   headers: { 
@@ -441,35 +440,7 @@ export default {
         { value: 'P', label: 'Perempuan' },
       ],
       jaringanOptions: [],
-      dataJaringan: {
-        'CIANJUR': [
-          { value: null, text: 'Pilih Jaringan' },
-          { value: 'JAMBRONG', text: 'JAMBRONG' },
-          { value: 'BOBOTOH', text: 'BOBOTOH' },
-          { value: 'IBU-IBU MILENIAL CIANJUR', text: 'IBU-IBU MILENIAL CIANJUR' },
-          { value: 'TEH DEVI SELATAN', text: 'TEH DEVI SELATAN' },
-        ],
-        'BOGOR': [
-          { value: null, text: 'Pilih Jaringan' },
-          { value: 'JANUR BOGOR', text: 'JANUR BOGOR' },
-          { value: 'EVENT BOGOR', text: 'EVENT BOGOR' },
-          { value: 'IBU-IBU MILENIAL BOGOR', text: 'IBU-IBU MILENIAL BOGOR' },
-        ]
-      },
       jaringanOptions2: [],
-      dataJaringan2: {
-        'CIANJUR': [
-          { value: 'JAMBRONG', label: 'JAMBRONG' },
-          { value: 'BOBOTOH', label: 'BOBOTOH' },
-          { value: 'IBU-IBU MILENIAL CIANJUR', label: 'IBU-IBU MILENIAL CIANJUR' },
-          { value: 'TEH DEVI SELATAN', label: 'TEH DEVI SELATAN' },
-        ],
-        'BOGOR': [
-          { value: 'JANUR BOGOR', label: 'JANUR BOGOR' },
-          { value: 'EVENT BOGOR', label: 'EVENT BOGOR' },
-          { value: 'IBU-IBU MILENIAL BOGOR', label: 'IBU-IBU MILENIAL BOGOR' },
-        ]
-      },
     }
   },
   watch: {
@@ -477,20 +448,9 @@ export default {
     selectedKecamatan: 'fetchKelurahanOptions',
     selectedKelurahan: 'fetchTpsOptions',
     selectedTps: 'resetSelected',
-    addCollapse: 'watchAddManual',
   },
   mounted() {
     this.fetchKabupatenOptions();
-    if (typeof AOS !== typeof undefined) {
-        AOS.init({
-            disable: function () {
-            var maxWidth = 996
-            return window.innerWidth < maxWidth
-            },
-            once: true,
-            duration: 800
-        })
-    }
   },
   methods: {
     wathhAddManual(){
@@ -509,13 +469,7 @@ export default {
 
       this.adminCity();
     },
-    setJaringanOption() {
-      this.jaringanOptions = this.dataJaringan[this.selectedKabupaten];
-      this.jaringanOptions2 = this.dataJaringan2[this.selectedKabupaten];
-      this.manualSelectedJaringan = this.jaringanOptions2[0];
-    },
     async fetchKecamatanOptions() {
-      this.setJaringanOption();
       this.selectedKecamatan = null;
       this.selectedKelurahan = null;
       this.selectedTps = null;

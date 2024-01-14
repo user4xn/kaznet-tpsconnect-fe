@@ -89,7 +89,7 @@ export default {
 
     const checkTokenExpiration = async () => {
       try {
-        const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/city/list`, withHeader); // Replace with your profile endpoint
+        const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/user/get-profile`, withHeader); // Replace with your profile endpoint
         if (response.data.meta.code == 200) {
           // Token is still valid
           console.log('Token is still valid');
