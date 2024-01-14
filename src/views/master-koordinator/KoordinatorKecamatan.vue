@@ -232,8 +232,8 @@
                 </button>
 
                 <!-- Display two pages after the current page -->
-                <button v-if="resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit))" class="btn btn-primary rounded-0" @click="prevNextCariData(+1)">{{ resultPagination.currentPage + 1 }}</button>
-                <button v-if="resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 1" class="btn btn-primary rounded-0" @click="prevNextCariData(+2)">{{ resultPagination.currentPage + 2 }}</button>
+                <button v-if="(resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit))) && (resultPagination.currentPage != (Math.ceil(resultTotal / resultPagination.currentLimit)))" class="btn btn-primary rounded-0" @click="prevNextCariData(+1)">{{ resultPagination.currentPage + 1 }}</button>
+                <button v-if="(resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 1) && (resultPagination.currentPage != (Math.ceil(resultTotal / resultPagination.currentLimit)) - 1)" class="btn btn-primary rounded-0" @click="prevNextCariData(+2)">{{ resultPagination.currentPage + 2 }}</button>
 
                 <!-- Display ellipsis (...) if not on the last page -->
                 <span v-if="resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 2" class="btn btn-primary rounded-0">...</span>
@@ -377,8 +377,8 @@
           </button>
 
           <!-- Display two pages after the current page -->
-          <button v-if="resultPaginationNama.currentPage < (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit))" class="btn btn-primary rounded-0" @click="prevNextCariDataNama(+1)">{{ resultPaginationNama.currentPage + 1 }}</button>
-          <button v-if="resultPaginationNama.currentPage < (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit)) - 1" class="btn btn-primary rounded-0" @click="prevNextCariDataNama(+2)">{{ resultPaginationNama.currentPage + 2 }}</button>
+          <button v-if="(resultPaginationNama.currentPage < (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit))) && (resultPaginationNama.currentPage != (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit)))" class="btn btn-primary rounded-0" @click="prevNextCariData(+1)">{{ resultPaginationNama.currentPage + 1 }}</button>
+          <button v-if="(resultPaginationNama.currentPage < (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit)) - 1) && (resultPaginationNama.currentPage != (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit)) - 1)" class="btn btn-primary rounded-0" @click="prevNextCariData(+2)">{{ resultPaginationNama.currentPage + 2 }}</button>
 
           <!-- Display ellipsis (...) if not on the last page -->
           <span v-if="resultPaginationNama.currentPage < (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit)) - 2" class="btn btn-primary rounded-0">...</span>
@@ -544,19 +544,6 @@
           { value: 'P', label: 'Perempuan' },
         ],
         jaringanOptions2: [],
-        dataJaringan: {
-          'CIANJUR': [
-            { value: 'JAMBRONG', label: 'JAMBRONG' },
-            { value: 'BOBOTOH', label: 'BOBOTOH' },
-            { value: 'IBU-IBU MILENIAL CIANJUR', label: 'IBU-IBU MILENIAL CIANJUR' },
-            { value: 'TEH DEVI SELATAN', label: 'TEH DEVI SELATAN' },
-          ],
-          'BOGOR': [
-            { value: 'JANUR BOGOR', label: 'JANUR BOGOR' },
-            { value: 'EVENT BOGOR', label: 'EVENT BOGOR' },
-            { value: 'IBU-IBU MILENIAL BOGOR', label: 'IBU-IBU MILENIAL BOGOR' },
-          ]
-        },
         isOnExport: false,
       }
     },
@@ -571,7 +558,11 @@
       selectedCariNamaKabupaten: 'fetchKecamatanCariNamaOptions',
       selectedCariNamaKecamatan: 'fetchKelurahanCariNamaOptions',
       selectedCariNamaKelurahan: 'cariDataNama',
-      editInputKab: 'setJaringanOptionEdit',
+      editInputKab: function() {
+        if(this.isAdmin) {
+          this.fetchJaringanOptions();
+        }
+      },
     },
     methods: {
       handleExport: debounce(async function () {
@@ -740,19 +731,29 @@
   
         this.adminCity();
       },
-      setJaringanOptionEdit() {
-        this.jaringanOptions2 = this.dataJaringan[this.editInputKab];
-      },
-      setJaringanOption() {
-        console.log(this.dataJaringan[this.selectedKabupaten]);
-        this.jaringanOptions2 = this.dataJaringan[this.selectedKabupaten];
-        this.manualSelectedJaringan = this.jaringanOptions2[0];
+      async fetchJaringanOptions() {
+        if (this.selectedKabupaten) {
+          try {
+            const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/network/list?nama_kabupaten=${this.selectedKabupaten}`, withHeader);
+            if(response.data.meta.code == 200) {
+              const data = response.data.data;
+
+              this.jaringanOptions2 = data.map(item => {
+                return {
+                  value: item,
+                  label: item,
+                }
+              });
+            }        
+          } catch (error) {
+            console.error('Error fetching Jaringan options:', error);
+          }
+        }
       },
       async fetchKecamatanOptions() {
         this.selectedKecamatan = null;
         this.selectedKelurahan = null;
         if (this.selectedKabupaten) {
-          this.setJaringanOption();
           try {
             const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/district/by-city?nama_kabupaten=${this.selectedKabupaten}`, withHeader);
             if(response.data.meta.code == 200) {
@@ -763,6 +764,9 @@
           }
           this.cariData(false, this.resultOffset);
           this.selectedCariNamaKabupaten = this.selectedKabupaten;
+          if(this.isAdmin) {
+            this.fetchJaringanOptions();
+          }
         }
       },
       async fetchKecamatanCariNamaOptions() {
@@ -961,6 +965,14 @@
   
         if(userData && userData.role === 'admin') {
           const region = userData.regency;
+          const network = userData.user_network;
+
+          this.jaringanOptions2 = network.map(item => {
+            return {
+              value: item,
+              label: item,
+            }
+          });
         
           if(this.kabupatenOptions.includes(region)) {
             this.selectedKabupaten = region;

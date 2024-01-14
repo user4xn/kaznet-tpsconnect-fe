@@ -332,8 +332,8 @@
               </button>
 
               <!-- Display two pages after the current page -->
-              <button v-if="resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit))" class="btn btn-primary rounded-0" @click="prevNextCariData(+1)">{{ resultPagination.currentPage + 1 }}</button>
-              <button v-if="resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 1" class="btn btn-primary rounded-0" @click="prevNextCariData(+2)">{{ resultPagination.currentPage + 2 }}</button>
+              <button v-if="(resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit))) && (resultPagination.currentPage != (Math.ceil(resultTotal / resultPagination.currentLimit)))" class="btn btn-primary rounded-0" @click="prevNextCariData(+1)">{{ resultPagination.currentPage + 1 }}</button>
+              <button v-if="(resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 1) && (resultPagination.currentPage != (Math.ceil(resultTotal / resultPagination.currentLimit)) - 1)" class="btn btn-primary rounded-0" @click="prevNextCariData(+2)">{{ resultPagination.currentPage + 2 }}</button>
 
               <!-- Display ellipsis (...) if not on the last page -->
               <span v-if="resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 2" class="btn btn-primary rounded-0">...</span>
@@ -448,12 +448,13 @@ export default {
     selectedKecamatan: 'fetchKelurahanOptions',
     selectedKelurahan: 'fetchTpsOptions',
     selectedTps: 'resetSelected',
+    addCollapse: 'watchAddManual'
   },
   mounted() {
     this.fetchKabupatenOptions();
   },
   methods: {
-    wathhAddManual(){
+    watchAddManual(){
       this.manualInputNIK = null;
       this.resetAddManual();
     },
@@ -469,6 +470,38 @@ export default {
 
       this.adminCity();
     },
+    async fetchJaringanOptions() {
+      if (this.selectedKabupaten) {
+        try {
+          const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/network/list?nama_kabupaten=${this.selectedKabupaten}`, withHeader);
+          if(response.data.meta.code == 200) {
+            const data = response.data.data;
+            this.jaringanOptions = data.map(item => {
+              return {
+                value: item,
+                text: item,
+              }
+            });
+
+            const placeholder = {
+              value: null,
+              text: 'Pilih Jaringan'
+            }
+            
+            this.jaringanOptions.unshift(placeholder);
+
+            this.jaringanOptions2 = data.map(item => {
+              return {
+                value: item,
+                label: item,
+              }
+            });
+          }        
+        } catch (error) {
+          console.error('Error fetching Jaringan options:', error);
+        }
+      }
+    },
     async fetchKecamatanOptions() {
       this.selectedKecamatan = null;
       this.selectedKelurahan = null;
@@ -482,8 +515,11 @@ export default {
         } catch (error) {
           console.error('Error fetching Kecamatan options:', error);
         }
-        
         this.cariData(false, this.resultOffset);
+        
+        if(this.isAdmin) {
+          this.fetchJaringanOptions();
+        }
       }
     },
     async fetchKelurahanOptions() {
@@ -563,7 +599,7 @@ export default {
       queryParam += `limit=${limit}&`;
       queryParam += `offset=${offset}`;
 
-      const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/resident/validate/list?${queryParam}`, withHeader);
+      const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/resident/validate/list${queryParam}`, withHeader);
 
       if(response.data.meta.code == 200) {
         const data = response.data.data.items;
@@ -607,6 +643,28 @@ export default {
 
       if(userData && userData.role === 'admin') {
         const region = userData.regency;
+        const network = userData.user_network;
+
+        this.jaringanOptions = network.map(item => {
+          return {
+            value: item,
+            text: item,
+          }
+        });
+
+        const placeholder = {
+          value: null,
+          text: 'Pilih Jaringan'
+        }
+        
+        this.jaringanOptions.unshift(placeholder);
+
+        this.jaringanOptions2 = network.map(item => {
+          return {
+            value: item,
+            label: item,
+          }
+        });
       
         if(this.kabupatenOptions.includes(region)) {
           this.selectedKabupaten = region;

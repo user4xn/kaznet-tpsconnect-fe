@@ -244,8 +244,8 @@
             </button>
 
             <!-- Display two pages after the current page -->
-            <button v-if="resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit))" class="btn btn-primary rounded-0" @click="prevNextCariData(+1)">{{ resultPagination.currentPage + 1 }}</button>
-            <button v-if="resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 1" class="btn btn-primary rounded-0" @click="prevNextCariData(+2)">{{ resultPagination.currentPage + 2 }}</button>
+            <button v-if="(resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit))) && (resultPagination.currentPage != (Math.ceil(resultTotal / resultPagination.currentLimit)))" class="btn btn-primary rounded-0" @click="prevNextCariData(+1)">{{ resultPagination.currentPage + 1 }}</button>
+            <button v-if="(resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 1) && (resultPagination.currentPage != (Math.ceil(resultTotal / resultPagination.currentLimit)) - 1)" class="btn btn-primary rounded-0" @click="prevNextCariData(+2)">{{ resultPagination.currentPage + 2 }}</button>
 
             <!-- Display ellipsis (...) if not on the last page -->
             <span v-if="resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 2" class="btn btn-primary rounded-0">...</span>
@@ -263,7 +263,7 @@
       </b-card>
     </b-col>
   </b-row>
-  <b-modal id="modalEdit" hide-backdrop hide-footer centered size="lg" title="Ubah Data Koordinator">
+  <b-modal id="modalEdit" hide-backdrop hide-footer centered size="lg" title="Ubah Data Pemilih">
     <b-form @submit="handleEdit">
       <b-row>
         <b-col md="3">
@@ -418,19 +418,6 @@ export default {
         { value: 'P', label: 'Perempuan' },
       ],
       jaringanOptions2: [],
-      dataJaringan: {
-        'CIANJUR': [
-          { value: 'JAMBRONG', label: 'JAMBRONG' },
-          { value: 'BOBOTOH', label: 'BOBOTOH' },
-          { value: 'IBU-IBU MILENIAL CIANJUR', label: 'IBU-IBU MILENIAL CIANJUR' },
-          { value: 'TEH DEVI SELATAN', label: 'TEH DEVI SELATAN' },
-        ],
-        'BOGOR': [
-          { value: 'JANUR BOGOR', label: 'JANUR BOGOR' },
-          { value: 'EVENT BOGOR', label: 'EVENT BOGOR' },
-          { value: 'IBU-IBU MILENIAL BOGOR', label: 'IBU-IBU MILENIAL BOGOR' },
-        ]
-      },
       isOnExport: false,
     }
   },
@@ -440,7 +427,6 @@ export default {
     selectedKelurahan: 'fetchTpsOptions',
     selectedTps: 'resetSelected',
     addCollapse: 'watchAddManual',
-    editInputKab: 'setJaringanOptionEdit'
   },
   mounted() {
     this.fetchKabupatenOptions();
@@ -631,19 +617,30 @@ export default {
 
       this.adminCity();
     },
-    setJaringanOptionEdit() {
-      this.jaringanOptions2 = this.dataJaringan[this.editInputKab];
-    },
-    setJaringanOption() {
-      this.jaringanOptions2 = this.dataJaringan[this.selectedKabupaten];
-      this.manualSelectedJaringan = this.jaringanOptions2[0];
+    async fetchJaringanOptions() {
+      if (this.selectedKabupaten) {
+        try {
+          const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/network/list?nama_kabupaten=${this.selectedKabupaten}`, withHeader);
+          if(response.data.meta.code == 200) {
+            const data = response.data.data;
+
+            this.jaringanOptions2 = data.map(item => {
+              return {
+                value: item,
+                label: item,
+              }
+            });
+          }        
+        } catch (error) {
+          console.error('Error fetching Jaringan options:', error);
+        }
+      }
     },
     async fetchKecamatanOptions() {
       this.selectedKecamatan = null;
       this.selectedKelurahan = null;
       this.selectedTps = null;
       if (this.selectedKabupaten) {
-        this.setJaringanOption();
         try {
           const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/district/by-city?nama_kabupaten=${this.selectedKabupaten}`, withHeader);
           if(response.data.meta.code == 200) {
@@ -653,6 +650,9 @@ export default {
           console.error('Error fetching Kecamatan options:', error);
         }
         this.cariData(false, this.resultOffset);
+        if(this.isAdmin) {
+          this.fetchJaringanOptions();
+        }
       }
     },
     async fetchKelurahanOptions() {
@@ -799,6 +799,14 @@ export default {
 
       if(userData && userData.role === 'admin') {
         const region = userData.regency;
+        const network = userData.user_network;
+
+        this.jaringanOptions2 = network.map(item => {
+          return {
+            value: item,
+            label: item,
+          }
+        });
       
         if(this.kabupatenOptions.includes(region)) {
           this.selectedKabupaten = region;

@@ -9,6 +9,11 @@
         </span>
         <input type="search" class="form-control" placeholder="Search..." />
       </div>
+      <div class="">
+        <span v-for="item in networks" :key="item" class="badge bg-primary p-2 me-1">
+          {{ item }}
+        </span>
+      </div>
       <a class="nav-link py-0 d-flex align-items-center ms-auto text-muted" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         <img src="@/assets/images/avatars/01.png" alt="User-Profile" class="theme-color-default-img img-fluid avatar avatar-50 avatar-rounded" />
         <img src="@/assets/images/avatars/avtar_1.png" alt="User-Profile" class="theme-color-purple-img img-fluid avatar avatar-50 avatar-rounded" />
@@ -54,6 +59,7 @@ export default {
     const isHidden = ref(false)
     const userName = ref('');
     const userRole = ref('');
+    const networks = ref('');
     const tokenExpirationCheckInterval = 60000*5;
     let withHeader = {
       headers: { 
@@ -79,6 +85,7 @@ export default {
       const userData = JSON.parse(localStorage.getItem('userData'))
       userName.value = userData?.full_name || 'John Doe';
       userRole.value = userData?.role || 'Admin (Example)';
+      networks.value = userData?.user_network;
 
       // Check token expiration periodically
       const tokenCheckIntervalId = setInterval(checkTokenExpiration, tokenExpirationCheckInterval);
@@ -147,6 +154,7 @@ export default {
       emit,
       userName,
       userRole,
+      networks,
       handleLogout
     }
   }
