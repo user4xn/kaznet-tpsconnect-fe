@@ -25,13 +25,13 @@
               <b-row>
                 <b-col sm="4">
                   <b-form-group>
-                    <label for="input-kabupaten" class="form-label">Kota/Kabupaten:</label>
+                    <label for="input-kabupaten" class="form-label">Kota/Kabupaten*</label>
                     <v-select v-model="selectedKabupaten" placeholder="Pilih Kabupaten" :options="kabupatenOptions" id="input-kabupaten" :disabled="!isAdmin"></v-select>
                   </b-form-group>
                 </b-col>
                 <b-col sm="4">
                   <b-form-group>
-                    <label for="input-kecamatan" class="form-label">Kecamatan:</label>
+                    <label for="input-kecamatan" class="form-label">Kecamatan*</label>
                     <v-select v-model="selectedKecamatan" placeholder="Pilih Kecamatan" :options="kecamatanOptions" id="input-kecamatan" :disabled="!selectedKabupaten"></v-select>
                   </b-form-group>
                 </b-col>
@@ -399,55 +399,55 @@
         <b-row>
           <b-col md="6">
             <b-form-group>
-              <label for="input-edit-nik" class="form-label">Kabupaten:</label>
+              <label for="input-edit-nik" class="form-label">Kabupaten*</label>
               <b-form-input v-model="editInputKab" class="form-control-sm height-select2" disabled></b-form-input>
             </b-form-group>
           </b-col>
           <b-col md="6">
             <b-form-group>
-              <label for="input-edit-nik" class="form-label">Kecamatan:</label>
+              <label for="input-edit-nik" class="form-label">Kecamatan*</label>
               <b-form-input v-model="editInputKec" class="form-control-sm height-select2" disabled></b-form-input>
             </b-form-group>
           </b-col>
           <b-col md="4">
             <b-form-group>
-              <label for="input-edit-nik" class="form-label">NIK:</label>
+              <label for="input-edit-nik" class="form-label">NIK*</label>
               <b-form-input type="number" v-model="editInputNIK" class="form-control-sm height-select2" disabled></b-form-input>
             </b-form-group>
           </b-col>
           <b-col md="4">
             <b-form-group>
-              <label for="input-edit-name" class="form-label">Nama Lengkap:</label>
+              <label for="input-edit-name" class="form-label">Nama Lengkap*</label>
               <b-form-input class="form-control-sm height-select2" v-model="editInputName" placeholder="Masukan Nama" id="input-edit-name" required></b-form-input>
             </b-form-group>
           </b-col>
           <b-col md="4">
             <b-form-group>
-              <label for="input-edit-jaringan" class="form-label">Jaringan:</label>
-              <v-select v-model="editSelectedJaringan" placeholder="Pilih Jaringan" :options="jaringanOptions2" id="input-edit-jaringan" required></v-select>
+              <label for="input-edit-jaringan" class="form-label">Jaringan*</label>
+              <v-select v-model="editSelectedJaringan" placeholder="Pilih Jaringan" :options="jaringanOptions2Edit" id="input-edit-jaringan" required></v-select>
             </b-form-group>
           </b-col>
           <b-col md="4">
             <b-form-group>
-              <label for="input-edit-gender" class="form-label">Jenis Kelamin:</label>
+              <label for="input-edit-gender" class="form-label">Jenis Kelamin</label>
               <v-select class="style-chooser" v-model="editSelectedGender" placeholder="Pilih Jenis Kelamin" :options="genderOptions" id="input-edit-gender"></v-select>
             </b-form-group>
           </b-col>
           <b-col md="4">
             <b-form-group>
-              <label for="input-edit-usia" class="form-label">Usia:</label>
+              <label for="input-edit-usia" class="form-label">Usia</label>
               <b-form-input type="number" class="form-control-sm height-select2" v-model="editInputUsia" placeholder="Masukan Usia" id="input-edit-usia"></b-form-input>
             </b-form-group>
           </b-col>
           <b-col md="4">
             <b-form-group>
-              <label for="input-edit-phone" class="form-label">No Telp:</label>
+              <label for="input-edit-phone" class="form-label">No Telp</label>
               <b-form-input type="number" class="form-control-sm height-select2" v-model="editInputTelp" placeholder="Masukan No Telepon" id="input-edit-phone"></b-form-input>
             </b-form-group>
           </b-col>
           <b-col md="12">
             <b-form-group>
-              <label for="input-edit-address" class="form-label">Alamat:</label>
+              <label for="input-edit-address" class="form-label">Alamat</label>
               <b-form-textarea class="form-control-sm height-select2" v-model="editInputAddress" placeholder="Masukan Alamat" id="input-edit-address" rows="3" max-rows="6"></b-form-textarea>
             </b-form-group>
           </b-col>
@@ -544,6 +544,7 @@
           { value: 'P', label: 'Perempuan' },
         ],
         jaringanOptions2: [],
+        jaringanOptions2Edit: [],
         isOnExport: false,
       }
     },
@@ -560,9 +561,9 @@
       selectedCariNamaKelurahan: 'cariDataNama',
       editInputKab: function() {
         if(this.isAdmin) {
-          this.fetchJaringanOptions();
+          this.fetchJaringanOptionsEdit();
         }
-      },
+      }
     },
     methods: {
       handleExport: debounce(async function () {
@@ -739,6 +740,25 @@
               const data = response.data.data;
 
               this.jaringanOptions2 = data.map(item => {
+                return {
+                  value: item,
+                  label: item,
+                }
+              });
+            }        
+          } catch (error) {
+            console.error('Error fetching Jaringan options:', error);
+          }
+        }
+      },
+      async fetchJaringanOptionsEdit() {
+        if (this.editInputKab) {
+          try {
+            const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/network/list?nama_kabupaten=${this.editInputKab}`, withHeader);
+            if(response.data.meta.code == 200) {
+              const data = response.data.data;
+
+              this.jaringanOptions2Edit = data.map(item => {
                 return {
                   value: item,
                   label: item,
@@ -968,6 +988,13 @@
           const network = userData.user_network;
 
           this.jaringanOptions2 = network.map(item => {
+            return {
+              value: item,
+              label: item,
+            }
+          });
+
+          this.jaringanOptions2Edit = network.map(item => {
             return {
               value: item,
               label: item,

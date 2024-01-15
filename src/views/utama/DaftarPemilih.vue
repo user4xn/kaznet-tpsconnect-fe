@@ -305,7 +305,7 @@
         <b-col md="4">
           <b-form-group>
             <label for="input-manual-jaringan" class="form-label">Jaringan*</label>
-            <v-select v-model="editSelectedJaringan" placeholder="Pilih Jaringan" :options="jaringanOptions2" id="input-manual-jaringan" required></v-select>
+            <v-select v-model="editSelectedJaringan" placeholder="Pilih Jaringan" :options="jaringanOptions2Edit" id="input-manual-jaringan" required></v-select>
           </b-form-group>
         </b-col>
         <b-col md="4">
@@ -418,6 +418,7 @@ export default {
         { value: 'P', label: 'Perempuan' },
       ],
       jaringanOptions2: [],
+      jaringanOptions2Edit: [],
       isOnExport: false,
     }
   },
@@ -427,6 +428,11 @@ export default {
     selectedKelurahan: 'fetchTpsOptions',
     selectedTps: 'resetSelected',
     addCollapse: 'watchAddManual',
+    editInputKab: function() {
+      if(this.isAdmin) {
+        this.fetchJaringanOptionsEdit();
+      }
+    }
   },
   mounted() {
     this.fetchKabupatenOptions();
@@ -636,6 +642,25 @@ export default {
         }
       }
     },
+    async fetchJaringanOptionsEdit() {
+      if (this.editInputKab) {
+        try {
+          const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/network/list?nama_kabupaten=${this.editInputKab}`, withHeader);
+          if(response.data.meta.code == 200) {
+            const data = response.data.data;
+
+            this.jaringanOptions2Edit = data.map(item => {
+              return {
+                value: item,
+                label: item,
+              }
+            });
+          }        
+        } catch (error) {
+          console.error('Error fetching Jaringan options:', error);
+        }
+      }
+    },
     async fetchKecamatanOptions() {
       this.selectedKecamatan = null;
       this.selectedKelurahan = null;
@@ -802,6 +827,13 @@ export default {
         const network = userData.user_network;
 
         this.jaringanOptions2 = network.map(item => {
+          return {
+            value: item,
+            label: item,
+          }
+        });
+
+        this.jaringanOptions2Edit = network.map(item => {
           return {
             value: item,
             label: item,

@@ -240,8 +240,8 @@
                 </button>
 
                 <!-- Display two pages after the current page -->
-                <button v-if="resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit))" class="btn btn-primary rounded-0" @click="prevNextCariData(+1)">{{ resultPagination.currentPage + 1 }}</button>
-                <button v-if="resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 1" class="btn btn-primary rounded-0" @click="prevNextCariData(+2)">{{ resultPagination.currentPage + 2 }}</button>
+                <button v-if="(resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit))) && (resultPagination.currentPage != (Math.ceil(resultTotal / resultPagination.currentLimit)))" class="btn btn-primary rounded-0" @click="prevNextCariData(+1)">{{ resultPagination.currentPage + 1 }}</button>
+                <button v-if="(resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 1) && (resultPagination.currentPage != (Math.ceil(resultTotal / resultPagination.currentLimit)) - 1)" class="btn btn-primary rounded-0" @click="prevNextCariData(+2)">{{ resultPagination.currentPage + 2 }}</button>
 
                 <!-- Display ellipsis (...) if not on the last page -->
                 <span v-if="resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 2" class="btn btn-primary rounded-0">...</span>
@@ -385,8 +385,8 @@
           </button>
 
           <!-- Display two pages after the current page -->
-          <button v-if="resultPaginationNama.currentPage < (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit))" class="btn btn-primary rounded-0" @click="prevNextCariDataNama(+1)">{{ resultPaginationNama.currentPage + 1 }}</button>
-          <button v-if="resultPaginationNama.currentPage < (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit)) - 1" class="btn btn-primary rounded-0" @click="prevNextCariDataNama(+2)">{{ resultPaginationNama.currentPage + 2 }}</button>
+          <button v-if="(resultPaginationNama.currentPage < (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit))) && (resultPaginationNama.currentPage != (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit)))" class="btn btn-primary rounded-0" @click="prevNextCariData(+1)">{{ resultPaginationNama.currentPage + 1 }}</button>
+          <button v-if="(resultPaginationNama.currentPage < (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit)) - 1) && (resultPaginationNama.currentPage != (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit)) - 1)" class="btn btn-primary rounded-0" @click="prevNextCariData(+2)">{{ resultPaginationNama.currentPage + 2 }}</button>
 
           <!-- Display ellipsis (...) if not on the last page -->
           <span v-if="resultPaginationNama.currentPage < (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit)) - 2" class="btn btn-primary rounded-0">...</span>
@@ -407,13 +407,13 @@
         <b-row>
           <b-col md="6">
             <b-form-group>
-              <label for="input-manual-nik" class="form-label">Kecamatan</label>
+              <label for="input-manual-nik" class="form-label">Kecamatan*</label>
               <b-form-input v-model="editInputKec" class="form-control-sm height-select2" disabled></b-form-input>
             </b-form-group>
           </b-col>
           <b-col md="6">
             <b-form-group>
-              <label for="input-manual-nik" class="form-label">Kelurahan</label>
+              <label for="input-manual-nik" class="form-label">Kelurahan*</label>
               <b-form-input v-model="editInputKel" class="form-control-sm height-select2" disabled></b-form-input>
             </b-form-group>
           </b-col>
@@ -425,14 +425,14 @@
           </b-col>
           <b-col md="4">
             <b-form-group>
-              <label for="input-manual-name" class="form-label">Nama Lengkap</label>
+              <label for="input-manual-name" class="form-label">Nama Lengkap*</label>
               <b-form-input class="form-control-sm height-select2" v-model="editInputName" placeholder="Masukan Nama" id="input-manual-name" required></b-form-input>
             </b-form-group>
           </b-col>
           <b-col md="4">
             <b-form-group>
-              <label for="input-manual-jaringan" class="form-label">Jaringan</label>
-              <v-select v-model="editSelectedJaringan" placeholder="Pilih Jaringan" :options="jaringanOptions2" id="input-manual-jaringan" required></v-select>
+              <label for="input-manual-jaringan" class="form-label">Jaringan*</label>
+              <v-select v-model="editSelectedJaringan" placeholder="Pilih Jaringan" :options="jaringanOptions2Edit" id="input-manual-jaringan" required></v-select>
             </b-form-group>
           </b-col>
           <b-col md="4">
@@ -554,19 +554,7 @@
           { value: 'P', label: 'Perempuan' },
         ],
         jaringanOptions2: [],
-        dataJaringan: {
-          'CIANJUR': [
-            { value: 'JAMBRONG', label: 'JAMBRONG' },
-            { value: 'BOBOTOH', label: 'BOBOTOH' },
-            { value: 'IBU-IBU MILENIAL CIANJUR', label: 'IBU-IBU MILENIAL CIANJUR' },
-            { value: 'TEH DEVI SELATAN', label: 'TEH DEVI SELATAN' },
-          ],
-          'BOGOR': [
-            { value: 'JANUR BOGOR', label: 'JANUR BOGOR' },
-            { value: 'EVENT BOGOR', label: 'EVENT BOGOR' },
-            { value: 'IBU-IBU MILENIAL BOGOR', label: 'IBU-IBU MILENIAL BOGOR' },
-          ]
-        },
+        jaringanOptions2Edit: [],
         isOnExport: false,
       }
     },
@@ -582,7 +570,11 @@
       selectedCariNamaKecamatan: 'fetchKelurahanCariNamaOptions',
       selectedCariNamaKelurahan: 'cariDataNama',
       selectedJaringan: 'fetchData',
-      editInputKab: 'setJaringanOptionEdit',
+      editInputKab: function() {
+        if(this.isAdmin) {
+          this.fetchJaringanOptionsEdit();
+        }
+      }
     },
     methods: {
       handleExport: debounce(async function () {
@@ -759,18 +751,48 @@
   
         this.adminCity();
       },
-      setJaringanOptionEdit() {
-        this.jaringanOptions2 = this.dataJaringan[this.editInputKab];
+      async fetchJaringanOptions() {
+        if (this.selectedKabupaten) {
+          try {
+            const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/network/list?nama_kabupaten=${this.selectedKabupaten}`, withHeader);
+            if(response.data.meta.code == 200) {
+              const data = response.data.data;
+
+              this.jaringanOptions2 = data.map(item => {
+                return {
+                  value: item,
+                  label: item,
+                }
+              });
+            }        
+          } catch (error) {
+            console.error('Error fetching Jaringan options:', error);
+          }
+        }
       },
-      setJaringanOption() {
-        this.jaringanOptions2 = this.dataJaringan[this.selectedKabupaten];
-        this.manualSelectedJaringan = this.jaringanOptions2[0];
+      async fetchJaringanOptionsEdit() {
+        if (this.editInputKab) {
+          try {
+            const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/network/list?nama_kabupaten=${this.editInputKab}`, withHeader);
+            if(response.data.meta.code == 200) {
+              const data = response.data.data;
+
+              this.jaringanOptions2Edit = data.map(item => {
+                return {
+                  value: item,
+                  label: item,
+                }
+              });
+            }        
+          } catch (error) {
+            console.error('Error fetching Jaringan options:', error);
+          }
+        }
       },
       async fetchKecamatanOptions() {
         this.selectedKecamatan = null;
         this.selectedKelurahan = null;
         if (this.selectedKabupaten) {
-          this.setJaringanOption();
           try {
           const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/district/by-city?nama_kabupaten=${this.selectedKabupaten}`, withHeader);
           if(response.data.meta.code == 200) {
@@ -781,6 +803,9 @@
           }
           this.cariData(false, this.resultOffset);
           this.selectedCariNamaKabupaten = this.selectedKabupaten;
+          if(this.isAdmin) {
+            this.fetchJaringanOptions();
+          }
         }
       },
       async fetchKelurahanOptions() {
@@ -998,6 +1023,21 @@
   
         if(userData && userData.role === 'admin') {
           const region = userData.regency;
+          const network = userData.user_network;
+
+          this.jaringanOptions2 = network.map(item => {
+            return {
+              value: item,
+              label: item,
+            }
+          });
+
+          this.jaringanOptions2Edit = network.map(item => {
+            return {
+              value: item,
+              label: item,
+            }
+          });
         
           if(this.kabupatenOptions.includes(region)) {
             this.selectedKabupaten = region;
