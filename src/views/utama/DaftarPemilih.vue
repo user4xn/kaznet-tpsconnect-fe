@@ -169,12 +169,18 @@
         <div class="card-header d-flex justify-content-between flex-wrap align-items-center">
           <div class="header-title w-100">
             <b-row>
-              <b-col sm="8" class="d-flex align-items-center">
+              <b-col sm="6" class="d-flex align-items-center">
                 <p class="text-muted mb-0">Tampil {{ `${(resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit) + 1} - ${((resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit)) + this.resultSearch.length} dari ${resultTotal.toLocaleString()}` }} data...</p>
               </b-col>
-              <b-col sm="4" class="text-end">
+              <b-col sm="6" class="text-end">
                 <b-button variant="success" @click="handleExport()" :disabled="isOnExport" size="sm">
                   {{ isOnExport ? 'Mengekspor..' : 'Export XLS' }}
+                </b-button>
+                <b-button :variant="resultManual == '1' ? 'warning' : 'outline-warning'" class="ms-1" @click="setCariDataManual('1')" size="sm">
+                  Ditambahkan Manual
+                </b-button>
+                <b-button :variant="resultManual == '0' ? 'info' : 'outline-info'" class="ms-1" @click="setCariDataManual('0')" size="sm">
+                  Dari Data DPT
                 </b-button>
               </b-col>
             </b-row>
@@ -385,6 +391,7 @@ export default {
       resultSearch: [],
       resultTotal: null,
       resultMode: true,
+      resultManual: null,
       resultPagination: {
         currentLimit: null,
         currentOffset: null,
@@ -439,6 +446,15 @@ export default {
     this.cariData(false);
   },
   methods: {
+    setCariDataManual(param) {
+      if(this.resultManual === param) {
+        this.resultManual = null;
+      } else {
+        this.resultManual = param;
+      }
+
+      this.cariData(false, this.resultOffset);
+    },
     handleExport: debounce(async function () {
       this.isOnExport = true;
 
@@ -772,6 +788,10 @@ export default {
 
       if (this.selectedTps) {
         queryParam += `tps=${this.selectedTps}&`;
+      }
+
+      if (this.resultManual) {
+        queryParam += `is_manual=${this.resultManual}&`;
       }
 
       if (this.selectedJaringan) {

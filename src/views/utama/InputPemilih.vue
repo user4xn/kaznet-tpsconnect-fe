@@ -503,6 +503,7 @@ export default {
       }
     },
     async fetchKecamatanOptions() {
+      this.selectedData = [];
       this.selectedKecamatan = null;
       this.selectedKelurahan = null;
       this.selectedTps = null;
@@ -520,9 +521,12 @@ export default {
         if(this.isAdmin) {
           this.fetchJaringanOptions();
         }
+      } else {
+        this.resultSearch = [];
       }
     },
     async fetchKelurahanOptions() {
+      this.selectedData = [];
       this.selectedKelurahan = null;
       this.selectedTps = null;
       if (this.selectedKecamatan) {
@@ -539,6 +543,7 @@ export default {
       }
     },
     async fetchTpsOptions() {
+      this.selectedData = [];
       this.selectedTps = null;
       this.inputName = null;
 
