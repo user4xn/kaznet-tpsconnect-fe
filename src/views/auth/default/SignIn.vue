@@ -36,8 +36,9 @@
                 <div class="d-flex justify-content-center">
                   <button type="submit" class="btn btn-primary">Masuk</button>
                 </div>
-
-                <div v-if="loginError" class="text-danger mt-2">{{ loginError }}</div>
+                <b-alert class="mt-3" variant="danger" v-if="loginError" show dismissible>
+                  {{ loginError }}
+                </b-alert>
               </form>
             </b-card>
           </b-col>
