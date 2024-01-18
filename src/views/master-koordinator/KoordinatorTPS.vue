@@ -255,7 +255,7 @@
                 <span v-if="resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 2" class="btn btn-primary rounded-0">...</span>
 
                 <!-- Display last page number if not on the last page -->
-                <button v-if="(resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 1) && resultPagination.currentPage != (Math.ceil(resultTotal / resultPagination.currentLimit))" class="btn btn-primary rounded-0" @click="prevNextCariData(+(Math.ceil(resultTotal / resultPagination.currentLimit) - resultPagination.currentPage))">{{ Math.ceil(resultTotal / resultPagination.currentLimit) }}</button>
+                <button v-if="(resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 1) && resultPagination.currentPage != (Math.ceil(resultTotal / resultPagination.currentLimit) - 2)" class="btn btn-primary rounded-0" @click="prevNextCariData(+(Math.ceil(resultTotal / resultPagination.currentLimit) - resultPagination.currentPage))">{{ Math.ceil(resultTotal / resultPagination.currentLimit) }}</button>
 
                 <button class="btn btn-primary btn-sm rounded-0 rounded-end" @click="prevNextCariData(+1)">
                   <svg class="icon-32" width="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -269,22 +269,28 @@
     </b-row>
     <b-modal id="modalCariNama" hide-backdrop hide-footer centered size="xl" title="Cari Data DPT">
       <b-row>
-        <b-col sm="6">
+        <b-col sm="4">
           <b-form-group>
             <label for="input-kabupaten" class="form-label">Kota/Kabupaten</label>
             <v-select v-model="selectedCariNamaKabupaten" placeholder="Pilih Kabupaten" :options="kabupatenOptions" id="input-kabupaten" :disabled="!isAdmin"></v-select>
           </b-form-group>
         </b-col>
-        <b-col sm="6">
+        <b-col sm="4">
           <b-form-group>
             <label for="input-kecamatan" class="form-label">Kecamatan</label>
             <v-select v-model="selectedCariNamaKecamatan" placeholder="Pilih Kecamatan" :options="kecamatanCariNamaOptions" id="input-kecamatan" :disabled="!selectedCariNamaKabupaten"></v-select>
           </b-form-group>
         </b-col>
-        <b-col sm="6">
+        <b-col sm="4">
           <b-form-group>
             <label for="input-kelurahan" class="form-label">Kelurahan</label>
             <v-select v-model="selectedCariNamaKelurahan" placeholder="Pilih Kelurahan" :options="kelurahanCariNamaOptions" id="input-kelurahan" :disabled="!selectedCariNamaKecamatan"></v-select>
+          </b-form-group>
+        </b-col>
+        <b-col sm="4">
+          <b-form-group>
+            <label for="input-tps" class="form-label">TPS*</label>
+            <v-select taggable v-model="selectedCariNamaTps" placeholder="Pilih TPS" :options="tpsCariNamaOptions" id="input-tps" :disabled="!selectedCariNamaKelurahan"></v-select>
           </b-form-group>
         </b-col>
         <b-col md="12">
@@ -315,6 +321,7 @@
                 <th>KAB</th>
                 <th>KEC</th>
                 <th>KEL</th>
+                <th>TPS</th>
                 <th style="min-width: 100px" class="text-center">Aksi</th>
               </tr>
             </thead>
@@ -328,6 +335,7 @@
                   <td>{{ result.nama_kabupaten }}</td>
                   <td>{{ result.nama_kecamatan }}</td>
                   <td>{{ result.nama_kelurahan }}</td>
+                  <td>{{ result.tps }}</td>
                   <td class="d-flex justify-content-center">
                     <button class="btn btn-primary btn-sm" data-bs-dismiss="modal" @click="handlePilih(index)">Pilih</button>
                     <button class="btn btn-success btn-sm ms-2" data-bs-toggle="collapse" :data-bs-target="'#detailRow-' + index">Detail</button>
@@ -400,7 +408,7 @@
           <span v-if="resultPaginationNama.currentPage < (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit)) - 2" class="btn btn-primary rounded-0">...</span>
 
           <!-- Display last page number if not on the last page -->
-          <button v-if="(resultPaginationNama.currentPage < (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit)) - 1) && resultPaginationNama.currentPage != (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit))" class="btn btn-primary rounded-0" @click="prevNextCariDataNama(+(Math.ceil(resultTotalNama / resultPaginationNama.currentLimit) - resultPaginationNama.currentPage))">{{ Math.ceil(resultTotalNama / resultPaginationNama.currentLimit) }}</button>
+          <button v-if="(resultPaginationNama.currentPage < (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit)) - 1) && resultPaginationNama.currentPage != (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit) - 2)" class="btn btn-primary rounded-0" @click="prevNextCariDataNama(+(Math.ceil(resultTotalNama / resultPaginationNama.currentLimit) - resultPaginationNama.currentPage))">{{ Math.ceil(resultTotalNama / resultPaginationNama.currentLimit) }}</button>
 
           <button class="btn btn-primary btn-sm rounded-0 rounded-end" @click="prevNextCariDataNama(+1)">
             <svg class="icon-32" width="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -513,6 +521,7 @@
         selectedTps: null,
         kecamatanCariNamaOptions: [],
         kelurahanCariNamaOptions: [],
+        tpsCariNamaOptions: [],
         selectedJaringan: null,
         inputName: null,
         kabupatenOptions: [],
@@ -563,6 +572,7 @@
         selectedCariNamaKabupaten: null,
         selectedCariNamaKecamatan: null,
         selectedCariNamaKelurahan: null,
+        selectedCariNamaTps: null,
         genderOptions: [
           { value: 'L', label: 'Laki-laki' },
           { value: 'P', label: 'Perempuan' },
@@ -583,7 +593,8 @@
       selectedTps: 'fetchData',
       selectedCariNamaKabupaten: 'fetchKecamatanCariNamaOptions',
       selectedCariNamaKecamatan: 'fetchKelurahanCariNamaOptions',
-      selectedCariNamaKelurahan: 'cariDataNama',
+      selectedCariNamaKelurahan: 'fetchTpsCariNamaOptions',
+      selectedCariNamaTps: 'cariDataNama',
       selectedJaringan: 'fetchData',
       editInputKab: function() {
         if(this.isAdmin) {
@@ -889,6 +900,24 @@
             const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/subdistrict/by-district?nama_kecamatan=${this.selectedCariNamaKecamatan}`, withHeader);
             if(response.data.meta.code == 200) {
               this.kelurahanCariNamaOptions = response.data.data;
+            }  
+          } catch (error) {
+            console.error('Error fetching Kelurahan options:', error);
+          }
+          this.cariDataNama();
+        }
+      },
+      async fetchTpsCariNamaOptions() {
+        this.selectedCariNamaTps = null;
+        if (this.selectedCariNamaKelurahan) {
+          try {
+            var queryParam = `nama_kabupaten=${this.selectedCariNamaKabupaten}`;
+                queryParam += `&nama_kecamatan=${this.selectedCariNamaKecamatan}`;
+                queryParam += `&nama_kelurahan=${this.selectedCariNamaKelurahan}`;
+
+            const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/resident/tps/subdistrict?${queryParam}`, withHeader);
+            if(response.data.meta.code == 200) {
+              this.tpsCariNamaOptions = response.data.data;
             }  
           } catch (error) {
             console.error('Error fetching Kelurahan options:', error);

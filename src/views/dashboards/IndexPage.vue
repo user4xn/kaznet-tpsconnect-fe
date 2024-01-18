@@ -57,9 +57,9 @@
               </div>
               <div class="d-flex align-items-center align-self-center">
                 <div class="d-flex align-items-center text-primary">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" viewBox="0 0 24 24" fill="currentColor">
+                  <svg class="mt-2" xmlns="http://www.w3.org/2000/svg" width="14" viewBox="0 0 24 24" fill="#3a57e8">
                     <g>
-                      <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                      <circle cx="12" cy="12" r="8" fill="#3a57e8"></circle>
                     </g>
                   </svg>
                   <div class="ms-2">
@@ -67,9 +67,9 @@
                   </div>
                 </div>
                 <div class="d-flex align-items-center ms-3 text-info">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" viewBox="0 0 24 24" fill="#079aa2">
+                  <svg class="mt-2" xmlns="http://www.w3.org/2000/svg" width="14" viewBox="0 0 24 24" fill="#4bc7d2">
                     <g>
-                      <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                      <circle cx="12" cy="12" r="8" fill="#4bc7d2"></circle>
                     </g>
                   </svg>
                   <div class="ms-2">
@@ -316,6 +316,56 @@ export default {
       }
     })
 
+    const earningChart = ref({
+      series: [55, 75],
+      options: {
+        chart: {
+          height: 260,
+          type: 'radialBar'
+        },
+        colors: ['#4bc7d2', '#3a57e8'],
+        plotOptions: {
+          radialBar: {
+            hollow: {
+              margin: 10,
+              size: '50%'
+            },
+            track: {
+              margin: 10,
+              strokeWidth: '50%'
+            },
+            dataLabels: {
+              show: false
+            }
+          }
+        }
+      }
+    })
+
+    const conversionChart = ref({
+      series: [],
+      options: {
+        chart: {
+          width: 380,
+          type: 'pie',
+        },
+        colors: ['#4bc7d2', '#3a57e8'],
+        labels: ['Cianjur', 'Bogor'],
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }]
+      },
+    });
+
+
     const grossSaleChartUpdate = (data) => {
       console.log(grossSaleChart.value, 'before');
 
@@ -348,32 +398,6 @@ export default {
       }
     }
 
-    const earningChart = ref({
-      series: [55, 75],
-      options: {
-        chart: {
-          height: 260,
-          type: 'radialBar'
-        },
-        colors: ['#4bc7d2', '#3a57e8'],
-        plotOptions: {
-          radialBar: {
-            hollow: {
-              margin: 10,
-              size: '50%'
-            },
-            track: {
-              margin: 10,
-              strokeWidth: '50%'
-            },
-            dataLabels: {
-              show: false
-            }
-          }
-        }
-      }
-    })
-
     const fetchChartProgres = async () => {
       try {
         const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/dashboard/bottom-chart`, withHeader);
@@ -393,28 +417,6 @@ export default {
         console.error('Error fetching chart top data:', error);
       }
     }
-
-    const conversionChart = ref({
-      series: [],
-      options: {
-        chart: {
-          width: 380,
-          type: 'pie',
-        },
-        labels: ['Cianjur', 'Bogor'],
-        responsive: [{
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200
-            },
-            legend: {
-              position: 'bottom'
-            }
-          }
-        }]
-      },
-    });
 
     const swiperItems = ref([])
 

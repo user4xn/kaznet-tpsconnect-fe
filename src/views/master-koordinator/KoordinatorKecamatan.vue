@@ -239,7 +239,7 @@
                 <span v-if="resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 2" class="btn btn-primary rounded-0">...</span>
 
                 <!-- Display last page number if not on the last page -->
-                <button v-if="(resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 1) && resultPagination.currentPage != (Math.ceil(resultTotal / resultPagination.currentLimit))" class="btn btn-primary rounded-0" @click="prevNextCariData(+(Math.ceil(resultTotal / resultPagination.currentLimit) - resultPagination.currentPage))">{{ Math.ceil(resultTotal / resultPagination.currentLimit) }}</button>
+                <button v-if="(resultPagination.currentPage < (Math.ceil(resultTotal / resultPagination.currentLimit)) - 1) && resultPagination.currentPage != (Math.ceil(resultTotal / resultPagination.currentLimit) - 2)" class="btn btn-primary rounded-0" @click="prevNextCariData(+(Math.ceil(resultTotal / resultPagination.currentLimit) - resultPagination.currentPage))">{{ Math.ceil(resultTotal / resultPagination.currentLimit) }}</button>
 
                 <button class="btn btn-primary btn-sm rounded-0 rounded-end" @click="prevNextCariData(+1)">
                   <svg class="icon-32" width="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -384,7 +384,7 @@
           <span v-if="resultPaginationNama.currentPage < (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit)) - 2" class="btn btn-primary rounded-0">...</span>
 
           <!-- Display last page number if not on the last page -->
-          <button v-if="(resultPaginationNama.currentPage < (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit)) - 1) && resultPaginationNama.currentPage != (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit))" class="btn btn-primary rounded-0" @click="prevNextCariDataNama(+(Math.ceil(resultTotalNama / resultPaginationNama.currentLimit) - resultPaginationNama.currentPage))">{{ Math.ceil(resultTotalNama / resultPaginationNama.currentLimit) }}</button>
+          <button v-if="(resultPaginationNama.currentPage < (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit)) - 1) && resultPaginationNama.currentPage != (Math.ceil(resultTotalNama / resultPaginationNama.currentLimit) - 2)" class="btn btn-primary rounded-0" @click="prevNextCariDataNama(+(Math.ceil(resultTotalNama / resultPaginationNama.currentLimit) - resultPaginationNama.currentPage))">{{ Math.ceil(resultTotalNama / resultPaginationNama.currentLimit) }}</button>
           
           <button class="btn btn-primary btn-sm rounded-0 rounded-end" @click="prevNextCariDataNama(+1)">
             <svg class="icon-32" width="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
