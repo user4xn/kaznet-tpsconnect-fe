@@ -184,6 +184,14 @@
                 </b-button>
               </b-col>
             </b-row>
+            <hr class="hr-horizontal"/>
+            <b-row>
+              <b-col sm="3">
+                <b-input-group size="md" prepend="Baris">
+                  <b-form-select v-model="resultLimit" @change="cariData(false)" placeholder="10" :options="[10,50,100]"></b-form-select>
+                </b-input-group>
+              </b-col>
+            </b-row>
           </div>
         </div>
         <b-card-body>

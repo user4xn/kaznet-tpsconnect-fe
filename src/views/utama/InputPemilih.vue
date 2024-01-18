@@ -233,8 +233,20 @@
     <b-col sm="12">
       <b-card no-body class="card">
         <div class="card-header d-flex justify-content-between flex-wrap align-items-center">
-          <div class="header-title">
-            <p class="text-muted mb-0">Tampil {{ `${(resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit) + 1} - ${((resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit)) + this.resultSearch.length} dari ${resultTotal.toLocaleString()}` }} data...</p>
+          <div class="header-title w-100">
+            <b-row>
+              <b-col sm="12" class="d-flex align-items-center">
+                <p class="text-muted mb-0">Tampil {{ `${(resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit) + 1} - ${((resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit)) + this.resultSearch.length} dari ${resultTotal.toLocaleString()}` }} data...</p>
+              </b-col>
+            </b-row>
+            <hr class="hr-horizontal"/>
+            <b-row>
+              <b-col sm="3">
+                <b-input-group size="md" prepend="Baris">
+                  <b-form-select v-model="resultLimit" @change="cariData(false)" placeholder="10" :options="[10,50,100]"></b-form-select>
+                </b-input-group>
+              </b-col>
+            </b-row>
           </div>
         </div>
         <b-card-body>
