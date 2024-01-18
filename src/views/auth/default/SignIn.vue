@@ -36,6 +36,8 @@
                 <div class="d-flex justify-content-center">
                   <button type="submit" class="btn btn-primary">Masuk</button>
                 </div>
+
+                <div v-if="loginError" class="text-danger mt-2">{{ loginError }}</div>
               </form>
             </b-card>
           </b-col>
@@ -64,6 +66,7 @@ const router = useRouter();
 
 const email = ref('');
 const password = ref('');
+const loginError = ref(null);
 
 onMounted(() => {
   if (localStorage.getItem('jwtToken')) {
@@ -106,6 +109,8 @@ const handleSignIn = async () => {
     router.push({ name: 'default.dashboard' });
   } catch (error) {
     console.error('Login failed:', error.response ? error.response.data : error.message);
+    // Update loginError to display an error message in the template
+    loginError.value = 'Email atau password yang anda masukan salah';
   }
 };
 </script>

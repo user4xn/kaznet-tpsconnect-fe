@@ -834,7 +834,6 @@ export default {
       }, 500);
     },300),
     prevNextCariData(x) {
-      console.log(x);
       let current = this.resultPagination.currentPage;
       let count = current + x;
       let mod = this.resultTotal % this.resultPagination.currentLimit;

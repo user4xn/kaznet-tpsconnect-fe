@@ -365,15 +365,10 @@ export default {
       },
     });
 
-
     const grossSaleChartUpdate = (data) => {
-      console.log(grossSaleChart.value, 'before');
-
       grossSaleChart.value.series[0].data = data.data_cianjur;
       grossSaleChart.value.series[1].data = data.data_bogor;
       grossSaleChart.value.options.xaxis.overwriteCategories = data;
-
-      console.log(grossSaleChart.value, 'after');
     }
 
     const fetchChartTop = async (date, by) => {
@@ -410,8 +405,6 @@ export default {
 
           earningChart.value.options.plotOptions.radialBar.hollow = Math.ceil(data.data_cianjur.percentage)+'%';
           earningChart.value.options.plotOptions.radialBar.track = Math.ceil(data.data_bogor.percentage)+'%';
-
-          console.log(earningChart.value);
         }
       } catch (error) {
         console.error('Error fetching chart top data:', error);

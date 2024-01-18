@@ -27,7 +27,7 @@
         </div>
       </a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-        <li><router-link class="dropdown-item" :to="{ name: 'default.user-privacy-setting' }">Pengaturan</router-link></li>
+        <li><a href="#" class="dropdown-item">Pengaturan</a></li>
         <li><hr class="dropdown-divider" /></li>
         <li><a href="#" class="dropdown-item" @click="handleLogout">Keluar</a></li>
       </ul>
