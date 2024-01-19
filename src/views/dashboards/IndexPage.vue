@@ -299,7 +299,7 @@ export default {
           labels: {
             show: true,
             minWidth: 19,
-            maxWidth: 23,
+            maxWidth: 25,
             style: {
               colors: '#8A92A6'
             },
