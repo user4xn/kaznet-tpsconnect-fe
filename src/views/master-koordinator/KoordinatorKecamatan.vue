@@ -47,12 +47,12 @@
                   <b-form-group>
                     <b-row>
                       <b-col md="6">
-                        <label for="input-jaringan" class="form-label">Jaringan:</label>
+                        <label for="input-jaringan" class="form-label">Jaringan</label>
                         <v-select v-model="selectedJaringan" placeholder="Pilih Jaringan" :options="jaringanOptions2" id="input-jaringan" required :disabled="!selectedKabupaten"></v-select>
                       </b-col>
                       <b-col md="6">
-                        <label for="input-name" class="form-label">Nama: <i>(enter untuk memuat data)</i></label>
-                        <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama" id="input-name" :disabled="!selectedKabupaten || isOnFetch" @keyup.enter="cariData(false)"></b-form-input>
+                        <label for="input-name" class="form-label">Cari <i>(enter untuk memuat data)</i></label>
+                        <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama atau NIK" id="input-name" :disabled="!selectedKabupaten || isOnFetch" @keyup.enter="cariData(false)"></b-form-input>
                       </b-col>
                     </b-row>
                   </b-form-group>

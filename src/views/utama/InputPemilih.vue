@@ -51,8 +51,8 @@
                 <b-form-group>
                   <b-row>
                     <b-col md="8">
-                      <label for="input-name" class="form-label">Nama <i>(enter untuk memuat data)</i></label>
-                      <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama" id="input-name" :disabled="!selectedKabupaten || isOnFetch || addCollapse" @keyup.enter="cariData(false)"></b-form-input>
+                      <label for="input-name" class="form-label">Cari <i>(enter untuk memuat data)</i></label>
+                      <b-form-input class="form-control-sm height-select2" v-model="inputName" placeholder="Cari Nama atau NIK" id="input-name" :disabled="!selectedKabupaten || isOnFetch || addCollapse" @keyup.enter="cariData(false)"></b-form-input>
                     </b-col>
                     <b-col md="4" class="d-flex align-items-end">
                       <b-button variant="primary" size="sm" class="height-select2 w-100" @click="cariData(true)" :disabled="!selectedKabupaten || isOnFetch || addCollapse">Tampilkan Semua</b-button>
@@ -157,11 +157,25 @@
   </b-row>
   <b-row v-if="succesValidate">
     <b-col sm="12">
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5.94118 10.7474V20.7444C5.94118 21.0758 5.81103 21.3936 5.57937 21.628C5.3477 21.8623 5.0335 21.994 4.70588 21.994H2.23529C1.90767 21.994 1.59347 21.8623 1.36181 21.628C1.13015 21.3936 1 21.0758 1 20.7444V11.997C1 11.6656 1.13015 11.3477 1.36181 11.1134C1.59347 10.879 1.90767 10.7474 2.23529 10.7474H5.94118ZM5.94118 10.7474C7.25166 10.7474 8.50847 10.2207 9.43512 9.28334C10.3618 8.34594 10.8824 7.07456 10.8824 5.74887V4.49925C10.8824 3.83641 11.1426 3.20071 11.606 2.73201C12.0693 2.26331 12.6977 2 13.3529 2C14.0082 2 14.6366 2.26331 15.0999 2.73201C15.5632 3.20071 15.8235 3.83641 15.8235 4.49925V10.7474H19.5294C20.1847 10.7474 20.8131 11.0107 21.2764 11.4794C21.7397 11.9481 22 12.5838 22 13.2466L20.7647 19.4947C20.5871 20.2613 20.25 20.9196 19.8045 21.3704C19.3589 21.8211 18.8288 22.04 18.2941 21.994H9.64706C8.6642 21.994 7.72159 21.599 7.0266 20.896C6.33162 20.1929 5.94118 19.2394 5.94118 18.2451" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <div class="alert alert-dismissible fade show" :class="resultValidate.error != 0 ? (resultValidate.total === resultValidate.error ? 'alert-danger' : 'alert-success') : 'alert-success'" role="alert">
+        <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+            <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+            </symbol>
+            <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+            </symbol>
+            <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+            </symbol>
         </svg>
-        <strong> Berhasil!</strong> {{ resultValidate.total - resultValidate.error }} data berhasil <u>di tambahkan</u>{{ resultValidate.error != 0 ? `, ${resultValidate.error} data duplikat ditemukan (akan dihapus).` : `. `}}.
+
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24">
+            <use xlink:href="#exclamation-triangle-fill" v-if="resultValidate.error != 0 && resultValidate.total === resultValidate.error"/>
+            <use xlink:href="#info-fill" v-if="resultValidate.error != 0 && resultValidate.total != resultValidate.error" />
+            <use xlink:href="#check-circle-fill" v-if="resultValidate.error == 0"/>
+        </svg>
+        <strong> {{ resultValidate.error != 0 ? (resultValidate.total === resultValidate.error ? 'Gagal!' : 'Berhasil!') : 'Berhasil!'}}</strong> {{ resultValidate.total - resultValidate.error }} data berhasil <u>di tambahkan</u>{{ resultValidate.error != 0 ? `, ${resultValidate.error} data terdeteksi duplikat (tidak akan ditambahkan).` : `. `}}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     </b-col>
