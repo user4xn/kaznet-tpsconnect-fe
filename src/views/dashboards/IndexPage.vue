@@ -1,6 +1,30 @@
 <template>
   <div class="row">
     <div class="col-md-12 col-lg-12">
+      <b-card no-body class="card">
+        <b-card-body>
+          <b-row>
+            <b-col sm="4">
+              <b-form-group>
+                <label for="input-kabupaten" class="form-label">Kota/Kabupaten</label>
+                <v-select v-model="selectedKabupaten" placeholder="Pilih Kabupaten" :options="kabupatenOptions" id="input-kabupaten" :disabled="!isAdmin"></v-select>
+              </b-form-group>
+            </b-col>
+            <b-col sm="4">
+              <b-form-group>
+                <label for="input-kecamatan" class="form-label">Kecamatan</label>
+                <v-select v-model="selectedKecamatan" placeholder="Pilih Kecamatan" :options="kecamatanOptions" id="input-kecamatan" :disabled="!selectedKabupaten"></v-select>
+              </b-form-group>
+            </b-col>
+            <b-col sm="4">
+              <b-form-group>
+                <label for="input-kelurahan" class="form-label">Kelurahan</label>
+                <v-select v-model="selectedKelurahan" placeholder="Pilih Kelurahan" :options="kelurahanOptions" id="input-kelurahan" :disabled="!selectedKecamatan"></v-select>
+              </b-form-group>
+            </b-col>
+          </b-row>
+        </b-card-body>
+      </b-card>
       <div class="row row-cols-1" data-aos="fade-up" data-aos-delay="800">
         <div class="d-slider1 overflow-hidden swiper-container-initialized swiper-container-horizontal swiper-container-pointer-events">
           <Swiper
@@ -197,7 +221,7 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { Navigation } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import AnalyticsWidget from '@/components/widgets/AnalyticsWidget.vue'
@@ -217,11 +241,19 @@ export default {
     AnalyticsWidget
   },
   setup() {
-    const modules = [Navigation]
-    const lastPemilih = ref([])
-    const countTodayPemilih = ref(0)
-    const totalCianjur = ref(0)
-    const totalBogor = ref(0)
+    const kabupatenOptions = ref([]);
+    const kecamatanOptions = ref([]);
+    const kelurahanOptions = ref([]);
+    const selectedKabupaten = ref(null);
+    const selectedKecamatan = ref(null);
+    const selectedKelurahan = ref(null);
+    const isAdmin = ref(false);
+    const modules = ref([Navigation]);
+    const lastPemilih = ref([]);
+    const countTodayPemilih = ref(0);
+    const totalCianjur = ref(0);
+    const totalBogor = ref(0);
+    const swiperItems = ref([]);
     
     const getCurrentDate = () => {
       const currentDate = new Date();
@@ -365,6 +397,66 @@ export default {
       },
     });
 
+    const fetchKabupatenOptions = async () => {
+      selectedKecamatan.value = null;
+      try {
+        const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/city/list`, withHeader);
+        if (response.data.meta.code === 200) {
+          kabupatenOptions.value = response.data.data;
+        }
+      } catch (error) {
+        console.error('Error fetching Kabupaten options:', error);
+      }
+
+      adminCity();
+    };
+
+    const fetchKecamatanOptions = async () => {
+      selectedKecamatan.value = null;
+      selectedKelurahan.value = null;
+      if (selectedKabupaten.value) {
+        try {
+          const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/district/by-city?nama_kabupaten=${selectedKabupaten.value}`, withHeader);
+          if (response.data.meta.code === 200) {
+            kecamatanOptions.value = response.data.data;
+          }
+        } catch (error) {
+          console.error('Error fetching Kecamatan options:', error);
+        }
+      }
+      fetchCard();
+    };
+
+    const fetchKelurahanOptions = async () => {
+      if (selectedKecamatan.value) {
+        try {
+          const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/subdistrict/by-district?nama_kecamatan=${selectedKecamatan.value}`, withHeader);
+          if (response.data.meta.code === 200) {
+            kelurahanOptions.value = response.data.data;
+          }
+        } catch (error) {
+          console.error('Error fetching Kelurahan options:', error);
+        }
+      }
+      fetchCard();
+    };
+
+    const adminCity = () => {
+      const userData = JSON.parse(localStorage.getItem('userData'));
+
+      if (userData && userData.role === 'admin') {
+        const region = userData.regency;
+
+        if (kabupatenOptions.value.includes(region)) {
+          selectedKabupaten.value = region;
+        }
+
+        fetchCard();
+      } else {
+        isAdmin.value = true;
+      }
+    };
+
     const grossSaleChartUpdate = (data) => {
       grossSaleChart.value.series[0].data = data.data_cianjur;
       grossSaleChart.value.series[1].data = data.data_bogor;
@@ -411,12 +503,25 @@ export default {
       }
     }
 
-    const swiperItems = ref([])
-
     const fetchCard = async () => {
       try {
-        const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/dashboard/card`, withHeader);
+        var queryParam = '?';
+        
+        if (selectedKabupaten.value) {
+          queryParam += `nama_kabupaten=${selectedKabupaten.value}&`;
+        }
+
+        if (selectedKecamatan.value) {
+            queryParam += `nama_kecamatan=${selectedKecamatan.value}&`;
+        }
+
+        if (selectedKelurahan.value) {
+            queryParam += `nama_kelurahan=${selectedKelurahan.value}`;
+        }
+
+        const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/dashboard/card${queryParam ?? ''}`, withHeader);
         if(response.data.meta.code == 200) {
+          swiperItems.value = []
           const data = response.data.data;
           data.forEach((item, index) => {
             swiperItems.value.push({
@@ -456,14 +561,54 @@ export default {
         duration: 800
       })
 
+      fetchKabupatenOptions()
       fetchCard()
       fetchLastPemilih()
       setTimeout(() => {
-        fetchChartTop('2024-01-10', 'week')
+        fetchChartTop(getCurrentDate(), 'week')
         fetchChartProgres();
       }, 2000);
     })
-    return { modules, grossSaleChart, earningChart, conversionChart, swiperItems, lastPemilih, countTodayPemilih, fetchChartTop, getCurrentDate, totalCianjur, totalBogor }
+
+    watch(selectedKabupaten, () => {
+      fetchKecamatanOptions();
+    });
+
+    watch(selectedKecamatan, () => {
+      fetchKelurahanOptions();
+    });
+
+    watch(selectedKelurahan, () => {
+      fetchCard();
+    });
+    
+    return {
+      kabupatenOptions,
+      kecamatanOptions,
+      kelurahanOptions,
+      selectedKabupaten,
+      selectedKecamatan,
+      selectedKelurahan,
+      isAdmin,
+      modules,
+      lastPemilih,
+      countTodayPemilih,
+      totalCianjur,
+      totalBogor,
+      swiperItems,
+      fetchKabupatenOptions,
+      fetchKecamatanOptions,
+      fetchKelurahanOptions,
+      adminCity,
+      fetchCard,
+      fetchLastPemilih,
+      fetchChartTop,
+      fetchChartProgres,
+      grossSaleChart,
+      earningChart,
+      conversionChart,
+      getCurrentDate,
+    };
   }
 }
 </script>
