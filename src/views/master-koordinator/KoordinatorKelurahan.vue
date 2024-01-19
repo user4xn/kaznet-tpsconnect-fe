@@ -1007,7 +1007,7 @@
           return;
         }
 
-        if ((count > 0 && count <= (this.resultTotalNama / this.resultPaginationNama.currentLimit)) || (mod != 0 && ((this.resultPaginationNama.currentLimit * (count - 1)) + mod) <= this.resultTotal)) {
+        if ((count > 0 && count <= (this.resultTotalNama / this.resultPaginationNama.currentLimit)) || (mod != 0 && ((this.resultPaginationNama.currentLimit * (count - 1)) + mod) <= this.resultTotalNama)) {
           this.resultPaginationNama.currentPage = count;
           this.cariDataNama(this.resultPaginationNama.currentPage);
         }
