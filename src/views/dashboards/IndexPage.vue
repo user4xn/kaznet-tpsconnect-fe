@@ -4,22 +4,28 @@
       <b-card no-body class="card">
         <b-card-body>
           <b-row>
-            <b-col sm="4">
+            <b-col sm="3">
               <b-form-group>
                 <label for="input-kabupaten" class="form-label">Kota/Kabupaten</label>
                 <v-select v-model="selectedKabupaten" placeholder="Pilih Kabupaten" :options="kabupatenOptions" id="input-kabupaten" :disabled="!isAdmin"></v-select>
               </b-form-group>
             </b-col>
-            <b-col sm="4">
+            <b-col sm="3">
               <b-form-group>
                 <label for="input-kecamatan" class="form-label">Kecamatan</label>
                 <v-select v-model="selectedKecamatan" placeholder="Pilih Kecamatan" :options="kecamatanOptions" id="input-kecamatan" :disabled="!selectedKabupaten"></v-select>
               </b-form-group>
             </b-col>
-            <b-col sm="4">
+            <b-col sm="3">
               <b-form-group>
                 <label for="input-kelurahan" class="form-label">Kelurahan</label>
                 <v-select v-model="selectedKelurahan" placeholder="Pilih Kelurahan" :options="kelurahanOptions" id="input-kelurahan" :disabled="!selectedKecamatan"></v-select>
+              </b-form-group>
+            </b-col>
+            <b-col sm="3">
+              <b-form-group>
+                <label for="input-kelurahan" class="form-label">Jaringan</label>
+                <v-select v-model="selectedJaringan" placeholder="Pilih Jaringan" :options="jaringanOptions2" id="input-kelurahan" :disabled="!selectedKabupaten"></v-select>
               </b-form-group>
             </b-col>
           </b-row>
@@ -244,9 +250,11 @@ export default {
     const kabupatenOptions = ref([]);
     const kecamatanOptions = ref([]);
     const kelurahanOptions = ref([]);
+    const jaringanOptions2 = ref([]);
     const selectedKabupaten = ref(null);
     const selectedKecamatan = ref(null);
     const selectedKelurahan = ref(null);
+    const selectedJaringan = ref(null);
     const isAdmin = ref(false);
     const modules = ref([Navigation]);
     const lastPemilih = ref([]);
@@ -413,6 +421,7 @@ export default {
 
     const fetchKecamatanOptions = async () => {
       selectedKecamatan.value = null;
+      selectedJaringan.value = null;
       selectedKelurahan.value = null;
       if (selectedKabupaten.value) {
         try {
@@ -428,6 +437,7 @@ export default {
     };
 
     const fetchKelurahanOptions = async () => {
+      selectedKelurahan.value = null;
       if (selectedKecamatan.value) {
         try {
           const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/subdistrict/by-district?nama_kecamatan=${selectedKecamatan.value}`, withHeader);
@@ -441,11 +451,39 @@ export default {
       fetchCard();
     };
 
+    const fetchJaringanOptions =  async () => {
+      if (selectedKabupaten.value) {
+        try {
+          const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/network/list?nama_kabupaten=${selectedKabupaten.value}`, withHeader);
+          if(response.data.meta.code == 200) {
+            const data = response.data.data;
+
+            jaringanOptions2.value = data.map(item => {
+              return {
+                value: item,
+                label: item,
+              }
+            });
+          }        
+        } catch (error) {
+          console.error('Error fetching Jaringan options:', error);
+        }
+      }
+    };
+
     const adminCity = () => {
       const userData = JSON.parse(localStorage.getItem('userData'));
 
       if (userData && userData.role === 'admin') {
         const region = userData.regency;
+        const network = userData.user_network;
+
+        jaringanOptions2.value = network.map(item => {
+          return {
+            value: item,
+            label: item,
+          }
+        });
 
         if (kabupatenOptions.value.includes(region)) {
           selectedKabupaten.value = region;
@@ -516,7 +554,11 @@ export default {
         }
 
         if (selectedKelurahan.value) {
-            queryParam += `nama_kelurahan=${selectedKelurahan.value}`;
+            queryParam += `nama_kelurahan=${selectedKelurahan.value}&`;
+        }
+
+        if (selectedJaringan.value) {
+            queryParam += `jaringan=${selectedJaringan.value.value}`;
         }
 
         const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/dashboard/card${queryParam ?? ''}`, withHeader);
@@ -572,6 +614,9 @@ export default {
 
     watch(selectedKabupaten, () => {
       fetchKecamatanOptions();
+      if(isAdmin.value) {
+        fetchJaringanOptions();
+      }
     });
 
     watch(selectedKecamatan, () => {
@@ -581,11 +626,17 @@ export default {
     watch(selectedKelurahan, () => {
       fetchCard();
     });
+
+    watch(selectedJaringan, () => {
+      fetchCard();
+    });
     
     return {
       kabupatenOptions,
       kecamatanOptions,
       kelurahanOptions,
+      jaringanOptions2,
+      selectedJaringan,
       selectedKabupaten,
       selectedKecamatan,
       selectedKelurahan,
