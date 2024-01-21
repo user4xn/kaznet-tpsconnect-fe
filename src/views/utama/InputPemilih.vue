@@ -226,7 +226,7 @@
                           </li>
                       </ol>
                       <div class="text-center mt-1">
-                          <button class="btn btn-success" :disabled="isOnValidate" @click="processValidate">
+                          <button class="btn btn-success" :disabled="selectedJaringanInput.length != selectedData.length || isOnValidate" @click="processValidate">
                             <span v-if="!isOnValidate">
                             Tambahkan Ke Pemilih
                             </span>
@@ -473,7 +473,6 @@ export default {
     selectedKabupaten: 'fetchKecamatanOptions',
     selectedKecamatan: 'fetchKelurahanOptions',
     selectedKelurahan: 'fetchTpsOptions',
-    selectedTps: 'resetSelected',
     addCollapse: 'watchAddManual'
   },
   mounted() {
@@ -716,6 +715,7 @@ export default {
     },
     resetSelected() {
       this.selectedData = [];
+      this.selectedJaringanInput = [];
       this.resetSearch();
       this.cariData(false, this.resultOffset);
     },
@@ -729,6 +729,7 @@ export default {
     },
     removeSelected(index, id) {
       this.selectedData.splice(index, 1);
+      this.selectedJaringanInput.splice(index, 1);
       this.selectedPhoneInput.splice(index, 1);
       this.selectedJaringanInput.splice(index, 1);
       const resIndex = this.resultSearch.findIndex(item => item.id === id);
@@ -788,6 +789,7 @@ export default {
           }
 
           this.selectedData = [];
+          this.selectedJaringanInput = [];
           this.selectedPhoneInput = [];
           this.succesValidate = true;
           this.resultValidate = {
