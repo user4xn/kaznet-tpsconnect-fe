@@ -753,8 +753,10 @@ export default {
       return age;
     },
     async processValidate() {
+      console.log('Data Terpilih', this.selectedData.length);
+      console.log('Jaringan Terinput', this.selectedJaringanInput.length);
       if(this.selectedData.length != this.selectedJaringanInput.length) {
-        return 
+        alert('Data Jaringan Tidak Lengkap Terdeteksi'); 
       }
       
       this.isOnValidate = true;
@@ -789,8 +791,11 @@ export default {
           }
 
           this.selectedData = [];
+          console.log('Data Terpilih Dibersihkan')
           this.selectedJaringanInput = [];
+          console.log('Data Jaringan Terpilih Dibersihkan')
           this.selectedPhoneInput = [];
+          console.log('Data Telepon Terpilih Dibersihkan')
           this.succesValidate = true;
           this.resultValidate = {
             total: totalValidate,
