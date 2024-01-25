@@ -56,7 +56,7 @@ const defaultChildRoutes = (prefix) => [
       pageTitle: 'Input Pemilih', 
       breadcrumbs: [
         { text: 'Utama'},
-        { text: 'Data Pemilih'},
+        { text: 'Data Pemilih' },
         { text: 'Input Pemilih' },
       ],
      },
@@ -77,6 +77,39 @@ const defaultChildRoutes = (prefix) => [
       ],
     },
     component: () => import('@/views/utama/DaftarPemilih.vue')
+  },
+  {
+    path: '/rekap-pemilih',
+    name: prefix + '.rekap-pemilih',
+    meta: { 
+      auth: true, 
+      name: 'Rekap Pemilih', 
+      isBanner: true,
+      pageTitle: 'Rekap Pemilih',
+      breadcrumbs: [
+        { text: 'Utama' },
+        { text: 'Data Pemilih' },
+        { text: 'Rekap Pemilih' },
+      ],
+    },
+    component: () => import('@/views/utama/DaftarRekapPemilih.vue')
+  },
+  {
+    path: '/tambah-rekap-pemilih',
+    name: prefix + '.tambah-rekap-pemilih',
+    meta: { 
+      auth: true, 
+      name: 'Tambah Rekap Pemilih', 
+      isBanner: true,
+      pageTitle: 'Tambah Rekap Pemilih',
+      breadcrumbs: [
+        { text: 'Utama' },
+        { text: 'Data Pemilih' },
+        { text: 'Rekap Pemilih', to: 'rekap-pemilih' },
+        { text: 'Tambah Rekap Pemilih' },
+      ],
+    },
+    component: () => import('@/views/utama/TambahRekapPemilih.vue')
   },
   {
     path: '/daftar-dpt',

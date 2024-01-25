@@ -11,6 +11,7 @@
         <b-collapse tag="ul" class="sub-nav" id="chooser-data" accordion="sidebar-menu" :visible="currentRoute.includes('chooser-data')">
           <side-menu isTag="router-link" title="Input Pemilih" icon="circle" :icon-size="10" icon-type="solid" miniTitle="IP" :route="{ to: 'default.input-pemilih' }"></side-menu>
           <side-menu isTag="router-link" title="Daftar Pemilih" icon="circle" :icon-size="10" icon-type="solid" miniTitle="DP" :route="{ to: 'default.daftar-pemilih' }"></side-menu>
+          <side-menu isTag="router-link" title="Rekap Pemilih" icon="circle" :icon-size="10" icon-type="solid" miniTitle="RP" :route="{ to: 'default.rekap-pemilih' }"></side-menu>
         </b-collapse>
       </side-menu>
 
