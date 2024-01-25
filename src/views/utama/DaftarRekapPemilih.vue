@@ -85,7 +85,7 @@
                   <p class="text-muted mb-0">Tampil {{ `${(resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit) + 1} - ${((resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit)) + this.resultSearch.length} dari ${resultTotal.toLocaleString()}` }} data...</p>
                 </b-col>
                 <b-col sm="4" class="text-end">
-                  <b-button variant="success" @click="handleExport()" :disabled="isOnExport" size="sm">
+                  <b-button variant="success" :disabled="isOnExport" size="sm">
                     {{ isOnExport ? 'Mengekspor..' : 'Export XLS' }}
                   </b-button>
                 </b-col>
