@@ -121,7 +121,7 @@
                       :id="`input-gambar-${index}-${fileIndex}`"
                       @change="event => handleAdditionalFileChange(event, index, fileIndex)"
                       class="mt-3 form-control form-control-sm height-select2"
-                      :required="fileIndex == 0"
+                      :required="fileIndex == 0 && item.suara != 0"
                       :class="inputItems[index].image_uploads[fileIndex].file == null ? 'is-invalid' : 'is-valid'"
                     />
                   </b-form-group>
