@@ -130,7 +130,7 @@
                         </template>
                       </td>
                       <td class="align-middle pt-1 text-center px-3">{{ result.status }}</td>
-                      <td class="align-middle pt-1 text-center">
+                      <td class="align-middle pt-1 text-center px-3">
                         <router-link isTag="button" class="btn btn-primary btn-sm" :to="{ name: 'default.detail-rekap-pemilih', params: { id: result.id }}" >Detail</router-link>
                       </td>
                     </tr>
