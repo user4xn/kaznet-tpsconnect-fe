@@ -112,6 +112,23 @@ const defaultChildRoutes = (prefix) => [
     component: () => import('@/views/utama/TambahRekapPemilih.vue')
   },
   {
+    path: '/detail-rekap-pemilih/:id',
+    name: prefix + '.detail-rekap-pemilih',
+    meta: { 
+      auth: true, 
+      name: 'Detail Rekap Pemilih', 
+      isBanner: true,
+      pageTitle: 'Detail Rekap Pemilih',
+      breadcrumbs: [
+        { text: 'Utama' },
+        { text: 'Data Pemilih' },
+        { text: 'Rekap Pemilih', to: '/rekap-pemilih' },
+        { text: 'Detail Rekap Pemilih' },
+      ],
+    },
+    component: () => import('@/views/utama/TambahRekapPemilih.vue')
+  },
+  {
     path: '/daftar-dpt',
     name: prefix + '.daftar-dpt',
     meta: { 
