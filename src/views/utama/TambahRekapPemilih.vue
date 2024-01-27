@@ -1,4 +1,4 @@
-<template>
+  <template>
     <b-row>
       <b-col sm="12">
         <b-card no-body class="card">
@@ -8,6 +8,31 @@
             </div>
           </div>
           <b-card-body>
+            <b-row v-if="isAlertInput">
+              <b-col sm="12">
+                <div  :class="`alert alert-${alertDataInput.type} alert-dismissible fade show`" role="alert">
+                  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                    <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+                    </symbol>
+                    <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+                    </symbol>
+                    <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                    </symbol>
+                  </svg>
+
+                  <svg class="bi flex-shrink-0 me-2" width="24" height="24">
+                    <use xlink:href="#exclamation-triangle-fill" v-if="alertDataInput.icon == 'warning'"/>
+                    <use xlink:href="#info-fill" v-if="alertDataInput.icon == 'info'" />
+                    <use xlink:href="#check-circle-fill" v-if="alertDataInput.icon == 'success'"/>
+                  </svg>
+                  {{ alertDataInput.text }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              </b-col>
+            </b-row>
             <b-form>
               <b-row>
                 <b-col sm="4">
@@ -50,31 +75,6 @@
             </b-col>
           </b-card-body>
         </b-card>
-      </b-col>
-    </b-row>
-    <b-row v-if="isAlertInput">
-      <b-col sm="12">
-        <div  :class="`alert alert-${alertDataInput.type} alert-dismissible fade show`" role="alert">
-          <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-            <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-            </symbol>
-            <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
-            </symbol>
-            <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-            </symbol>
-          </svg>
-
-          <svg class="bi flex-shrink-0 me-2" width="24" height="24">
-            <use xlink:href="#exclamation-triangle-fill" v-if="alertDataInput.icon == 'warning'"/>
-            <use xlink:href="#info-fill" v-if="alertDataInput.icon == 'info'" />
-            <use xlink:href="#check-circle-fill" v-if="alertDataInput.icon == 'success'"/>
-          </svg>
-          {{ alertDataInput.text }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
       </b-col>
     </b-row>
     <b-row v-if="isAlert">
@@ -159,24 +159,45 @@
                 </b-col>
                 <b-col sm="12">
                   <b-row class="m-0">
-                    <b-col sm="12" md="4" lg="2"  v-for="(preview, previewIndex) in item.image_previews" :key="previewIndex" class="d-flex flex-column align-items-center justify-content-between">
-                      <img :src="preview.image" :alt="getFilenameAndExtension(preview.image, 'filename')" class="preview-image rounded-2 mt-3 border">
-                      <b-col sm="12" class="text-truncate mt-auto">
-                        {{ getFilenameAndExtension(preview.image, 'filename') }}
-                      </b-col>
-                      <template class="my-2 d-flex justify-content-center">
-                        <b-button @click="handleDownloadImage(preview.image)" variant="outline-info" size="sm" class="mx-1 rounded-2">
-                          <svg width="26" viewBox="-5 -3 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M11.2301 7.29052V3.2815C11.2301 2.85523 11.5701 2.5 12.0001 2.5C12.3851 2.5 12.7113 2.79849 12.763 3.17658L12.7701 3.2815V7.29052L17.55 7.29083C19.93 7.29083 21.8853 9.23978 21.9951 11.6704L22 11.8861V16.9254C22 19.373 20.1127 21.3822 17.768 21.495L17.56 21.5H6.44C4.06 21.5 2.11409 19.5608 2.00484 17.1213L2 16.9047L2 11.8758C2 9.4281 3.87791 7.40921 6.22199 7.29585L6.43 7.29083H11.23V13.6932L9.63 12.041C9.33 11.7312 8.84 11.7312 8.54 12.041C8.39 12.1959 8.32 12.4024 8.32 12.6089C8.32 12.7659 8.3648 12.9295 8.45952 13.0679L8.54 13.1666L11.45 16.1819C11.59 16.3368 11.79 16.4194 12 16.4194C12.1667 16.4194 12.3333 16.362 12.4653 16.2533L12.54 16.1819L15.45 13.1666C15.75 12.8568 15.75 12.3508 15.45 12.041C15.1773 11.7594 14.7475 11.7338 14.4462 11.9642L14.36 12.041L12.77 13.6932V7.29083L11.2301 7.29052Z" fill="currentColor"></path>
-                          </svg>
-                        </b-button>
-                        <b-button @click="handleDeleteImage(index, previewIndex)" variant="outline-danger" size="sm" class="mx-1 rounded-2">
-                          <svg width="26" viewBox="-5 -3 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M20.2871 5.24297C20.6761 5.24297 21 5.56596 21 5.97696V6.35696C21 6.75795 20.6761 7.09095 20.2871 7.09095H3.71385C3.32386 7.09095 3 6.75795 3 6.35696V5.97696C3 5.56596 3.32386 5.24297 3.71385 5.24297H6.62957C7.22185 5.24297 7.7373 4.82197 7.87054 4.22798L8.02323 3.54598C8.26054 2.61699 9.0415 2 9.93527 2H14.0647C14.9488 2 15.7385 2.61699 15.967 3.49699L16.1304 4.22698C16.2627 4.82197 16.7781 5.24297 17.3714 5.24297H20.2871ZM18.8058 19.134C19.1102 16.2971 19.6432 9.55712 19.6432 9.48913C19.6626 9.28313 19.5955 9.08813 19.4623 8.93113C19.3193 8.78413 19.1384 8.69713 18.9391 8.69713H5.06852C4.86818 8.69713 4.67756 8.78413 4.54529 8.93113C4.41108 9.08813 4.34494 9.28313 4.35467 9.48913C4.35646 9.50162 4.37558 9.73903 4.40755 10.1359C4.54958 11.8992 4.94517 16.8102 5.20079 19.134C5.38168 20.846 6.50498 21.922 8.13206 21.961C9.38763 21.99 10.6811 22 12.0038 22C13.2496 22 14.5149 21.99 15.8094 21.961C17.4929 21.932 18.6152 20.875 18.8058 19.134Z" fill="currentColor"></path>
-                          </svg>
-                        </b-button>
-                      </template>
-                    </b-col>
+                    <div class="d-slider1 overflow-hidden swiper-container-initialized swiper-container-horizontal swiper-container-pointer-events px-0">
+                      <Swiper
+                        class="p-0 m-0 mb-2 swiper-wrapper list-inline"
+                        :modules="modules"
+                        :slide-per-view="4"
+                        :space-between="32"
+                        :breakpoints="{
+                          320: { slidesPerView: 1 },
+                          550: { slidesPerView: 2 },
+                          991: { slidesPerView: 3 },
+                          1400: { slidesPerView: 3 },
+                          1500: { slidesPerView: 4 },
+                          1920: { slidesPerView: 4 },
+                          2040: { slidesPerView: 7 },
+                          2440: { slidesPerView: 8 }
+                        }"
+                        :navigation="{
+                          nextEl: '#blog-tranding-next',
+                          prevEl: '#blog-tranding-prev'
+                        }">
+                        
+                        <SwiperSlide class="swiper-slide card card-slide shadow-none" v-for="(preview, previewIndex) in item.image_previews" :key="previewIndex">
+                          <img @click="showLightBox(item.image_previews, previewIndex)" :src="preview.image" :alt="getFilenameAndExtension(preview.image, 'filename')" class="preview-image rounded-2 mt-3 border">
+                          <b-col sm="12" class="text-truncate">
+                            {{ getFilenameAndExtension(preview.image, 'filename') }}
+                          </b-col>
+                          <template class="my-2 d-flex justify-content-center">
+                            <b-button @click="handleDeleteImage(index, previewIndex)" variant="outline-danger" size="sm" class="mx-1 rounded-2">
+                              <svg width="26" viewBox="-5 -3 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M20.2871 5.24297C20.6761 5.24297 21 5.56596 21 5.97696V6.35696C21 6.75795 20.6761 7.09095 20.2871 7.09095H3.71385C3.32386 7.09095 3 6.75795 3 6.35696V5.97696C3 5.56596 3.32386 5.24297 3.71385 5.24297H6.62957C7.22185 5.24297 7.7373 4.82197 7.87054 4.22798L8.02323 3.54598C8.26054 2.61699 9.0415 2 9.93527 2H14.0647C14.9488 2 15.7385 2.61699 15.967 3.49699L16.1304 4.22698C16.2627 4.82197 16.7781 5.24297 17.3714 5.24297H20.2871ZM18.8058 19.134C19.1102 16.2971 19.6432 9.55712 19.6432 9.48913C19.6626 9.28313 19.5955 9.08813 19.4623 8.93113C19.3193 8.78413 19.1384 8.69713 18.9391 8.69713H5.06852C4.86818 8.69713 4.67756 8.78413 4.54529 8.93113C4.41108 9.08813 4.34494 9.28313 4.35467 9.48913C4.35646 9.50162 4.37558 9.73903 4.40755 10.1359C4.54958 11.8992 4.94517 16.8102 5.20079 19.134C5.38168 20.846 6.50498 21.922 8.13206 21.961C9.38763 21.99 10.6811 22 12.0038 22C13.2496 22 14.5149 21.99 15.8094 21.961C17.4929 21.932 18.6152 20.875 18.8058 19.134Z" fill="currentColor"></path>
+                              </svg>
+                            </b-button>
+                          </template>
+                        </SwiperSlide>
+                      </Swiper>
+                      <div class="swiper-button swiper-button-next bg-white rounded-2" id="blog-tranding-next"></div>
+                      <div class="swiper-button swiper-button-prev bg-white rounded-2" id="blog-tranding-prev"></div>
+                      <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                    </div>
                   </b-row>
                 </b-col>
               </b-row>
@@ -200,9 +221,18 @@
         </b-card>
       </b-col>
     </b-row>
+    <vue-easy-lightbox
+      :visible="visibleRef"
+      :imgs="imgsRef"
+      :index="indexRef"
+      @hide="onHide"
+    ></vue-easy-lightbox>
   </template>
   <script scoped>
   import axios from 'axios';
+  import { Navigation } from 'swiper'
+  import { Swiper, SwiperSlide } from 'swiper/vue'
+  import VueEasyLightbox from 'vue-easy-lightbox'
 
   let withHeader = {
     headers: { 
@@ -211,8 +241,17 @@
   }
 
   export default {
+    components: {
+      Swiper,
+      SwiperSlide,
+      VueEasyLightbox,
+    },
     data() {
       return {
+        visibleRef: false,
+        indexRef: 0,
+        imgsRef: [],
+        modules: [Navigation],
         isEditMode: false,
         isOnFetch: false,
         isOnSubmit: false,
@@ -255,6 +294,17 @@
       selectedKelurahan: 'fetchTpsOptions',
     },
     methods: {
+      showLightBox(imagesArray, index) {
+        this.imgsRef = [];
+        this.visibleRef = true;
+        imagesArray.forEach((item) => {
+          this.imgsRef.push(item.image);
+        });
+        this.indexRef = index;
+      },
+      onHide() {
+        this.visibleRef = false;
+      },
       handleDownloadImage(imageUrl) {
         const a = document.createElement('a');
         a.href = imageUrl;
