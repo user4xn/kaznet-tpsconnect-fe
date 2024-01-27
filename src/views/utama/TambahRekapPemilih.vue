@@ -159,7 +159,7 @@
                 </b-col>
                 <b-col sm="12">
                   <b-row class="m-0">
-                    <b-col sm="12" md="4" lg="3"  v-for="(preview, previewIndex) in item.image_previews" :key="previewIndex" class="d-flex flex-column align-items-center justify-content-between">
+                    <b-col sm="12" md="4" lg="2"  v-for="(preview, previewIndex) in item.image_previews" :key="previewIndex" class="d-flex flex-column align-items-center justify-content-between">
                       <img :src="preview.image" :alt="getFilenameAndExtension(preview.image, 'filename')" class="preview-image rounded-2 mt-3 border">
                       <b-col sm="12" class="text-truncate mt-auto">
                         {{ getFilenameAndExtension(preview.image, 'filename') }}
@@ -256,11 +256,15 @@
     },
     methods: {
       handleDownloadImage(imageUrl) {
-        const link = document.createElement('a');
-        link.href = imageUrl;
-        const filename = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-        link.download = filename;
-        link.click();
+        const a = document.createElement('a');
+        a.href = imageUrl;
+        a.target = '_blank';
+        a.download = this.getFilenameAndExtension(imageUrl, 'filename')+'.'+this.getFilenameAndExtension(imageUrl, 'ext');
+        document.body.appendChild(a);
+
+        a.click();
+
+        document.body.removeChild(a);
       },
       handleDeleteImage(index,previewIndex) {
         let id = this.inputItems[index].image_previews[previewIndex].id;
