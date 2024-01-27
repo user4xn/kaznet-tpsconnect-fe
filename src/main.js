@@ -27,7 +27,7 @@ app.use(store).use(router)
 app.use(VueSweetalert2)
 app.use(VueApexCharts)
 app.use(BootstrapVue3)
-app.component("v-select", VueSelect);
+app.component('v-select', VueSelect);
 app.component('counter-up', CounterUp)
 
 // Custom Components & Directives

@@ -407,9 +407,8 @@
         this.inputItems.forEach((item, index) => {
           formData.append(`items[${index}][jaringan]`, item.jaringan);
           formData.append(`items[${index}][total_suara]`, item.suara);
-          
-          item.image_uploads.forEach((file, fileIndex) => {
-            formData.append(`items[${index}][image_uploads][${fileIndex}]`, file);
+          item.image_uploads.forEach((fileData, fileIndex) => {
+            formData.append(`items[${index}][image_uploads][${fileIndex}]`, fileData.file);
           });
         });
 
