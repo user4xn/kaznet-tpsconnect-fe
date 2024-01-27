@@ -131,8 +131,9 @@
                       </td>
                       <td class="align-middle pt-1 text-center px-3">{{ result.status }}</td>
                       <td class="align-middle pt-1 text-center px-3">
-                        <router-link isTag="button" class="btn btn-primary btn-sm" :to="{ name: 'default.detail-rekap-pemilih', params: { id: result.id }}" >Detail</router-link>
-                      </td>
+                        <router-link isTag="button" class="btn btn-info btn-sm me-2" :to="{ name: 'default.detail-rekap-pemilih', params: { id: result.id }}" >Detail</router-link>
+                        <b-button variant="danger" size="sm" @click="handleDelete(index)">Hapus</b-button>
+                    </td>
                     </tr>
                   </template>
                 </tbody>
@@ -241,6 +242,42 @@
         } else {
           return 'bg-info';
         }
+      },
+      handleDelete(index) {
+        const id = this.resultSearch[index].id;
+
+        this.$swal({
+          title: "Konfirmasi Hapus!",
+          icon: "warning",
+          showCancelButton: true,
+          cancelButtonText: "Batal",
+          confirmButtonText: "Ya, Hapus!"
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              const response = await axios.delete(`${process.env.VUE_APP_BACKEND_API}/api/v1/voter-recap/delete/${id}`, withHeader);
+              
+              if(response.data.meta.code == 200) {
+                this.$swal({
+                  title: "Ok",
+                  text: "data sudah dihapus!",
+                  icon: "success"
+                });
+                this.cariData(false, this.resultOffset);
+                return
+              }
+              
+            } catch (error) {
+              this.$swal({
+                title: "Error!",
+                text: error.message,
+                icon: "error"
+              });
+
+              console.log('error cant delete data: ', error);
+            }
+          }
+        });
       },
       handleExport: debounce(async function () {
         this.isOnExport = true;
