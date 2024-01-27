@@ -159,9 +159,11 @@
                 </b-col>
                 <b-col sm="12">
                   <b-row class="m-0">
-                    <b-col sm="3" v-for="(preview, previewIndex) in item.image_previews" :key="previewIndex" class="d-flex flex-column align-items-center">
+                    <b-col sm="12" md="4" lg="3"  v-for="(preview, previewIndex) in item.image_previews" :key="previewIndex" class="d-flex flex-column align-items-center justify-content-between">
                       <img :src="preview.image" :alt="getFilenameAndExtension(preview.image, 'filename')" class="preview-image rounded-2 mt-3 border">
-                      {{ getFilenameAndExtension(preview.image, 'filename') }}
+                      <b-col sm="12" class="text-truncate mt-auto">
+                        {{ getFilenameAndExtension(preview.image, 'filename') }}
+                      </b-col>
                       <template class="my-2 d-flex justify-content-center">
                         <b-button @click="handleDownloadImage(preview.image)" variant="outline-info" size="sm" class="mx-1 rounded-2">
                           <svg width="26" viewBox="-5 -3 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -598,7 +600,8 @@
   }
 
   .preview-image {
-    min-height: 140px;
+    height: 230px;
+    object-fit: cover;
     width: 100%;
   }
   </style>
