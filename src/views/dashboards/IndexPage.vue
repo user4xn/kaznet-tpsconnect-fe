@@ -53,16 +53,19 @@
               prevEl: '#blog-tranding-prev'
             }">
             <SwiperSlide class="swiper-slide card card-slide" v-for="(item, index) in swiperItems" :key="index">
-              <b-card-body>
+              <b-card-body class="d-flex align-items-center">
                 <div class="progress-widget">
-                  <analytics-widget :index="index" :title="item.title" :size="item.size" :sub-title="item.subTitle" :value="item.value" :color="item.color" :is-profit="item.isProfit">
-                    <svg class="card-slie-arrow" width="24" height="24px" viewBox="0 0 24 24" v-if="index % 2">
-                      <path fill="currentColor" d="M19,6.41L17.59,5L7,15.59V9H5V19H15V17H8.41L19,6.41Z"></path>
+                  <div class="icon-card p-3 rounded-pill border border-4" :class="index % 2 ? 'border-primary' : 'border-info'">
+                    <button class="btn p-0" @click="fetchKK()" v-if="item.is_refresh">
+                      <b-spinner variant="light" v-if="isFetchKK"></b-spinner>
+                      <svg v-else class="icon-32" width="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16.8397 20.1642V6.54639" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>                                    <path d="M20.9173 16.0681L16.8395 20.1648L12.7617 16.0681" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>                                    <path d="M6.91102 3.83276V17.4505" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>                                    <path d="M2.8335 7.92894L6.91127 3.83228L10.9891 7.92894" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                      </svg>
+                    </button>
+                    <svg v-else class="icon-32" width="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M3 6.5C3 3.87479 3.02811 3 6.5 3C9.97189 3 10 3.87479 10 6.5C10 9.12521 10.0111 10 6.5 10C2.98893 10 3 9.12521 3 6.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M14 6.5C14 3.87479 14.0281 3 17.5 3C20.9719 3 21 3.87479 21 6.5C21 9.12521 21.0111 10 17.5 10C13.9889 10 14 9.12521 14 6.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M3 17.5C3 14.8748 3.02811 14 6.5 14C9.97189 14 10 14.8748 10 17.5C10 20.1252 10.0111 21 6.5 21C2.98893 21 3 20.1252 3 17.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M14 17.5C14 14.8748 14.0281 14 17.5 14C20.9719 14 21 14.8748 21 17.5C21 20.1252 21.0111 21 17.5 21C13.9889 21 14 20.1252 14 17.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
-                    <svg class="card-slie-arrow" width="24" height="24" viewBox="0 0 24 24" v-else>
-                      <path fill="currentColor" d="M5,17.59L15.59,7H9V5H19V15H17V8.41L6.41,19L5,17.59Z"></path>
-                    </svg>
-                  </analytics-widget>
+                  </div>
                   <div class="progress-detail">
                     <p class="mb-2">{{ item.subTitle }}</p>
                     <h4 class="counter">{{ item.amount }}</h4>
@@ -230,7 +233,6 @@
 import { onMounted, ref, watch } from 'vue'
 import { Navigation } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/vue'
-import AnalyticsWidget from '@/components/widgets/AnalyticsWidget.vue'
 import AOS from 'aos'
 import axios  from 'axios';
 
@@ -244,7 +246,6 @@ export default {
   components: {
     Swiper,
     SwiperSlide,
-    AnalyticsWidget
   },
   setup() {
     const kabupatenOptions = ref([]);
@@ -256,6 +257,7 @@ export default {
     const selectedKelurahan = ref(null);
     const selectedJaringan = ref(null);
     const isAdmin = ref(false);
+    const isFetchKK = ref(false);
     const modules = ref([Navigation]);
     const lastPemilih = ref([]);
     const countTodayPemilih = ref(0);
@@ -570,9 +572,23 @@ export default {
               size: 100,
               amount: item.total,
               subTitle: item.name,
-              color: index % 2 ? 'primary' : 'info'
+              color: index % 2 ? 'primary' : 'info',
+              is_refresh: item.is_refresh
             });
           });
+          isFetchKK.value = false;
+        }
+      } catch (error) {
+        console.error('Error fetching card data:', error);
+      }
+    }
+
+    const fetchKK = async () => {
+      isFetchKK.value = true;
+      try {
+        const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/validresident/check-kk`, withHeader);
+        if(response.data.meta.code == 200) {
+          fetchCard();
         }
       } catch (error) {
         console.error('Error fetching card data:', error);
@@ -659,7 +675,15 @@ export default {
       earningChart,
       conversionChart,
       getCurrentDate,
+      isFetchKK,
+      fetchKK,
     };
   }
 }
 </script>
+<style scoped>
+.icon-card{
+  height: 72px !important;
+  width: 72px !important;
+}
+</style>
