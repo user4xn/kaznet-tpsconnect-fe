@@ -61,15 +61,34 @@ export default {
     const userRole = ref('');
     const networks = ref('');
     const tokenExpirationCheckInterval = 60000*5;
+    const localStorageKey = 'lastTokenCheckDate';
+    const lastTokenCheckDate = ref(new Date(localStorage.getItem(localStorageKey)) || new Date());
+    
     let withHeader = {
       headers: { 
         'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
       }
     }
+
+    const checkTokenExpirationWithDelay = async () => {
+      // Check if the current date is different from the stored date
+      if (isDateDifferent(lastTokenCheckDate.value, new Date())) {
+        // Trigger token expiration check
+        await checkTokenExpiration();
+      }
+    };
+
+    const isDateDifferent = (date1, date2) => {
+      return (
+        date1.getFullYear() !== date2.getFullYear() ||
+        date1.getMonth() !== date2.getMonth() ||
+        date1.getDate() !== date2.getDate()
+      );
+    };
       
     const carts = computed(() => store.getters.carts);
 
-    const onscroll = () => {
+    const onscroll = async () => {
       const yOffset = document.documentElement.scrollTop
       const navbar = document.querySelector('.navs-sticky')
       if (navbar !== null) {
@@ -135,13 +154,19 @@ export default {
       store.commit('setting/clearTokenCheckIntervalId');
     }
 
-    onMounted(() => {
-      window.addEventListener('scroll', onscroll())
+    onMounted(async () => {
+      window.addEventListener('scroll', onscroll)
       setProfile()
+      
+      // Check token expiration with delay
+      await checkTokenExpirationWithDelay();
+      // Update the last token check date and store it in local storage
+      lastTokenCheckDate.value = new Date();
+      localStorage.setItem(localStorageKey, lastTokenCheckDate.value.toISOString());
     });
 
     onUnmounted(() => {
-      window.removeEventListener('scroll', onscroll())
+      window.removeEventListener('scroll', onscroll)
 
       // Clear the token check interval on component unmount
       clearTokenCheckInterval();

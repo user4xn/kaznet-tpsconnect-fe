@@ -14,6 +14,7 @@
           <side-menu isTag="router-link" title="Rekap Pemilih" icon="circle" :icon-size="10" icon-type="solid" miniTitle="RP" :route="{ to: 'default.rekap-pemilih' }"></side-menu>
         </b-collapse>
       </side-menu>
+      <side-menu isTag="router-link" title="Rekap Pemilu" icon="chart-square-bar" :route="{ to: 'default.rekap-pemilu' }"></side-menu>
 
       <li><hr class="hr-horizontal" /></li>
       <side-menu title="Master Data" :static-item="true"></side-menu>
@@ -34,36 +35,7 @@
       <side-menu isTag="router-link" title="Kelurahan" icon="location" :route="{ to: 'default.daftar-kelurahan' }"></side-menu> -->
     </ul>
   </default-sidebar>
-  <!-- Sidebar Component End Here-->
 </template>
-
-<!-- <script>
-import { ref } from 'vue'
-import { useRoute } from 'vue-router'
-import DefaultSidebar from '@/components/custom/sidebar/DefaultSidebar.vue'
-import SideMenu from '@/components/custom/nav/SideMenu.vue'
-export default {
-  components: { DefaultSidebar, SideMenu },
-  setup() {
-    const visible = ref(false)
-    const currentRoute = useRoute()
-    const openMenu = () => {
-      visible.value = !visible.value
-    }
-    const checkActive = (route) => {
-      if (currentRoute.name === route) {
-        return true
-      }
-      if (route.includes(currentRoute.name)) {
-        return true
-      }
-    }
-
-    return { visible, openMenu, checkActive }
-  },
-  methods: {}
-}
-</script> -->
 <script setup>
 import DefaultSidebar from '@/components/custom/sidebar/DefaultSidebar.vue'
 import SideMenu from '@/components/custom/nav/SideMenu.vue'

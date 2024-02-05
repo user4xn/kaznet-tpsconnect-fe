@@ -113,8 +113,25 @@
               <div class="dropdown">
                 <a href="#" class="text-secondary dropdown-toggle" id="dropdownMenuButton22" data-bs-toggle="dropdown" aria-expanded="false"> Filter </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton22">
-                  <li><a class="dropdown-item" @click="fetchChartTop(getCurrentDate(), 'week')">Minggu Ini</a></li>
-                  <li><a class="dropdown-item" @click="fetchChartTop(getCurrentDate(), 'month')">Bulan Ini</a></li>
+                  <li class="d-flex justify-content-between">
+                    <a @click.stop.prevent="handleMonth(-1)" class="dropdown-item">
+                      <svg class="icon-32" width="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2 12C2 6.48 6.49 2 12 2L12.2798 2.00384C17.6706 2.15216 22 6.57356 22 12C22 17.51 17.52 22 12 22C6.49 22 2 17.51 2 12ZM13.98 16C14.27 15.7 14.27 15.23 13.97 14.94L11.02 12L13.97 9.06C14.27 8.77 14.27 8.29 13.98 8C13.68 7.7 13.21 7.7 12.92 8L9.43 11.47C9.29 11.61 9.21 11.8 9.21 12C9.21 12.2 9.29 12.39 9.43 12.53L12.92 16C13.06 16.15 13.25 16.22 13.44 16.22C13.64 16.22 13.83 16.15 13.98 16Z" fill="currentColor"></path>
+                      </svg>
+                    </a>
+                    <a href="#" disable class="dropdown-item pe-auto">{{ selectedMonth.text ?? 'Bulan Ini' }}</a>
+                    <a @click.stop.prevent="handleMonth(+1)" class="dropdown-item pe-auto">
+                      <svg class="icon-32" width="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M22 12C22 17.52 17.51 22 12 22L11.7202 21.9962C6.32942 21.8478 2 17.4264 2 12C2 6.49 6.48 2 12 2C17.51 2 22 6.49 22 12ZM10.02 8C9.73 8.3 9.73 8.77 10.03 9.06L12.98 12L10.03 14.94C9.73 15.23 9.73 15.71 10.02 16C10.32 16.3 10.79 16.3 11.08 16L14.57 12.53C14.71 12.39 14.79 12.2 14.79 12C14.79 11.8 14.71 11.61 14.57 11.47L11.08 8C10.94 7.85 10.75 7.78 10.56 7.78C10.36 7.78 10.17 7.85 10.02 8Z" fill="currentColor"></path>
+                      </svg>                        
+                    </a>
+                  </li>
+                  <li class="text-center" :class="selectedWeek.value === null ? 'bg-primary' : ''">
+                    <a href="#" class="dropdown-item pe-auto" :class="selectedWeek.value === null ? 'text-white' : ''" @click.prevent="fetchChartTop(weekOptions[0].value, 'month')">Bulanan</a>
+                  </li>
+                  <li v-for="item in weekOptions" :key="item" :class="selectedWeek.value === item.value ? 'bg-primary' : ''" class="text-center">
+                    <a href="#" class="dropdown-item pe-auto" :class="selectedWeek.value === item.value ? 'text-white' : ''" @click.prevent="fetchChartTop(item.value, 'week')">{{ item.text }}</a>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -248,6 +265,27 @@ export default {
     SwiperSlide,
   },
   setup() {
+    const monthOptions = ref([
+      { value: 1, text: 'Januari' },
+      { value: 2, text: 'Februari' },
+      { value: 3, text: 'Maret' },
+      { value: 4, text: 'April' },
+      { value: 5, text: 'Mei' },
+      { value: 6, text: 'Juni' },
+      { value: 7, text: 'Juli' },
+      { value: 8, text: 'Agustus' },
+      { value: 9, text: 'September' },
+      { value: 10, text: 'Oktober' },
+      { value: 11, text: 'November' },
+      { value: 12, text: 'Desember' },
+    ]);
+    const weekOptions =  ref([]);
+    const selectedWeek = ref({
+      value: null,
+      text: null,
+    });
+    const selectedMonth = ref([]);
+    const monthOffset = ref(0);
     const kabupatenOptions = ref([]);
     const kecamatanOptions = ref([]);
     const kelurahanOptions = ref([]);
@@ -264,13 +302,60 @@ export default {
     const totalCianjur = ref(0);
     const totalBogor = ref(0);
     const swiperItems = ref([]);
-    
-    const getCurrentDate = () => {
+
+    const handleMonth = (mod) => {
       const currentDate = new Date();
       const year = currentDate.getFullYear();
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-      const day = String(currentDate.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
+
+      if (!mod) {
+        const currentMonth = currentDate.getMonth() + 1;
+        const monthIndex = monthOptions.value.findIndex((month) => month.value === currentMonth);
+        selectedMonth.value = monthOptions.value[monthIndex];
+
+        const weekDates = getWeekDates(year, currentMonth);
+        weekOptions.value = weekDates;
+        selectedWeek.value = weekOptions.value[0];
+        monthOffset.value = monthIndex;
+        fetchChartTop(weekOptions.value[0].value, 'week')
+        return
+      }
+
+      let next = monthOffset.value + mod;
+      if (next > 11 || next < 0) {
+        return;
+      }
+
+      selectedMonth.value = monthOptions.value[next];
+      monthOffset.value = next;
+
+      const weekDates = getWeekDates(year, next+1);
+      weekOptions.value = weekDates;
+      selectedWeek.value = weekOptions.value[0];
+      fetchChartTop(weekDates[0].value, 'month');
+    };
+
+    const getWeekDates = (year, month) => {
+      const firstDayOfMonth = new Date(year, month - 1, 1);
+      const firstDayOfWeek = firstDayOfMonth.getDay();
+      const offsetToFirstSunday = (7 - firstDayOfWeek) % 7;
+      const result = [];
+
+      for (let weekNumber = 0; ; weekNumber++) {
+        const firstDateOfWeek = new Date(year, month - 1, 1 + offsetToFirstSunday + weekNumber * 7);
+
+        if (firstDateOfWeek.getMonth() !== month - 1) {
+          break;
+        }
+
+        const formattedDate = `${firstDateOfWeek.getFullYear()}-${(firstDateOfWeek.getMonth() + 1).toString().padStart(2, '0')}-${firstDateOfWeek.getDate().toString().padStart(2, '0')}`;
+        const data = {
+          value: formattedDate,
+          text: 'Minggu Ke '+ (weekNumber+1),
+        };
+        result.push(data);
+      }
+
+      return result;
     }
 
     const grossSaleChart = ref({
@@ -356,7 +441,7 @@ export default {
           enabled: true
         }
       }
-    })
+    });
 
     const earningChart = ref({
       series: [55, 75],
@@ -382,7 +467,7 @@ export default {
           }
         }
       }
-    })
+    });
 
     const conversionChart = ref({
       series: [],
@@ -501,7 +586,7 @@ export default {
       grossSaleChart.value.series[0].data = data.data_cianjur;
       grossSaleChart.value.series[1].data = data.data_bogor;
       grossSaleChart.value.options.xaxis.overwriteCategories = data;
-    }
+    };
 
     const fetchChartTop = async (date, by) => {
       try {
@@ -519,11 +604,20 @@ export default {
         if(response.data.meta.code == 200) {
           const data = response.data.data;
           grossSaleChartUpdate(data);
+          const weekIndex = weekOptions.value.findIndex((week) => week.value === date);
+          if(by === 'month') {
+            selectedWeek.value = {
+              value: null,
+              text: null,
+            };
+          } else {
+            selectedWeek.value = weekOptions.value[weekIndex];
+          }
         }
       } catch (error) {
         console.error('Error fetching chart top data:', error);
       }
-    }
+    };
 
     const fetchChartProgres = async () => {
       try {
@@ -541,7 +635,7 @@ export default {
       } catch (error) {
         console.error('Error fetching chart top data:', error);
       }
-    }
+    };
 
     const fetchCard = async () => {
       try {
@@ -581,7 +675,7 @@ export default {
       } catch (error) {
         console.error('Error fetching card data:', error);
       }
-    }
+    };
 
     const fetchKK = async () => {
       isFetchKK.value = true;
@@ -593,7 +687,7 @@ export default {
       } catch (error) {
         console.error('Error fetching card data:', error);
       }
-    }
+    };
 
     const fetchLastPemilih = async () => {
       try {
@@ -607,7 +701,7 @@ export default {
       } catch (error) {
         console.error('Error fetching last pemilih data:', error);
       }
-    }
+    };
 
     onMounted(() => {
       AOS.init({
@@ -618,15 +712,15 @@ export default {
         once: true,
         duration: 800
       })
-
+      
+      handleMonth()
       fetchKabupatenOptions()
       fetchCard()
       fetchLastPemilih()
       setTimeout(() => {
-        fetchChartTop(getCurrentDate(), 'week')
         fetchChartProgres();
       }, 2000);
-    })
+    });
 
     watch(selectedKabupaten, () => {
       fetchKecamatanOptions();
@@ -648,6 +742,11 @@ export default {
     });
     
     return {
+      monthOptions,
+      weekOptions,
+      selectedMonth,
+      selectedWeek,
+      handleMonth,
       kabupatenOptions,
       kecamatanOptions,
       kelurahanOptions,
@@ -674,7 +773,6 @@ export default {
       grossSaleChart,
       earningChart,
       conversionChart,
-      getCurrentDate,
       isFetchKK,
       fetchKK,
     };

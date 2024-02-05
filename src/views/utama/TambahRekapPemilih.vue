@@ -305,17 +305,6 @@
       onHide() {
         this.visibleRef = false;
       },
-      handleDownloadImage(imageUrl) {
-        const a = document.createElement('a');
-        a.href = imageUrl;
-        a.target = '_blank';
-        a.download = this.getFilenameAndExtension(imageUrl, 'filename')+'.'+this.getFilenameAndExtension(imageUrl, 'ext');
-        document.body.appendChild(a);
-
-        a.click();
-
-        document.body.removeChild(a);
-      },
       handleDeleteImage(index,previewIndex) {
         let id = this.inputItems[index].image_previews[previewIndex].id;
 

@@ -95,6 +95,37 @@ const defaultChildRoutes = (prefix) => [
     component: () => import('@/views/utama/DaftarRekapPemilih.vue')
   },
   {
+    path: '/rekap-pemilu',
+    name: prefix + '.rekap-pemilu',
+    meta: { 
+      auth: true, 
+      name: 'Rekap Pemilu', 
+      isBanner: true,
+      pageTitle: 'Rekap Pemilu',
+      breadcrumbs: [
+        { text: 'Utama' },
+        { text: 'Rekap Pemilu' },
+      ],
+    },
+    component: () => import('@/views/utama/DaftarRekapPemilu.vue')
+  },
+  {
+    path: '/detail-rekap-pemilu/:id',
+    name: prefix + '.detail-rekap-pemilu',
+    meta: { 
+      auth: true, 
+      name: 'Detail Rekap Pemilu', 
+      isBanner: true,
+      pageTitle: 'Detail Rekap Pemilu',
+      breadcrumbs: [
+        { text: 'Utama' },
+        { text: 'Rekap Pemilu', to: '/rekap-pemilu' },
+        { text: 'Detail Rekap Pemilu' },
+      ],
+    },
+    component: () => import('@/views/utama/DetailRekapPemilu.vue')
+  },
+  {
     path: '/tambah-rekap-pemilih',
     name: prefix + '.tambah-rekap-pemilih',
     meta: { 
