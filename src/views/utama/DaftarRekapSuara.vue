@@ -110,7 +110,7 @@
                       <td class="align-middle pt-1">{{ result.nama_kelurahan != '' ? result.nama_kecamatan : '-' }}</td>
                       <td class="align-middle pt-1 text-center">{{ result.tps != '' ? result.tps : '-' }}</td>
                       <td class="align-middle pt-1 text-center px-3">
-                        <router-link isTag="button" class="btn btn-info btn-sm me-2" :to="{ name: 'default.detail-rekap-pemilu', params: { id: result.id }}" >Detail</router-link>
+                        <router-link isTag="button" class="btn btn-info btn-sm me-2" :to="{ name: 'default.detail-rekap-suara', params: { id: result.id }}" >Detail</router-link>
                         <b-button variant="danger" size="sm" @click="handleDelete(index)">Hapus</b-button>
                     </td>
                     </tr>

@@ -14,7 +14,7 @@
           <side-menu isTag="router-link" title="Rekap Pemilih" icon="circle" :icon-size="10" icon-type="solid" miniTitle="RP" :route="{ to: 'default.rekap-pemilih' }"></side-menu>
         </b-collapse>
       </side-menu>
-      <side-menu isTag="router-link" title="Rekap Pemilu" icon="chart-square-bar" :route="{ to: 'default.rekap-pemilu' }"></side-menu>
+      <side-menu isTag="router-link" title="Rekapitulasi Suara" icon="chart-square-bar" :route="{ to: 'default.rekap-suara' }"></side-menu>
 
       <li><hr class="hr-horizontal" /></li>
       <side-menu title="Master Data" :static-item="true"></side-menu>

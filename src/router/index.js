@@ -95,35 +95,35 @@ const defaultChildRoutes = (prefix) => [
     component: () => import('@/views/utama/DaftarRekapPemilih.vue')
   },
   {
-    path: '/rekap-pemilu',
-    name: prefix + '.rekap-pemilu',
+    path: '/rekap-suara',
+    name: prefix + '.rekap-suara',
     meta: { 
       auth: true, 
-      name: 'Rekap Pemilu', 
+      name: 'Rekap Suara', 
       isBanner: true,
-      pageTitle: 'Rekap Pemilu',
+      pageTitle: 'Rekap Suara',
       breadcrumbs: [
         { text: 'Utama' },
-        { text: 'Rekap Pemilu' },
+        { text: 'Rekapitulasi Suara' },
       ],
     },
-    component: () => import('@/views/utama/DaftarRekapPemilu.vue')
+    component: () => import('@/views/utama/DaftarRekapSuara.vue')
   },
   {
-    path: '/detail-rekap-pemilu/:id',
-    name: prefix + '.detail-rekap-pemilu',
+    path: '/detail-rekap-suara/:id',
+    name: prefix + '.detail-rekap-suara',
     meta: { 
       auth: true, 
-      name: 'Detail Rekap Pemilu', 
+      name: 'Detail Rekap Suara', 
       isBanner: true,
-      pageTitle: 'Detail Rekap Pemilu',
+      pageTitle: 'Detail Rekap Suara',
       breadcrumbs: [
         { text: 'Utama' },
-        { text: 'Rekap Pemilu', to: '/rekap-pemilu' },
-        { text: 'Detail Rekap Pemilu' },
+        { text: 'Rekapitulasi Suara', to: '/rekap-suara' },
+        { text: 'Detail Rekapitulasi Suara' },
       ],
     },
-    component: () => import('@/views/utama/DetailRekapPemilu.vue')
+    component: () => import('@/views/utama/DetailRekapSuara.vue')
   },
   {
     path: '/tambah-rekap-pemilih',
