@@ -207,6 +207,7 @@
                     <th>KECAMATAN</th>
                     <th>KELURAHAN</th>
                     <th>NO TPS</th>
+                    <th class="text-center">JUMLAH PEMILIH</th>
                     <th>NIK</th>
                     <th>JARINGAN</th>
                     <th>TELP</th>
@@ -222,6 +223,11 @@
                       <td>{{ result.nama_kecamatan }}</td>
                       <td>{{ result.nama_kelurahan }}</td>
                       <td>{{ result.tps }}</td>
+                      <td class="text-center">
+                        <b-badge :variant="result.total_voter < 5 ? 'danger' : 'success'" class="rounded-pill w-50">
+                          {{ result.total_voter }}
+                        </b-badge>
+                      </td>
                       <td>{{ result.nik }}</td>
                       <td>{{ result.jaringan }}</td>
                       <td>{{ result.telp }}</td>

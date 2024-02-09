@@ -79,6 +79,46 @@
           <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
         </div>
       </div>
+      <div class="row row-cols-1" data-aos="fade-up" data-aos-delay="800">
+        <div class="d-slider1 overflow-hidden swiper-container-initialized swiper-container-horizontal swiper-container-pointer-events">
+          <Swiper
+            class="p-0 m-0 mb-2 swiper-wrapper list-inline"
+            :modules="modules"
+            :slide-per-view="4"
+            :space-between="32"
+            :breakpoints="{
+              320: { slidesPerView: 1 },
+              550: { slidesPerView: 2 },
+              991: { slidesPerView: 3 },
+              1400: { slidesPerView: 3 },
+              1500: { slidesPerView: 4 },
+              1920: { slidesPerView: 4 },
+              2040: { slidesPerView: 7 },
+              2440: { slidesPerView: 8 }
+            }"
+            :navigation="{
+              nextEl: '#blog-caleg-next',
+              prevEl: '#blog-caleg-prev'
+            }">
+            <SwiperSlide class="swiper-slide card card-slide" v-for="(item, index) in swiperCalegItems" :key="index">
+              <b-card-body class="d-flex align-items-center">
+                <div class="progress-widget">
+                  <div class="icon-card p-0">
+                    <img :src="item.img_url" class="rounded-pill w-100 border">
+                  </div>
+                  <div class="progress-detail">
+                    <p class="mb-2">{{ item.subTitle }}</p>
+                    <h4 class="counter">{{ item.amount }}</h4>
+                  </div>
+                </div>
+              </b-card-body>
+            </SwiperSlide>
+          </Swiper>
+          <div class="swiper-button swiper-button-next" id="blog-caleg-next"></div>
+          <div class="swiper-button swiper-button-prev" id="blog-caleg-prev"></div>
+          <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+        </div>
+      </div>
     </div>
     <div class="col-md-12">
       <div class="row">
@@ -252,6 +292,7 @@ import { Navigation } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import AOS from 'aos'
 import axios  from 'axios';
+import kangZamanImage from '@/assets/custom-vue/img/kangzaman.png';
 
 let withHeader = {
   headers: { 
@@ -302,6 +343,7 @@ export default {
     const totalCianjur = ref(0);
     const totalBogor = ref(0);
     const swiperItems = ref([]);
+    const swiperCalegItems = ref([]);
 
     const handleMonth = (mod) => {
       const currentDate = new Date();
@@ -521,6 +563,7 @@ export default {
         }
       }
       fetchCard();
+      fetchCalegCard();
     };
 
     const fetchKelurahanOptions = async () => {
@@ -536,6 +579,7 @@ export default {
         }
       }
       fetchCard();
+      fetchCalegCard();
     };
 
     const fetchJaringanOptions =  async () => {
@@ -577,6 +621,7 @@ export default {
         }
 
         fetchCard();
+        fetchCalegCard();
       } else {
         isAdmin.value = true;
       }
@@ -677,6 +722,46 @@ export default {
       }
     };
 
+    const fetchCalegCard = async () => {
+      try {
+        var queryParam = '?';
+        
+        if (selectedKabupaten.value) {
+          queryParam += `nama_kabupaten=${selectedKabupaten.value}&`;
+        }
+
+        if (selectedKecamatan.value) {
+            queryParam += `nama_kecamatan=${selectedKecamatan.value}&`;
+        }
+
+        if (selectedKelurahan.value) {
+            queryParam += `nama_kelurahan=${selectedKelurahan.value}&`;
+        }
+
+        if (selectedJaringan.value) {
+            queryParam += `jaringan=${selectedJaringan.value.value}`;
+        }
+
+        const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/dashboard/card/voter-caleg${queryParam ?? ''}`, withHeader);
+        if(response.data.meta.code == 200) {
+          swiperItems.value = []
+          const data = response.data.data;
+          data.forEach((item, index) => {
+            swiperCalegItems.value.push({
+              size: 100,
+              amount: item.total,
+              subTitle: item.name,
+              color: index % 2 ? 'primary' : 'info',
+              is_refresh: item.is_refresh,
+              img_url: item.img_url ?? kangZamanImage,
+            });
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching card data:', error);
+      }
+    };
+
     const fetchKK = async () => {
       isFetchKK.value = true;
       try {
@@ -716,6 +801,7 @@ export default {
       handleMonth()
       fetchKabupatenOptions()
       fetchCard()
+      fetchCalegCard()
       fetchLastPemilih()
       setTimeout(() => {
         fetchChartProgres();
@@ -735,10 +821,12 @@ export default {
 
     watch(selectedKelurahan, () => {
       fetchCard();
+      fetchCalegCard();
     });
 
     watch(selectedJaringan, () => {
       fetchCard();
+      fetchCalegCard();
     });
     
     return {
@@ -762,6 +850,7 @@ export default {
       totalCianjur,
       totalBogor,
       swiperItems,
+      swiperCalegItems,
       fetchKabupatenOptions,
       fetchKecamatanOptions,
       fetchKelurahanOptions,

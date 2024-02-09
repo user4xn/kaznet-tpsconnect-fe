@@ -293,7 +293,7 @@
           <thead>
             <tr class="ligth">
               <th>#</th>
-              <th>Nama</th>
+              <th>NAMA</th>
               <th>NIK</th>
               <th>JK</th>
               <th>KAB</th>
