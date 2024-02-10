@@ -92,7 +92,18 @@ const defaultChildRoutes = (prefix) => [
         { text: 'Rekap Pemilih' },
       ],
     },
-    component: () => import('@/views/utama/DaftarRekapPemilih.vue')
+    component: () => import('@/views/utama/DaftarRekapPemilih.vue'),
+    beforeEnter(to, from, next) {
+      const userData = JSON.parse(localStorage.getItem('userData'));
+      console.log('User Data:', userData);
+      if (userData && userData.role === 'superadmin') {
+        console.log('Access granted for superadmin');
+        next(); // Allow navigation
+      } else {
+        console.log('Access denied');
+        next('/errors/401');
+      }
+    }
   },
   {
     path: '/rekap-suara',
@@ -316,6 +327,12 @@ const errorRoutes = (prefix) => [
     name: prefix + '.404',
     meta: { auth: true, name: 'Error 404', isBanner: true },
     component: () => import('@/views/errors/Error404Page.vue')
+  },
+  {
+    path: '401',
+    name: prefix + '.401',
+    meta: { auth: true, name: 'Error 401', isBanner: true },
+    component: () => import('@/views/errors/Error401Page.vue')
   },
   {
     path: '500',

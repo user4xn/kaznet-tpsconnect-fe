@@ -104,7 +104,7 @@
               <b-card-body class="d-flex align-items-center">
                 <div class="progress-widget">
                   <div class="icon-card p-0">
-                    <img :src="item.img_url" class="rounded-pill w-100 border">
+                    <img :src="item.img_url" class="rounded-pill w-100 border icon-card">
                   </div>
                   <div class="progress-detail">
                     <p class="mb-2">{{ item.subTitle }}</p>
@@ -872,5 +872,6 @@ export default {
 .icon-card{
   height: 72px !important;
   width: 72px !important;
+  object-fit: cover;
 }
 </style>
