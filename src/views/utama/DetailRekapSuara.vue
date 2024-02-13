@@ -4,7 +4,7 @@
 				<b-card no-body class="card">
 					<div class="card-header d-flex justify-content-between flex-wrap align-items-center">
 						<div class="header-title">
-							<h4 class="card-title mb-0">Detail Rekap Pemilu</h4>
+							<h4 class="card-title mb-0">Detail Rekap Suara</h4>
 						</div>
 					</div>
 					<b-card-body>
@@ -305,7 +305,7 @@
               this.alertData = {
                 type: 'success',
                 icon: 'success',
-                text: 'Berhasil meyimpan data rekap pemilu!'
+                text: 'Berhasil meyimpan data rekap suara!'
               };
               
               window.scrollTo({
@@ -318,14 +318,20 @@
               this.alertData = {
                 type: 'success',
                 icon: 'success',
-                text: 'Berhasil menambahkan data rekap pemilu!'
+                text: 'Berhasil menambahkan data rekap suara!'
               };
 
               this.resetInput();
             }
           }        
         } catch (error) {
-          console.error('Error fetching detail data:', error);
+          console.error('Error menambahkan data:', error);
+          this.isAlert = true;
+          this.alertData = {
+            type: 'Gagal',
+            icon: 'error',
+            text: 'Gagal menambahkan data rekap suara, data duplikat!'
+          };
         }
 
 				setTimeout(() => {

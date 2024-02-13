@@ -73,6 +73,11 @@
                 <b-col sm="8" class="d-flex align-items-center">
                   <p class="text-muted mb-0">Tampil {{ `${(resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit) + 1} - ${((resultPagination.currentPage * (resultPagination.currentLimit ?? resultLimit)) - (resultPagination.currentLimit ?? resultLimit)) + this.resultSearch.length} dari ${resultTotal.toLocaleString()}` }} data...</p>
                 </b-col>
+                <b-col sm="4" class="text-end">
+                  <b-button variant="success" @click="handleExport()" :disabled="isOnExport" size="sm">
+                    {{ isOnExport ? 'Mengekspor..' : 'Export XLS' }}
+                  </b-button>
+                </b-col>
               </b-row>
               <hr class="hr-horizontal"/>
               <b-row>
@@ -92,8 +97,8 @@
                     <th>#</th>
                     <th>FOTO</th>
                     <th>KABUPATEN</th>
-                    <th>KECAMATAN</th>
                     <th>KELURAHAN</th>
+                    <th>KECAMATAN</th>
                     <th>NO TPS</th>
                     <th class="text-center">AKSI</th>
                   </tr>
@@ -106,8 +111,8 @@
                         <img :src="result.image_path" class="rounded-2 border img-preview">
                       </td>
                       <td class="align-middle pt-1">{{ result.nama_kabupaten != '' ? result.nama_kabupaten : '-' }}</td>
-                      <td class="align-middle pt-1">{{ result.nama_kecamatan != '' ? result.nama_kelurahan : '-' }}</td>
-                      <td class="align-middle pt-1">{{ result.nama_kelurahan != '' ? result.nama_kecamatan : '-' }}</td>
+                      <td class="align-middle pt-1">{{ result.nama_kelurahan != '' ? result.nama_kelurahan : '-' }}</td>
+                      <td class="align-middle pt-1">{{ result.nama_kecamatan != '' ? result.nama_kecamatan : '-' }}</td>
                       <td class="align-middle pt-1 text-center">{{ result.tps != '' ? result.tps : '-' }}</td>
                       <td class="align-middle pt-1 text-center px-3">
                         <router-link isTag="button" class="btn btn-info btn-sm me-2" :to="{ name: 'default.detail-rekap-suara', params: { id: result.id }}" >Detail</router-link>
@@ -316,7 +321,7 @@
         this.isOnExport = true;
 
         var queryParam = '?';
-        let filename = 'RekapPemilih';
+        let filename = 'RekapSuara';
         this.isOnFetchExport = true;
 
         if (this.selectedKabupaten) {
@@ -342,7 +347,7 @@
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
         filename += `-${timestamp}`;
         
-        await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/voter-recap/export${queryParam ?? ''}`, {
+        await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/voter-caleg-recap/export${queryParam ?? ''}`, {
           headers: { 
             'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
           },
