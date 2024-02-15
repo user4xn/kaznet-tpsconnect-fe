@@ -97,8 +97,8 @@
                     <th>#</th>
                     <th>FOTO</th>
                     <th>KABUPATEN</th>
-                    <th>KELURAHAN</th>
                     <th>KECAMATAN</th>
+                    <th>KELURAHAN</th>
                     <th>NO TPS</th>
                     <th class="text-center">AKSI</th>
                   </tr>
@@ -111,8 +111,8 @@
                         <img :src="result.image_path" class="rounded-2 border img-preview">
                       </td>
                       <td class="align-middle pt-1">{{ result.nama_kabupaten != '' ? result.nama_kabupaten : '-' }}</td>
-                      <td class="align-middle pt-1">{{ result.nama_kelurahan != '' ? result.nama_kelurahan : '-' }}</td>
                       <td class="align-middle pt-1">{{ result.nama_kecamatan != '' ? result.nama_kecamatan : '-' }}</td>
+                      <td class="align-middle pt-1">{{ result.nama_kelurahan != '' ? result.nama_kelurahan : '-' }}</td>
                       <td class="align-middle pt-1 text-center">{{ result.tps != '' ? result.tps : '-' }}</td>
                       <td class="align-middle pt-1 text-center px-3">
                         <router-link isTag="button" class="btn btn-info btn-sm me-2" :to="{ name: 'default.detail-rekap-suara', params: { id: result.id }}" >Detail</router-link>
@@ -415,11 +415,11 @@
           } catch (error) {
             console.error('Error fetching Kecamatan options:', error);
           }
-          this.cariData(false, this.resultOffset);
           if(this.isAdmin) {
             this.fetchJaringanOptions();
           }
         }
+        this.cariData(false, this.resultOffset);
       },
       async fetchKelurahanOptions() {
         this.selectedKelurahan = null;
@@ -433,8 +433,8 @@
           } catch (error) {
             console.error('Error fetching Kelurahan options:', error);
           }
-          this.cariData(false, this.resultOffset);
         }
+        this.cariData(false, this.resultOffset);
       },
       async fetchTpsOptions() {
         this.selectedTps = null;
@@ -453,8 +453,8 @@
           } catch (error) {
             console.error('Error fetching Kelurahan options:', error);
           }
-          this.cariData(false, this.resultOffset);
         }
+        this.cariData(false, this.resultOffset);
       },
       cariData: debounce(async function (showAll, page) {      
         if(showAll == false && !page) {

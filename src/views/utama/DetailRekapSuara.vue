@@ -6,6 +6,11 @@
 						<div class="header-title">
 							<h4 class="card-title mb-0">Detail Rekap Suara</h4>
 						</div>
+            <div class="d-flex align-items-center gap-3">
+              <button @click="handleDelete()" class="text-center btn btn-danger d-flex gap-2">
+                Hapus
+              </button>
+            </div>
 					</div>
 					<b-card-body>
 						<b-row v-if="isAlert">
@@ -211,6 +216,43 @@
 			selectedKelurahan: 'fetchTpsOptions',
 		},
 		methods: {
+      handleDelete() {
+        const param = this.$route.params;
+				const id = param.id;
+
+        this.$swal({
+          title: "Konfirmasi Hapus!",
+          icon: "warning",
+          showCancelButton: true,
+          cancelButtonText: "Batal",
+          confirmButtonText: "Ya, Hapus!"
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              const response = await axios.delete(`${process.env.VUE_APP_BACKEND_API}/api/v1/kordinator/tps/delete/${id}`, withHeader);
+              
+              if(response.data.meta.code == 200) {
+                this.$swal({
+                  title: "Ok",
+                  text: "data sudah dihapus!",
+                  icon: "success"
+                });
+
+                this.$router.push({ name: 'default.rekap-suara' });
+              }
+              
+            } catch (error) {
+              this.$swal({
+                title: "Error!",
+                text: error.message,
+                icon: "error"
+              });
+
+              console.log('error cant delete data: ', error);
+            }
+          }
+        });
+      },
 			showLightBox(image, index) {
         this.imgsRef = [];
         this.visibleRef = true;
@@ -225,53 +267,53 @@
         this.selectedKecamatan = null;
         this.selectedKelurahan = null;
         this.selectedTps = null;
-				this.inputCaleg = [
-					{
-						nama: 'Diah Pitaloka',
-						required: false,
-						count: 0,
-					},
-					{
-						nama: 'Arief Rachman',
-						required: false,
-						count: 0,
-					},
-					{
-						nama: 'Mohammad Nuruzzaman',
-						required: true,
-						count: 0,
-					},
-					{
-						nama: 'Yulistian Imam Taryudi',
-						required: false,
-						count: 0,
-					},
-					{
-						nama: 'Andri Saleh Amarald',
-						required: false,
-						count: 0,
-					},
-					{
-						nama: 'Isnur Yuhesti',
-						required: false,
-						count: 0,
-					},
-					{
-						nama: 'Husdi Karyono',
-						required: false,
-						count: 0,
-					},
-					{
-						nama: 'Muhamad Adbdul Azis',
-						required: false,
-						count: 0,
-					},
-					{
-						nama: 'Kintan Kusuma',
-						required: false,
-						count: 0,
-					},
-				];
+        this.inputCaleg = [
+          {
+            nama: 'Diah Pitaloka',
+            required: false,
+            count: 0,
+          },
+          {
+            nama: 'Arief Rachman',
+            required: false,
+            count: 0,
+          },
+          {
+            nama: 'Mohammad Nuruzzaman',
+            required: true,
+            count: 0,
+          },
+          {
+            nama: 'Yulistian Imam Taryudi',
+            required: false,
+            count: 0,
+          },
+          {
+            nama: 'Andri Saleh Amarald',
+            required: false,
+            count: 0,
+          },
+          {
+            nama: 'Isnur Yuhesti',
+            required: false,
+            count: 0,
+          },
+          {
+            nama: 'Husdi Karyono',
+            required: false,
+            count: 0,
+          },
+          {
+            nama: 'Muhamad Adbdul Azis',
+            required: false,
+            count: 0,
+          },
+          {
+            nama: 'Kintan Kusuma',
+            required: false,
+            count: 0,
+          },
+        ];
         
         if(!this.isAdmin) {
           this.adminCity();
@@ -328,10 +370,14 @@
           console.error('Error menambahkan data:', error);
           this.isAlert = true;
           this.alertData = {
-            type: 'Gagal',
-            icon: 'error',
+            type: 'danger',
+            icon: 'warning',
             text: 'Gagal menambahkan data rekap suara, data duplikat!'
           };
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
         }
 
 				setTimeout(() => {
