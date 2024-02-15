@@ -744,7 +744,7 @@ export default {
 
         const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/dashboard/card/voter-caleg${queryParam ?? ''}`, withHeader);
         if(response.data.meta.code == 200) {
-          swiperItems.value = []
+          swiperCalegItems.value = []
           const data = response.data.data;
           data.forEach((item, index) => {
             swiperCalegItems.value.push({
