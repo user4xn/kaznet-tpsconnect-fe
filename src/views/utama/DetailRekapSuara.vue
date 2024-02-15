@@ -229,7 +229,7 @@
         }).then(async (result) => {
           if (result.isConfirmed) {
             try {
-              const response = await axios.delete(`${process.env.VUE_APP_BACKEND_API}/api/v1/kordinator/tps/delete/${id}`, withHeader);
+              const response = await axios.delete(`${process.env.VUE_APP_BACKEND_API}/api/v1/voter-caleg-recap/delete/${id}`, withHeader);
               
               if(response.data.meta.code == 200) {
                 this.$swal({
