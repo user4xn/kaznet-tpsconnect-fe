@@ -372,12 +372,16 @@
           this.alertData = {
             type: 'danger',
             icon: 'warning',
-            text: 'Gagal menambahkan data rekap suara, data duplikat!'
+            text: 'Gagal menambahkan data rekap suara, data duplikat! (Data Otomatis Akan Dihapus) Mengalihkan...'
           };
           window.scrollTo({
             top: 0,
             behavior: 'smooth'
           });
+
+          setTimeout(() => {
+            this.$router.push({ name: 'default.rekap-suara' });
+          }, 4000);
         }
 
 				setTimeout(() => {
