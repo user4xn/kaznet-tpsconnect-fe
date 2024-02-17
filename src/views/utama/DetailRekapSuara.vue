@@ -105,6 +105,20 @@
 								</b-form>
 							</b-col>
 						</b-row>
+            <b-row>
+              <b-col sm=12 class="d-flex justify-content-between flex-wrap align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                  <button @click="nextPrevPage(-1)" class="text-center btn btn-primary d-flex gap-2">
+                    Sebelumnya
+                  </button>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                  <button @click="nextPrevPage(+1)" class="text-center btn btn-primary d-flex gap-2">
+                    Selanjutnya
+                  </button>
+                </div>
+              </b-col>
+            </b-row>
 					</b-card-body>
 				</b-card>
 			</b-col>
@@ -157,47 +171,47 @@
 				},
 				inputCaleg: [
 					{
-						nama: 'Diah Pitaloka',
+						nama: '1. Diah Pitaloka',
 						required: false,
 						count: 0,
 					},
 					{
-						nama: 'Arief Rachman',
+						nama: '2. Arief Rachman',
 						required: false,
 						count: 0,
 					},
 					{
-						nama: 'Mohammad Nuruzzaman',
+						nama: '3. Mohammad Nuruzzaman',
 						required: true,
 						count: 0,
 					},
 					{
-						nama: 'Yulistian Imam Taryudi',
+						nama: '4. Yulistian Imam Taryudi',
 						required: false,
 						count: 0,
 					},
 					{
-						nama: 'Andri Saleh Amarald',
+						nama: '5. Andri Saleh Amarald',
 						required: false,
 						count: 0,
 					},
 					{
-						nama: 'Isnur Yuhesti',
+						nama: '6. Isnur Yuhesti',
 						required: false,
 						count: 0,
 					},
 					{
-						nama: 'Husdi Karyono',
+						nama: '7. Husdi Karyono',
 						required: false,
 						count: 0,
 					},
 					{
-						nama: 'Muhamad Adbdul Azis',
+						nama: '8. Muhamad Adbdul Azis',
 						required: false,
 						count: 0,
 					},
 					{
-						nama: 'Kintan Kusuma',
+						nama: '9. Kintan Kusuma',
 						required: false,
 						count: 0,
 					},
@@ -216,6 +230,21 @@
 			selectedKelurahan: 'fetchTpsOptions',
 		},
 		methods: {
+      nextPrevPage(x) {
+        const param = this.$route.params;
+				const id = param.id;
+        const next = parseInt(id) + parseInt(x);
+
+        this.$router.push({ name: 'default.detail-rekap-suara', params: { id: next } });
+        this.isOnFetch = true;
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+        setTimeout(() => {
+          this.checkEdit();
+        }, 500);
+      },
       handleDelete() {
         const param = this.$route.params;
 				const id = param.id;
@@ -398,6 +427,7 @@
         }
       },
 			async fetchDetail(id) {
+        this.isOnFetch = true;
         try {
           const response = await axios.get(`${process.env.VUE_APP_BACKEND_API}/api/v1/voter-caleg-recap/detail/${id}`, withHeader);
           if(response.data.meta.code == 200) {
@@ -406,7 +436,29 @@
           }        
         } catch (error) {
           console.error('Error fetching detail data:', error);
+          this.$swal({
+            title: "Error Data in ID ("+id+")",
+            text: error.response.data.meta.message,
+            icon: "error",
+            showCancelButton: true,
+            confirmButtonText: "Kembali Ke List",
+            cancelButtonText: "ID Selanjutnya",
+            buttonsStyling: false,
+            customClass: {
+              confirmButton: 'btn btn-primary',
+              cancelButton: 'ms-1 btn btn-info',
+            }
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.$router.push({ name: 'default.rekap-suara' });
+            } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+              this.nextPrevPage(+1);
+            } else {
+              this.nextPrevPage(-1);
+            }
+          });
         }
+        this.isOnFetch = false;
       },
       async setDetail(data) {
 				this.imageFile = data.image_path;
@@ -421,47 +473,47 @@
 
 				this.inputCaleg = [
 					{
-						nama: 'Diah Pitaloka',
+						nama: '1. Diah Pitaloka',
 						required: false,
 						count: data.diah_pitaloka,
 					},
 					{
-						nama: 'Arief Rachman',
+						nama: '2.  Arief Rachman',
 						required: false,
 						count: data.arief_rachman,
 					},
 					{
-						nama: 'Mohammad Nuruzzaman',
+						nama: '3.  Mohammad Nuruzzaman',
 						required: true,
 						count: data.mohammad_nuruzzaman,
 					},
 					{
-						nama: 'Yulistian Imam Taryudi',
+						nama: '4. Yulistian Imam Taryudi',
 						required: false,
 						count: data.yulistian_imam_taryudi,
 					},
 					{
-						nama: 'Andri Saleh Amarald',
+						nama: '5. Andri Saleh Amarald',
 						required: false,
 						count: data.andri_saleh_amarald,
 					},
 					{
-						nama: 'Isnur Yuhesti',
+						nama: '6. Isnur Yuhesti',
 						required: false,
 						count: data.isnur_yuhesti,
 					},
 					{
-						nama: 'Husdi Karyono',
+						nama: '7. Husdi Karyono',
 						required: false,
 						count: data.husdi_karyono,
 					},
 					{
-						nama: 'Muhamad Adbdul Azis',
+						nama: '8. Muhamad Adbdul Azis',
 						required: false,
 						count: data.muhamad_adbdul_azis,
 					},
 					{
-						nama: 'Kintan Kusuma',
+						nama: '9. Kintan Kusuma',
 						required: false,
 						count: data.kintan_kusuma,
 					},

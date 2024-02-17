@@ -95,12 +95,9 @@ const defaultChildRoutes = (prefix) => [
     component: () => import('@/views/utama/DaftarRekapPemilih.vue'),
     beforeEnter(to, from, next) {
       const userData = JSON.parse(localStorage.getItem('userData'));
-      console.log('User Data:', userData);
       if (userData && userData.role === 'superadmin') {
-        console.log('Access granted for superadmin');
-        next(); // Allow navigation
+        next();
       } else {
-        console.log('Access denied');
         next('/errors/401');
       }
     }
