@@ -58,12 +58,27 @@
 										<v-select v-model="selectedKelurahan" placeholder="Pilih Kelurahan" :options="kelurahanOptions" id="input-kelurahan" :disabled="!selectedKecamatan"></v-select>
 									</b-form-group>
 								</b-col>
-								<b-col sm="4">
-									<b-form-group>
-										<label for="input-tps" class="form-label">TPS*</label>
-										<v-select taggable v-model="selectedTps" placeholder="Pilih TPS" :options="tpsOptions" id="input-tps" :disabled="!selectedKelurahan"></v-select>
-									</b-form-group>
-								</b-col>
+                <b-col sm="12">
+                  <b-form-group>
+                    <b-row>
+                      <b-col md="4">
+                        <label for="input-tps" class="form-label">TPS*</label>
+										    <v-select taggable v-model="selectedTps" placeholder="Pilih TPS" :options="tpsOptions" id="input-tps" :disabled="!selectedKelurahan"></v-select>
+                      </b-col>
+                      <b-col md="4" class="d-flex align-items-end">
+                        <b-button variant="primary" size="sm" class="height-select2 w-100" @click="handleSubmit()" :disabled="!selectedKabupaten || !selectedKecamatan || !selectedKelurahan || !selectedTps || isOnSubmit">
+                          <span v-if="!isOnSubmit">
+                            {{ isEditMode == true ? 'Simpan Perubahan' : 'Submit' }}
+                          </span>
+                          <span v-if="isOnSubmit">
+                            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                            Menyimpan Data...
+                          </span>
+                        </b-button>
+                      </b-col>
+                    </b-row>
+                  </b-form-group>
+                </b-col>
 							</b-row>
 						</b-form>
 						<b-col sm="12" class="col-12 d-flex justify-content-center">
@@ -73,6 +88,20 @@
 							</span>
 						</b-col>	
 						<hr class="hr-horizontal"/>
+            <b-row class="my-2">
+              <b-col sm=12 class="d-flex justify-content-between flex-wrap align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                  <button @click="nextPrevPage(-1)" class="text-center btn btn-primary d-flex gap-2">
+                    Sebelumnya
+                  </button>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                  <button @click="nextPrevPage(+1)" class="text-center btn btn-primary d-flex gap-2">
+                    Selanjutnya
+                  </button>
+                </div>
+              </b-col>
+            </b-row>
 						<b-row>
 							<b-col sm="6" class="d-flex align-items-start">
 									<img @click="showLightBox(imageFile, 0)" class="w-100 border rounded-2 mt-2 zoom-on-hover" :src="imageFile ?? 'https://semantic-ui.com/images/wireframe/white-image.png'">
@@ -105,7 +134,7 @@
 								</b-form>
 							</b-col>
 						</b-row>
-            <b-row>
+            <b-row class="my-2">
               <b-col sm=12 class="d-flex justify-content-between flex-wrap align-items-center">
                 <div class="d-flex align-items-center gap-3">
                   <button @click="nextPrevPage(-1)" class="text-center btn btn-primary d-flex gap-2">
@@ -206,7 +235,7 @@
 						count: 0,
 					},
 					{
-						nama: '8. Muhamad Adbdul Azis',
+						nama: '8. Muhamad Abdul Azis',
 						required: false,
 						count: 0,
 					},
@@ -401,7 +430,7 @@
           this.alertData = {
             type: 'danger',
             icon: 'warning',
-            text: 'Gagal menambahkan data rekap suara, data duplikat! (Data Otomatis Akan Dihapus) Mengalihkan...'
+            text: 'Gagal menambahkan data rekap suara, data duplikat! (Data Otomatis Akan Dihapus)'
           };
           window.scrollTo({
             top: 0,
@@ -409,8 +438,28 @@
           });
 
           setTimeout(() => {
-            this.$router.push({ name: 'default.rekap-suara' });
-          }, 4000);
+            this.$swal({
+              title: "Deleted Data in ID ("+id+")",
+              text: error.response.data.meta.message,
+              icon: "error",
+              showCancelButton: true,
+              confirmButtonText: "Kembali Ke List",
+              cancelButtonText: "ID Selanjutnya",
+              buttonsStyling: false,
+              customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'ms-1 btn btn-info',
+              }
+            }).then((result) => {
+              if (result.isConfirmed) {
+                this.$router.push({ name: 'default.rekap-suara' });
+              } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+                this.nextPrevPage(+1);
+              } else {
+                this.nextPrevPage(-1);
+              }
+            });
+          }, 2000);
         }
 
 				setTimeout(() => {
@@ -508,7 +557,7 @@
 						count: data.husdi_karyono,
 					},
 					{
-						nama: '8. Muhamad Adbdul Azis',
+						nama: '8. Muhamad Abdul Azis',
 						required: false,
 						count: data.muhamad_adbdul_azis,
 					},
